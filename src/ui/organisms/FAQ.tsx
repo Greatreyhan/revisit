@@ -1,4 +1,3 @@
-import React from 'react'
 import DropDown from '../molecules/DropDown'
 
 const FAQ = () => {

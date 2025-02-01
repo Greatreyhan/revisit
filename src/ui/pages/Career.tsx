@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { MdArrowOutward } from 'react-icons/md'
 import { onValue, ref as rtdbref } from "firebase/database";
 import { FIREBASE_DB } from "../../config/firebaseinit";

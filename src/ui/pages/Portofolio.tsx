@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, ChangeEvent, useMemo } from "react";
 import { FIREBASE_DB } from "../../config/firebaseinit";
 import { PortoCard } from "../organisms";
-import { Heroimage } from "../../assets/images";
 import { onValue, ref as rtdbRef } from "firebase/database";
 import { AiOutlineSearch } from "react-icons/ai";
 
@@ -18,7 +17,6 @@ const Portofolio: React.FC = () => {
   const [keyPortofolio, setKeyPortofolio] = useState<string[]>([]);
   const [queryText, setQueryText] = useState<string>("");
   const [filteredKey, setFilteredKey] = useState<string[]>([]);
-  const [tagKey, setTagKey] = useState<string>("all");
 
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
@@ -52,18 +50,6 @@ const Portofolio: React.FC = () => {
       );
       setFilteredKey(filtered);
     }, 300);
-  };
-
-  const handleTag = (tagName: string) => {
-    setTagKey(tagName);
-    if (tagName.toLowerCase() === "all") {
-      setFilteredKey(keyPortofolio);
-    } else {
-      const filtered = keyPortofolio.filter((key) =>
-        dataPortofolio[key]?.tag.toLowerCase() === tagName.toLowerCase()
-      );
-      setFilteredKey(filtered);
-    }
   };
 
   const displayedProjects = useMemo(

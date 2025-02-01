@@ -1,4 +1,3 @@
-import React from "react";
 import { useFirebase } from "./FirebaseContext";
 
 import { Outlet, Navigate } from "react-router-dom";

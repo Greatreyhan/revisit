@@ -57,7 +57,12 @@ class MyUploadAdapter {
     }
 }
 
-const Editor = ({ HTML, setDataEdit }) => {
+interface EditorData{
+    HTML: any;
+    setDataEdit: any;
+}
+
+const Editor: React.FC<EditorData> = ({ HTML, setDataEdit }) => {
 
     function MyCustomUploadAdapterPlugin(editor: any) {
         editor.plugins.get("FileRepository").createUploadAdapter = (loader: any) => {
@@ -79,7 +84,7 @@ const Editor = ({ HTML, setDataEdit }) => {
     return (
         <>
             <CKEditor
-                editor={ClassicEditor}
+                editor={ClassicEditor as any}
                 config={custom_config}
                 data={HTML}
                 onReady={(editor) => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { IoMdApps } from "react-icons/io";
 import { MdInsertPageBreak, MdOutlineDesignServices, MdPerson, MdWork } from "react-icons/md";
-import { TbReportAnalytics, TbReportSearch } from "react-icons/tb";
+import { TbReportSearch } from "react-icons/tb";
 import { MdOutlineLogout } from "react-icons/md";
 import { Logo } from '../../assets/icons';
 import { useFirebase } from '../../utils/FirebaseContext'; // Update the path as needed

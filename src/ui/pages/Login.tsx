@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useFirebase } from "../../utils/FirebaseContext";
 import { Navigate } from "react-router-dom";
 import { Heroimage } from "../../assets/images";
@@ -6,9 +6,9 @@ import { Heroimage } from "../../assets/images";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { signIn, user, errorMessage } = useFirebase();
+  const { signIn, user, message } = useFirebase();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e:any) => {
     e.preventDefault();
     await signIn(email, password);
   };
@@ -24,7 +24,7 @@ const Login = () => {
 
           <div className="flex flex-col justify-center px-8 pt-8 my-auto md:justify-start md:pt-0 md:px-24 lg:px-32">
             <p className="text-3xl text-center">Welcome.</p>
-            <p className="text-xs text-center text-red-500">{errorMessage}</p>
+            <p className="text-xs text-center text-red-500">{message.message}</p>
             <form
               onSubmit={handleSubmit}
               className="flex flex-col pt-3 md:pt-8"

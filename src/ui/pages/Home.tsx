@@ -4,8 +4,8 @@ import { HeroHome} from "../../assets/images";
 import { ServiceCard } from "../organisms";
 import { onValue, ref as rtdbref } from "firebase/database";
 import { FIREBASE_DB } from "../../config/firebaseinit";
-import Slider from 'react-infinite-logo-slider'
 import MiniBlog from "../organisms/MiniBlog";
+import Slider from "../organisms/Slider";
 
 interface SubserviceItem {
   id: string;
@@ -27,11 +27,6 @@ interface ServiceItem {
   subservice: SubserviceItem[];
 }
 
-interface ClientItem {
-  id: string;
-  title: string;
-  image: string;
-}
 
 const transformDataService = (data: Record<string, any>): ServiceItem[] => {
   return Object.entries(data).map(([key, value]) => ({
@@ -57,18 +52,8 @@ const transformDataService = (data: Record<string, any>): ServiceItem[] => {
       : [],
   }));
 };
-
-const transformDataClient = (data: Record<string, any>): ClientItem[] => {
-  return Object.entries(data).map(([key, value]) => ({
-    id: key,
-    title: value.title,
-    image: value.image,
-  }));
-};
-
 const Home: React.FC = () => {
   const [serviceData, setServiceData] = useState<ServiceItem[]>([]);
-  const [clientData, setClientData] = useState<ClientItem[]>([]);
 
   useEffect(() => {
     const unsubscribeService = onValue(rtdbref(FIREBASE_DB, "service"), (snapshot) => {
@@ -79,18 +64,8 @@ const Home: React.FC = () => {
       }
     });
 
-    const unsubscribeClient = onValue(rtdbref(FIREBASE_DB, "client"), (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        const transformedData = transformDataClient(data);
-        setClientData(transformedData);
-      }
-    });
-
     return () => {
-      unsubscribeService();
-      unsubscribeClient();
-    }
+      unsubscribeService();    }
   }, []);
 
   return (
@@ -139,21 +114,15 @@ const Home: React.FC = () => {
         {/* Clients */}
         <hr className="w-8/12 mx-auto md:mt-8 mt-4" />
         <div className="w-full mx-auto flex items-center justify-around">
-          <Slider
+          {/* <Slider
             width="200px"
             duration={40}
             pauseOnHover={true}
             blurBorders={false}
             blurBorderColor={'#fff'}
           >
-            {clientData.map(e => {
-              return (<Slider.Slide>
-                <div key={e.id} className="flex justify-center items-center h-full w-full px-12 mt-8">
-                  <img src={e.image} className="max-w-full max-h-full object-contain" alt={e.title} />
-                </div>
-              </Slider.Slide>)
-            })}
-          </Slider>
+          </Slider> */}
+          <Slider />
         </div>
 
       </div>

@@ -1,10 +1,9 @@
-import React from 'react'
 import {
   BrowserRouter,
   Routes,
   Route,
 } from "react-router-dom";
-import { Aboutus, Article, Blog, Contactus, Home, Login, Portofolio, Service, Editor, Admin } from "./ui/pages"
+import { Aboutus, Article, Blog, Contactus, Home, Login, Portofolio, Service, Admin } from "./ui/pages"
 import { PortoDetail } from "./ui/organisms"
 import { FirebaseProvider } from './utils/FirebaseContext';
 import Career from './ui/pages/Career';
@@ -13,7 +12,6 @@ import AdminPortofolio from './ui/pages/AdminPortofolio';
 import AdminPortofolioEditor from './ui/pages/AdminPortofolioEditor';
 import AdminArticleEditor from './ui/pages/AdminArticleEditor';
 import AdminArticle from './ui/pages/AdminArticle';
-import AdminEditor from './ui/pages/AdminEditor';
 import LandingTemplate from './ui/templates/LandingTemplate';
 import AdminCareer from './ui/pages/AdminCareer';
 import AdminCareerEditor from './ui/pages/AdminCareerEditor';
@@ -62,9 +60,7 @@ function App() {
     { path: "/admin/client/add", element: <AdminClientEditor />, type: "admin" },
     { path: "/admin/client/:id", element: <AdminClientEditor />, type: "admin" },
     { path: "/admin/client", element: <AdminClient />, type: "admin" },
-    { path: "/editor", element: <Editor />, type: "admin" },
     { path: "/admin", element: <Admin />, type: "admin" },
-    { path: "/editor/:id", element: <AdminEditor />, type: "admin" },
   ];
 
   return (
