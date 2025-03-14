@@ -5,11 +5,12 @@ import { useFirebase } from "../../utils/FirebaseContext";
 import { IoMdDownload, IoMdSearch } from "react-icons/io";
 import SelectInput from "../molecules/SelectInput";
 import InputField from "../molecules/InputField";
-import AddUnit from "../organisms/AddUnit";
 import AddAttachment from "../organisms/AddAttachment";
 import TextField from "../molecules/TextField";
 import { areaData, areaMap, cargoTypesData, DealerData, segmentData } from "../../utils/masterData";
-import { AttachmentItem, InvestigationItem, Unit, UnitInvolve } from "../interface/Report";
+import { AttachmentItem, InvestigationItem, UnitInvolve } from "../interface/Report";
+import { UnitVisit } from "../interface/Visit";
+import AddUnitVisit from "../organisms/AddUnitVisit";
 
 
 const ProfileVisitEditor: React.FC = () => {    
@@ -72,7 +73,7 @@ const ProfileVisitEditor: React.FC = () => {
 
     const [attachments, setAttachments] = useState<AttachmentItem[]>([]);
     const [investigations, setInvestigations] = useState<InvestigationItem[]>([]);
-    const [units, setUnits] = useState<Unit[]>([]);
+    const [units, setUnits] = useState<UnitVisit[]>([]);
     const [unitInvolves, setUnitInvolves] = useState<UnitInvolve[]>([])
 
 
@@ -295,7 +296,7 @@ const ProfileVisitEditor: React.FC = () => {
                     {/* Customer Unit */}
                     <div className="w-full py-8 px-8 rounded-lg my-4 bg-slate-100">
                         <h2 className="font-semibold">Customer Unit</h2>
-                        <AddUnit units={units} setUnits={setUnits} />
+                        <AddUnitVisit units={units} setUnits={setUnits} />
                     </div>
 
                     {/* Operational */}
@@ -365,6 +366,14 @@ const ProfileVisitEditor: React.FC = () => {
                             value={customerInfo}
                             onChange={(e) => setCustomerInfo(e.target.value)}
                             placeholder="Informasi Customer"
+                            required={true}
+                        />
+                        <TextField
+                            label="Service Information"
+                            name="serviceInfo"
+                            value={serviceInfo}
+                            onChange={(e) => setServiceInfo(e.target.value)}
+                            placeholder="Informasi Service"
                             required={true}
                         />
                         <TextField

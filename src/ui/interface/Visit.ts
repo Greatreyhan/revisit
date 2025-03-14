@@ -10,13 +10,14 @@ export interface InvestigationItem {
     judge: string;
 }
 
-export interface Unit {
+export interface UnitVisit {
     trademark: string;
     typeUnit: string;
     qtyUnit: string;
-    goodType: string;
-    route: string;
-    distance: string;
+    rearBodyType: string;
+    payload: string;
+    goods: string;
+    bodyMaker: string;
 }
 
 export interface UnitInvolve {
@@ -53,6 +54,7 @@ export interface VisitData {
     tripPerDay: string;
     distancePerTrip: string;
     routeOfTrip: string;
+    mapAttached: string;
     
     // Road Condition
     highway: string;
@@ -77,6 +79,6 @@ export interface VisitData {
     // Additional Information
     attachments: AttachmentItem[];
     investigations: InvestigationItem[];
-    units: Unit[];
+    units: UnitVisit[];
     unitInvolves: UnitInvolve[];
 }

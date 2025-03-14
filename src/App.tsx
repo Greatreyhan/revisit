@@ -30,6 +30,7 @@ import ReportViewer from "./ui/pages/ReportViewer";
 import ViewerTemplate from "./ui/templates/ViewerTemplate";
 import ProfileVisit from "./ui/pages/ProfileVisit";
 import ProfileVisitEditor from "./ui/pages/ProfileVisitEditor";
+import VisitViewer from "./ui/pages/VisitViewer";
 
 function App() {
 
@@ -65,6 +66,7 @@ function App() {
     { path: "/report/editor/:id", element: <ProfileReportEditor />, type: "profile" },
 
     { path: "/visit/editor", element: <ProfileVisitEditor />, type: "profile" },
+    { path: "/visit/view/:id", element: <VisitViewer />, type: "viewer" },
     { path: "/visit/editor/:id", element: <ProfileVisitEditor />, type: "profile" },
 
 

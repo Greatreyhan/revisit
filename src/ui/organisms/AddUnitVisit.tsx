@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import InputField from '../molecules/InputField';
 import { MdAdd, MdDelete, MdEdit } from 'react-icons/md';
 import SelectInput from '../molecules/SelectInput';
-import { Unit } from '../interface/Report';
+import { UnitVisit } from '../interface/Visit';
 
-interface AddUnitProps{
-    units : Unit[]
-    setUnits: (units: Unit[]) => void;
+
+interface AddUnitVisitProps{
+    units : UnitVisit[]
+    setUnits: (units: UnitVisit[]) => void;
 }
 
 const merkData = ["HINO", "ISUZU", "MITSUBISHI", "UD"];
@@ -41,28 +42,30 @@ const modelMap: Record<string, string[]> = {
 };
 
 
-const AddUnit: React.FC<AddUnitProps> = ({ units, setUnits }) =>  {
+const AddUnitVisit: React.FC<AddUnitVisitProps> = ({ units, setUnits }) =>  {
     const [trademark, setTrademark] = useState<string>("");
     const [typeUnit, setTypeUnit] = useState<string>("");
     const [dataModel, setDataModel] = useState<string[]>([])
     const [qtyUnit, setQtyUnit] = useState<string>("");
-    const [goodType, setGoodType] = useState<string>("");
-    const [route, setRoute] = useState<string>("");
-    const [distance, setDistance] = useState<string>("");
+    const [rearBodyType, setRearBodyType] = useState<string>("");
+    const [payload, setPayload] = useState<string>("");
+    const [goods, setGoods] = useState<string>("");
+    const [bodyMaker, setBodyMaker] = useState<string>("");
     const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
 
     useEffect(()=>console.log(units),[])
 
     const handleAddUnit = () => {
-        if (trademark && typeUnit && qtyUnit && goodType && route && distance) {
-            const newUnit: Unit = { trademark, typeUnit, qtyUnit, goodType, route, distance };
+        if (trademark && typeUnit && qtyUnit && rearBodyType && goods && payload && bodyMaker) {
+            const newUnit: UnitVisit = { trademark, typeUnit, qtyUnit, rearBodyType, payload, goods, bodyMaker };
             setUnits([...units, newUnit]);
             setTrademark("");
             setTypeUnit("");
             setQtyUnit("");
-            setGoodType("");
-            setRoute("");
-            setDistance("");
+            setRearBodyType("");
+            setPayload("");
+            setGoods("")
+            setBodyMaker("")
             setIsPopupOpen(false);
         }
     };
@@ -80,9 +83,10 @@ const AddUnit: React.FC<AddUnitProps> = ({ units, setUnits }) =>  {
                                 <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Merk</th>
                                 <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Model</th>
                                 <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Qty</th>
-                                <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Good</th>
-                                <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Route</th>
-                                <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Distance (KM)</th>
+                                <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Rear Body Type</th>
+                                <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Payload</th>
+                                <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Goods</th>
+                                <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900 w-24">Body Maker</th>
                                 <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900 w-24">Action</th>
                             </tr>
                         </thead>
@@ -93,9 +97,10 @@ const AddUnit: React.FC<AddUnitProps> = ({ units, setUnits }) =>  {
                                     <td className="border p-1.5 dark:border-dark-5 text-center">{unit.trademark}</td>
                                     <td className="border p-1.5 dark:border-dark-5 text-center">{unit.typeUnit}</td>
                                     <td className="border p-1.5 dark:border-dark-5 text-center">{unit.qtyUnit}</td>
-                                    <td className="border p-1.5 dark:border-dark-5 text-center">{unit.goodType}</td>
-                                    <td className="border p-1.5 dark:border-dark-5 text-center">{unit.route}</td>
-                                    <td className="border p-1.5 dark:border-dark-5 text-center">{unit.distance}</td>
+                                    <td className="border p-1.5 dark:border-dark-5 text-center">{unit.rearBodyType}</td>
+                                    <td className="border p-1.5 dark:border-dark-5 text-center">{unit.payload}</td>
+                                    <td className="border p-1.5 dark:border-dark-5 text-center">{unit.goods}</td>
+                                    <td className="border p-1.5 dark:border-dark-5 text-center">{unit.bodyMaker}</td>
                                     <td className="border-t p-1.5 flex gap-x-3 justify-around items-center">
                                         <button
                                             type="button"
@@ -139,10 +144,11 @@ const AddUnit: React.FC<AddUnitProps> = ({ units, setUnits }) =>  {
                         </div>
                         <div className="flex w-full gap-5">
                             <InputField label="Jumlah Unit" type='number' name="qtyUnit" value={qtyUnit} onChange={(e) => setQtyUnit(e.target.value)} placeholder="Masukkan jumlah unit" />
-                            <InputField label="Tipe Barang" name="goodType" value={goodType} onChange={(e) => setGoodType(e.target.value)} placeholder="Masukkan tipe barang" />
+                            <InputField label="Tipe Barang" name="rearBodyType" value={rearBodyType} onChange={(e) => setRearBodyType(e.target.value)} placeholder="Masukkan tipe barang" />
                         </div>
-                        <InputField label="Rute" name="route" value={route} onChange={(e) => setRoute(e.target.value)} placeholder="Masukkan rute perjalanan" />
-                        <InputField type="number" label="Jarak Tempuh (KM)" name="distance" value={distance} onChange={(e) => setDistance(e.target.value)} placeholder="Masukkan jarak tempuh" />
+                        <InputField type="number" label="Jarak Tempuh (KM)" name="payload" value={payload} onChange={(e) => setPayload(e.target.value)} placeholder="Masukkan jarak tempuh" />
+                        <InputField label="Goods" name="goods" value={goods} onChange={(e) => setGoods(e.target.value)} placeholder="Masukkan jenis Muatan" />
+                        <InputField label="Body Maker" name="bodyMaker" value={bodyMaker} onChange={(e) => setBodyMaker(e.target.value)} placeholder="Body Maker" />
                         <div className="flex justify-end gap-5 mt-4">
                             <button type="button" className="bg-white text-primary px-4 py-2 rounded-md" onClick={() => setIsPopupOpen(false)}>Batal</button>
                             <button type="button" className="text-white bg-primary px-4 py-2 rounded-md" onClick={handleAddUnit}>Simpan</button>
@@ -154,4 +160,4 @@ const AddUnit: React.FC<AddUnitProps> = ({ units, setUnits }) =>  {
     );
 };
 
-export default AddUnit;
+export default AddUnitVisit;
