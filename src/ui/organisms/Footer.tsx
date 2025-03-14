@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { LogoInverted } from "../../assets/icons";
+import { Logo } from "../../assets/icons";
 import { BsInstagram, BsWhatsapp } from "react-icons/bs";
 import { BiLogoGmail, BiLogoLinkedin } from "react-icons/bi";
 
@@ -8,16 +8,13 @@ const Footer = () => {
     <div className="w-full mx-auto bg-base-dark">
       <div className="flex flex-wrap md:w-10/12 w-full px-3 md:px-0 mx-auto justify-around items-start pt-4">
         <div className="md:w-4/12 w-full text-white text-normal p-3">
-          <img className="w-24 mt-9" src={LogoInverted} />
-          <h4 className="font-bold mt-4 text-xl">Widya Solusi Utama</h4>
+          <img className="w-24 mt-9" src={Logo} />
+          <h4 className="font-bold mt-4 text-xl">Isuzu Astra Motor Indonesia</h4>
           <address className="mt-3">
-            <p className="font-semibold ">Semarang</p>
-            Jl. Setia Budi No.192, Srondol Wetan, Kec. Banyumanik, Kota Semarang, Jawa Tengah 20264
+            <p className="font-semibold ">Bekasi</p>
+            Jl. Pejuang, RT.007/RW.016, Harapan Jaya, Kecamatan Medan Satria, Kota Bks, Jawa Barat 17124
           </address>
-          <address className="mt-3">
-            <p className="font-semibold ">Depok</p>
-            Jl. Margonda No.1 Lantai UG, Kemiri Muka, Kecamatan Beji, Kota Depok, Jawa Barat 16424
-          </address>
+
 
         </div>
         <div className="flex flex-col flex-1 mx-8">
@@ -25,28 +22,28 @@ const Footer = () => {
             <a
               className="mt-3 text-primary w-10 h-10 p-2.5 bg-base-white rounded-full inline-block hover:text-white"
               target="_blank"
-              href="https://www.instagram.com/abdurrahman.lawfirm/"
+              href="https://www.instagram.com/isuzuid/"
             >
               <BsInstagram className="w-full h-full" />
             </a>
             <a
               className="mt-3 text-primary w-10 h-10 p-2.5 bg-base-white rounded-full inline-block hover:text-white"
               target="_blank"
-              href="mailto:abdurrahman.and.co@gmail.com"
+              href="mailto:contact@isuzu-astra.com"
             >
               <BiLogoGmail className="w-full h-full" />
             </a>
             <a
               className="mt-3 text-primary w-10 h-10 p-2.5 bg-base-white rounded-full inline-block hover:text-white"
               target="_blank"
-              href="https://wa.me/6282210100098"
+              href="https://wa.me/6289503953090"
             >
               <BsWhatsapp className="w-full h-full" />
             </a>
             <a
               className="mt-3 text-primary w-10 h-10 p-2.5 bg-base-white rounded-full inline-block hover:text-white"
               target="_blank"
-              href="https://www.linkedin.com/company/abdurrahman-co/"
+              href="https://www.linkedin.com/company/isuzu-astra-motor-indonesia"
             >
               <BiLogoLinkedin className="w-full h-full" />
             </a>
@@ -63,22 +60,22 @@ const Footer = () => {
                 className="mt-3 text-gray-300 hover:text-white"
                 to="/service"
               >
-                Our Services
+                Dashboard
               </Link>
               <Link
                 className="mt-3 text-gray-300 hover:text-white"
                 to="/portofolio"
               >
-                Portofolios
+                Literature
               </Link>
               <Link className="mt-3 text-gray-300 hover:text-white" to="/about">
-                About Us
+                Assistant
               </Link>
               <Link
                 className="mt-3 text-gray-300 hover:text-white"
                 to="/blog"
               >
-                Blogs
+                Report
               </Link>
             </div>
             <div className="md:flex-1 w-4/12 text-white flex flex-col p-2 mt-8">
@@ -90,21 +87,28 @@ const Footer = () => {
                 target="_blank"
                 href="https://wa.me/6282210100098/?text=Halo%2C%20saya%20ingin%20bertanya%20terkait%20layanan%20di%20bidang%20Litigasi%20dari%20Abdurrahman%20%26%20Co."
               >
-                Company Profile
+                BBG
               </a>
               <a
                 className="mt-3 text-gray-300 hover:text-white"
                 target="_blank"
                 href="https://wa.me/6282210100098/?text=Halo%2C%20saya%20ingin%20bertanya%20terkait%20layanan%20di%20bidang%20Non%20Litigasi%20dari%20Abdurrahman%20%26%20Co."
               >
-                Certification
+                Workshop Manual
               </a>
               <a
                 className="mt-3 text-gray-300 hover:text-white"
                 target="_blank"
                 href="https://wa.me/6282210100098/?text=Halo%2C%20saya%20ingin%20bertanya%20terkait%20layanan%20di%20bidang%20Retainer%20dari%20Abdurrahman%20%26%20Co."
               >
-                Izin Usaha
+                Visit Report
+              </a>
+              <a
+                className="mt-3 text-gray-300 hover:text-white"
+                target="_blank"
+                href="https://wa.me/6282210100098/?text=Halo%2C%20saya%20ingin%20bertanya%20terkait%20layanan%20di%20bidang%20Retainer%20dari%20Abdurrahman%20%26%20Co."
+              >
+                Parts Library
               </a>
             </div>
             <div className="md:flex-1 w-4/12 text-white flex flex-col p-2 mt-8 md:pl-10 pl-0">
@@ -116,28 +120,28 @@ const Footer = () => {
                 target="_blank"
                 href="https://www.instagram.com/abdurrahman.lawfirm/"
               >
-                IT Solution
+                Report Creator
               </a>
               <a
                 className="mt-3 text-gray-300 hover:text-white"
                 target="_blank"
                 href="mailto:abdurrahman.and.co@gmail.com"
               >
-                IT Consultion
+                Problem Consultation
               </a>
               <a
                 className="mt-3 text-gray-300 hover:text-white"
                 target="_blank"
                 href="https://wa.me/6282210100098"
               >
-                License Procurement
+                Schedule to Visit
               </a>
               <a
                 className="mt-3 text-gray-300 hover:text-white"
                 target="_blank"
                 href="https://www.linkedin.com/company/abdurrahman-co/"
               >
-                Digital Marketing
+                Product Knowledge
               </a>
             </div>
           </div>
@@ -145,7 +149,7 @@ const Footer = () => {
 
       </div>
       <p className="text-center mt-8 text-white text-sm">
-        © PT Widya Solusi Utama
+        © Revisit
       </p>
     </div>
   );

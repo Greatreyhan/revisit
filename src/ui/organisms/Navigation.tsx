@@ -19,12 +19,13 @@ const Navigation: React.FC = () => {
         </div>
         <div className="md:flex justify-around items-center px-8 py-2 hidden">
           {[
-            { to: '/', label: 'Home' },
-            { to: '/service', label: 'Services' },
-            { to: '/portofolio', label: 'Our Work' },
-            { to: '/blog', label: 'Blog' },
-            { to: '/career', label: 'Career' },
-            { to: '/about', label: 'About Us' },
+            { to: '/', label: 'Dashboard' },
+            { to: '/literature', label: 'Literature' },
+            { to: '/assistant', label: 'Assistant' },
+            { to: '/report', label: 'Report' },
+            { to: '/information', label: 'Information' },
+            { to: '/warranty', label: 'Warranty' },
+            { to: '/tools', label: 'Tools' },
           ].map((item) => (
             <Link
               key={item.to}
@@ -38,12 +39,12 @@ const Navigation: React.FC = () => {
           ))}
         </div>
         <div className="mr-8 hidden md:block">
-          <a
-            href="#"
+          <Link
+            to="/login"
             className="text-primary border-primary border hover:bg-primary hover:text-white px-6 py-2 text-sm rounded-xl"
           >
-            Contact Us
-          </a>
+            Login
+          </Link>
         </div>
         <div onClick={handleNav} className="md:hidden flex items-center">
           <MdMenu className="text-3xl" />
@@ -53,13 +54,12 @@ const Navigation: React.FC = () => {
         <div className="w-screen h-screen fixed bg-slate-50 bg-opacity-90 z-10">
           <div className="flex-col w-full h-full text-center pt-8 justify-around items-center text-xl tracking-wide text-slate-900">
             {[
-              { to: '/', label: 'Home' },
-              { to: '/service', label: 'Services' },
-              { to: '/portofolio', label: 'Our Work' },
-              { to: '/blog', label: 'Blog' },
-              { to: '/career', label: 'Career' },
-              { to: '/about', label: 'About Us' },
-              { to: '/contact', label: 'Contact Us' },
+              { to: '/', label: 'Dashboard' },
+              { to: '/literature', label: 'Literature' },
+              { to: '/assistant', label: 'Assistant' },
+              { to: '/report', label: 'Report' },
+              { to: '/information', label: 'Information' },
+              { to: '/tools', label: 'Tools' },
             ].map((item) => (
               <Link
                 key={item.to}

@@ -56,5 +56,5 @@ import Partner21 from "./Partner21.png"
 import Props1 from "./Props1.png"
 import Props2 from "./Props2.png"
 import Props3 from "./Props3.png"
-
-export { Heroimage, TeamsImage, HeroService, HeroAbout, HeroHome, Agile, Cert1, Cert2, Cert3, Cert4, Cert5, Cert6, Cert7, Cert8, Cert9, Cert10, Cert11, Cert12, Cert13, Cert14, Cert15, Cert16, Service1, Service2, Service3, Service4, Service5, Service6, Desc1,Desc2,Desc3,Desc4,Desc5,Desc6, Partner1, Partner2, Partner3, Partner4, Partner5, Partner6, Partner7, Partner8, Partner9, Partner10, Partner11, Partner12, Partner13, Partner14, Partner15, Partner16, Partner17, Partner18, Partner19, Partner20, Partner21, Props1, Props2, Props3 }
+import Logo2 from "./Logo2.png"
+export {Logo2, Heroimage, TeamsImage, HeroService, HeroAbout, HeroHome, Agile, Cert1, Cert2, Cert3, Cert4, Cert5, Cert6, Cert7, Cert8, Cert9, Cert10, Cert11, Cert12, Cert13, Cert14, Cert15, Cert16, Service1, Service2, Service3, Service4, Service5, Service6, Desc1,Desc2,Desc3,Desc4,Desc5,Desc6, Partner1, Partner2, Partner3, Partner4, Partner5, Partner6, Partner7, Partner8, Partner9, Partner10, Partner11, Partner12, Partner13, Partner14, Partner15, Partner16, Partner17, Partner18, Partner19, Partner20, Partner21, Props1, Props2, Props3 }

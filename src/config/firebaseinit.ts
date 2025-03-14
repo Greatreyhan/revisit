@@ -6,14 +6,14 @@ import { getDatabase } from "firebase/database"
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBY489QtliguFmQctM81x7EyguUHGzr37I",
-  authDomain: "comprowsu.firebaseapp.com",
-  databaseURL: "https://comprowsu-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "comprowsu",
-  storageBucket: "comprowsu.appspot.com",
-  messagingSenderId: "408123204083",
-  appId: "1:408123204083:web:e2f8ad5f97f6a90f67b286",
-  measurementId: "G-17H0SFP31R"
+  apiKey: "AIzaSyB90SzPUcE2cFc0_ceUjQ0lEdU2e8McZHo",
+  authDomain: "wsucompro.firebaseapp.com",
+  databaseURL: "https://wsucompro-default-rtdb.firebaseio.com",
+  projectId: "wsucompro",
+  storageBucket: "wsucompro.appspot.com",
+  messagingSenderId: "829238839828",
+  appId: "1:829238839828:web:fc2ebfbaaaa0e93108f501",
+  measurementId: "G-3RKL0XGG31"
 };
 
 // Initialize Firebase

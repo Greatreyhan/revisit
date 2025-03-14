@@ -21,6 +21,15 @@ import AdminSubservice from './ui/pages/AdminSubservice';
 import AdminSubserviceEditor from './ui/pages/AdminSubserviceEditor';
 import AdminClientEditor from './ui/pages/AdminClientEditor';
 import AdminClient from './ui/pages/AdminClient';
+import ProfileTemplate from "./ui/templates/ProfileTemplate";
+import Profile from "./ui/pages/Profile";
+import ProfileReport from "./ui/pages/ProfileReport";
+import ProfileReportEditor from "./ui/pages/ProfileReportEditor";
+import PDFCanvas from "./ui/pages/PDFCanvas";
+import ReportViewer from "./ui/pages/ReportViewer";
+import ViewerTemplate from "./ui/templates/ViewerTemplate";
+import ProfileVisit from "./ui/pages/ProfileVisit";
+import ProfileVisitEditor from "./ui/pages/ProfileVisitEditor";
 
 function App() {
 
@@ -40,6 +49,24 @@ function App() {
 
     // Login Route
     { path: "/login", element: <Login />, type: "basic" },
+
+    // Profile
+    { path: "/profile", element: <Profile />, type: "profile" },
+    { path: "/report", element: <ProfileReport />, type: "profile" },
+    { path: "/visit", element: <ProfileVisit />, type: "profile" },
+    { path: "/assistant", element: <ProfileReport />, type: "profile" },
+    { path: "/schedule", element: <ProfileReport />, type: "profile" },
+    { path: "/warranty", element: <ProfileReport />, type: "profile" },
+    { path: "/canvas/:id", element: <PDFCanvas />, type: "profile" },
+
+    // Form
+    { path: "/report/editor", element: <ProfileReportEditor />, type: "profile" },
+    { path: "/report/view/:id", element: <ReportViewer />, type: "viewer" },
+    { path: "/report/editor/:id", element: <ProfileReportEditor />, type: "profile" },
+
+    { path: "/visit/editor", element: <ProfileVisitEditor />, type: "profile" },
+    { path: "/visit/editor/:id", element: <ProfileVisitEditor />, type: "profile" },
+
 
     // Admin Template Routes
     { path: "/admin/portofolio", element: <AdminPortofolio />, type: "admin" },
@@ -82,6 +109,22 @@ function App() {
                   key={index}
                   path={path}
                   element={<AdminTemplate>{element}</AdminTemplate>}
+                />
+              );
+            } else if (type === "profile") {
+              return (
+                <Route
+                  key={index}
+                  path={path}
+                  element={<ProfileTemplate>{element}</ProfileTemplate>}
+                />
+              );
+            } else if (type === "viewer") {
+              return (
+                <Route
+                  key={index}
+                  path={path}
+                  element={<ViewerTemplate>{element}</ViewerTemplate>}
                 />
               );
             } else {
