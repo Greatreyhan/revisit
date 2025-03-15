@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import InputField from "../molecules/InputField";
-import { MdAdd } from "react-icons/md";
+import { MdAdd, MdClose, MdDelete } from "react-icons/md";
 import { useFirebase } from "../../utils/FirebaseContext";
 
 interface AttachmentItem {
@@ -18,6 +18,7 @@ const AddAttachment: React.FC<AddAttachmentProps> = ({ attachments, setAttachmen
     const [imageAttached, setImageAttached] = useState<string>("");
     const [imageDescription, setImageDescription] = useState<string>("");
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [selectIndex, setSelectIndex] = useState<number>(-1)
 
     const handleAddAttachment = () => {
         if (imageAttached && imageDescription) {
@@ -31,15 +32,55 @@ const AddAttachment: React.FC<AddAttachmentProps> = ({ attachments, setAttachmen
         }
     };
 
+    const handleDeleteAttachment = () => {
+        if (selectIndex !== -1) {
+            const updatedAttachments = attachments.filter((_, index) => index !== selectIndex);
+            setAttachments(updatedAttachments);
+            setSelectIndex(-1); // Tutup modal setelah menghapus
+        }
+    };
+
     return (
         <div>
-            {/* List Attachments */}
-            <div className="flex gap-5 mt-4">
-                {attachments.map((attachment, index) => (
-                    <div key={index} className="border rounded-md shadow-md w-4/12">
-                        <img src={attachment.imageAttached} alt="Lampiran" className="w-full h-56 object-cover rounded-md" />
-                        <p className="py-2 text-center bg-primary rounded-b text-white">{attachment.imageDescription}</p>
+            {/* Show Images */}
+            <div onClick={() => setSelectIndex(-1)} className={`fixed w-screen h-screen bg-black top-0 left-0 bg-opacity-40 ${selectIndex == -1 ? "hidden" : "flex"} justify-center items-center`}>
+                <div className={`pb-6 bg-slate-50 rounded-lg flex flex-col w-10/12`}>
+                    <div className="relative">
+                        <div className="flex justify-between items-center bg-slate-100 rounded-t-xl">
+                            <h2 className="text-xl px-6">{attachments[selectIndex]?.imageDescription}</h2>
+                            <button onClick={() => setSelectIndex(-1)} type="button"><MdClose className="text-5xl bg-red-700 text-white p-3 rounded-tr-lg" /></button>
+                        </div>
+
+                        <div className="w-full h-96 flex justify-center items-center" >
+                            <img className="object-fill h-full" src={attachments[selectIndex]?.imageAttached} />
+                        </div>
+
+                        <hr className="mt-8" />
+                        <div className="flex mt-2 gap-3 px-8 pt-4">
+
+                            <button
+                                className="text-rose-800 px-4 py-2 rounded-lg bg-rose-100 flex items-center"
+                                type="button"
+                                onClick={handleDeleteAttachment}
+                            >
+                                <MdDelete className="text-md mr-1" />
+                                <p className="text-sm">Delete Image</p>
+                            </button>
+
+                        </div>
                     </div>
+
+
+                </div>
+            </div>
+
+            {/* List Attachments */}
+            <div className="flex flex-wrap gap-5 mt-4">
+                {attachments.map((attachment, index) => (
+                    <button onClick={() => setSelectIndex(index)} type="button" key={index} className="border rounded-md shadow-md md:w-4/12 w-5/12">
+                        <img src={attachment.imageAttached} alt="Lampiran" className="w-full md:h-56 h-32 object-cover rounded-t-md" />
+                        <p className="py-2 text-center bg-primary rounded-b-md text-white">{attachment.imageDescription}</p>
+                    </button>
                 ))}
             </div>
 

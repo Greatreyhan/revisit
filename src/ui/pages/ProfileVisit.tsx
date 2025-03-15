@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { MdEdit, MdDelete, MdPrint } from "react-icons/md";
+import { MdEdit, MdDelete, MdPrint, MdClose } from "react-icons/md";
 import { useFirebase } from "../../utils/FirebaseContext";
 import { VisitData } from "../interface/Visit";
+import { IoMdSettings } from "react-icons/io";
 
 const ProfileVisit = () => {
   const { getFromDatabase, deleteFromDatabase } = useFirebase();
   const [dataArticle, setDataArticle] = useState<{ [key: string]: VisitData }>({});
   const [keyArticle, setKeyArticle] = useState<string[]>([]);
+  const [keyData, setKeyData] = useState<string>("")
 
   useEffect(() => {
     getFromDatabase(`visit`).then((data) => {
@@ -22,6 +24,68 @@ const ProfileVisit = () => {
 
   return (
     <div className="w-10/12 mx-auto pt-8">
+      
+      <div onClick={() => setKeyData("")} className={`fixed w-screen h-screen bg-black top-0 left-0 bg-opacity-40 ${keyData == "" ? "hidden" : "flex"} justify-center items-center`}>
+        <div className={`pb-6 bg-slate-50 rounded-lg flex flex-col`}>
+          <div className="relative">
+            <button onClick={() => setKeyData("")} className="absolute right-0 top-0" type="button"><MdClose className="text-5xl bg-red-700 text-white p-3 rounded-tr-lg" /></button>
+            <table className="w-full">
+              <thead>
+                <tr className="">
+                  <td className="font-semibold py-3 px-6 rounded-t-lg bg-slate-100" colSpan={2}>Report Information</td>
+                </tr>
+              </thead>
+              <tbody className="">
+                <tr className="text-left w-full">
+                  <td className="px-6 w-3/12 p-2">Customer</td>
+                  <td className=" w-10/12 p-2">: {dataArticle[keyData]?.customerName}</td>
+                </tr>
+                <tr className="text-left w-full">
+                  <td className="px-6 w-3/12 p-2">Area</td>
+                  <td className=" w-10/12 p-2">: {dataArticle[keyData]?.area}</td>
+                </tr>
+                <tr className="text-left w-full">
+                  <td className="px-6 w-3/12 p-2">Units</td>
+                  <td className=" w-10/12 p-2">: {dataArticle[keyData]?.units?.reduce((sum, unit) => sum + (Number(unit.qtyUnit) || 0),0)}</td>
+                </tr>
+                <tr className="text-left w-full">
+                  <td className="px-6 w-3/12 p-2">Segment</td>
+                  <td className=" w-10/12 p-2">: {dataArticle[keyData]?.segment}</td>
+                </tr>
+              </tbody>
+            </table>
+            <hr className="mt-8" />
+            <div className="flex mt-2 gap-3 px-8 pt-4">
+              <Link
+                className="text-sky-800 px-4 py-2 rounded-lg bg-sky-100 flex items-center"
+                to={"/visit/editor/" + keyData}
+              >
+                <MdEdit className="text-md mr-1" />
+                <p className="text-sm">Edit Data</p>
+              </Link>
+
+              <button
+                className="text-rose-800 px-4 py-2 rounded-lg bg-rose-100 flex items-center"
+                type="button"
+                onClick={() => deleteFromDatabase("visit/" + keyData)}
+              >
+                <MdDelete className="text-md mr-1" />
+                <p className="text-sm">Delete Data</p>
+              </button>
+              <Link
+                className="text-emerald-800 px-4 py-2 rounded-lg bg-emerald-100 flex items-center"
+                type="button"
+                to={"/visit/view/" + keyData}
+              >
+                <MdPrint className="text-md mr-1" />
+                <p className="text-sm">Show Visit</p>
+              </Link>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
       <div className="flex items-center justify-between py-8">
         <p>Total Visit: {keyArticle.length}</p>
         <Link
@@ -34,24 +98,24 @@ const ProfileVisit = () => {
       <div className="flex justify-center items-center">
         <table className="table p-4 bg-white rounded-lg shadow">
           <thead>
-            <tr>
-              <th className="border p-4 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">#</th>
-              <th className="border p-4 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Customer</th>
-              <th className="border p-4 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Dealer</th>
-              <th className="border p-4 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Area</th>
-              <th className="border p-4 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Unit</th>
-              <th className="border p-4 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Action</th>
+            <tr className="md:text-md text-sm bg-slate-50 font-bold">
+              <th className="border p-4 dark:border-dark-5 whitespace-nowrap text-gray-900">#</th>
+              <th className="border p-4 dark:border-dark-5 whitespace-nowrap text-gray-900">Customer</th>
+              <th className="border p-4 dark:border-dark-5 whitespace-nowrap text-gray-900 md:table-cell hidden">Segment</th>
+              <th className="border p-4 dark:border-dark-5 whitespace-nowrap text-gray-900">Area</th>
+              <th className="border p-4 dark:border-dark-5 whitespace-nowrap text-gray-900">Unit</th>
+              <th className="border p-4 dark:border-dark-5 whitespace-nowrap text-gray-900">Action</th>
             </tr>
           </thead>
           <tbody>
             {keyArticle.map((key, i) => (
-              <tr key={key} className="text-gray-700">
+              <tr key={key} className="text-gray-700 md:text-md text-sm">
                 <td className="border p-4 dark:border-dark-5">{i + 1}</td>
                 <td className="border p-4 dark:border-dark-5">{dataArticle[key]?.customerName}</td>
-                <td className="border p-4 dark:border-dark-5">{dataArticle[key]?.dealer}</td>
+                <td className="border p-4 dark:border-dark-5 md:table-cell hidden">{dataArticle[key]?.segment}</td>
                 <td className="border p-4 dark:border-dark-5">{dataArticle[key]?.area}</td>
-                <td className="border p-4 dark:border-dark-5">  {dataArticle[key]?.units.reduce((total, unit) => total + parseInt(unit.qtyUnit, 10), 0)}</td>
-                <td className="border-t p-4 flex gap-x-3 justify-around items-center">
+                <td className="border p-4 dark:border-dark-5 text-center">  {dataArticle[key]?.units.reduce((total, unit) => total + parseInt(unit.qtyUnit, 10), 0)}</td>
+                <td className="border-t p-4 md:flex gap-x-3 justify-around items-center hidden">
                   <Link
                     className="p-2 text-sky-800 rounded-full bg-sky-100"
                     to={"/visit/editor/" + key}
@@ -72,6 +136,17 @@ const ProfileVisit = () => {
                   >
                     <MdPrint />
                   </Link>
+                </td>
+                <td className="border-t p-4 flex gap-x-3 justify-around items-center md:hidden">
+
+                  <button
+                    className="p-2 text-sky-800 rounded-full bg-sky-100"
+                    type="button"
+                    onClick={() => console.log("show")}
+                  >
+                    <IoMdSettings onClick={() => setKeyData(key)} />
+                  </button>
+
                 </td>
               </tr>
             ))}

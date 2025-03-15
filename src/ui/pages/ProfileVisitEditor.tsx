@@ -231,7 +231,7 @@ const ProfileVisitEditor: React.FC = () => {
                         <div className="loader"></div>
                     </div>
                 )}
-                <div className="w-10/12 mx-auto flex justify-between">
+                <div className="md:w-10/12 w-11/12 mx-auto flex justify-between">
                     <button
                         type="button"
                         className="mt-4 px-6 py-2 inline-flex justify-center items-center bg-primary rounded-full text-white font-semibold"
@@ -247,7 +247,7 @@ const ProfileVisitEditor: React.FC = () => {
                         Import TIR
                     </button>
                 </div>
-                <form className="w-10/12 flex flex-col mx-auto my-8 justify-around items-center" onSubmit={handleSendData}>
+                <form className="md:w-10/12 w-11/12 flex flex-col mx-auto my-8 justify-around items-center" onSubmit={handleSendData}>
                     <TextField
                         label="Context"
                         name="context"
@@ -260,14 +260,14 @@ const ProfileVisitEditor: React.FC = () => {
                     {/* General Information */}
                     <div className="w-full py-8 px-8 rounded-lg my-4 bg-slate-100">
                         <h2 className="font-semibold">General Information</h2>
-                        <div className="flex w-full gap-5">
+                        <div className="md:flex w-full gap-5">
                             <InputField label="Form Number" name="Form Number" value={formNumber} onChange={(e) => setFormNumber(e.target.value)} placeholder="Form Number" />
 
                             <InputField label="Visitor Name" name="Visitor Name" value={visitorName} onChange={(e) => setVisitorName(e.target.value)} placeholder="Visitor Name" />
 
                             <InputField label="Tanggal Kunjungan" name="visitDate" type="date" value={visitDate} onChange={(e) => setVisitDate(e.target.value)} />
                         </div>
-                        <div className="flex w-full gap-5">
+                        <div className="md:flex w-full gap-5">
                             <InputField label="Visitor" name="visitor" value={visitor} onChange={(e) => setVisitor(e.target.value)} placeholder="Visitor" />
                             <InputField label="Reviewer" name="reviewer" value={reviewer} onChange={(e) => setReviewer(e.target.value)} placeholder="Reviewer" />
                             <InputField label="Approval" name="approval" value={approval} onChange={(e) => setApproval(e.target.value)} placeholder="Approval" />
@@ -276,17 +276,17 @@ const ProfileVisitEditor: React.FC = () => {
 
                     <div className="w-full py-8 px-8 rounded-lg my-4 bg-slate-100">
                         <h2 className="font-semibold">Basic Information</h2>
-                        <div className="flex w-full gap-5">
+                        <div className="md:flex w-full gap-5">
                             <InputField label="Nama Customer" name="customerName" value={customerName} onChange={(e) => setCustomerName(e.target.value)} placeholder="Masukkan Nama Customer" />
                             <SelectInput label="Dealer" name="dealer" value={dealer} onChange={(e) => setDealer(e.target.value)} options={DealerData} />
                             <InputField label="Tanggal Operasi" name="dateOperation" type="date" value={dateOperation} onChange={(e) => setDateOperation(e.target.value)} />
                         </div>
-                        <div className="flex w-full gap-5">
+                        <div className="md:flex w-full gap-5">
                             <SelectInput label="Area" name="area" value={area} onChange={(e) => { setArea(e.target.value); setDataLocation(areaMap[e.target.value] || []); }} options={areaData} />
                             <SelectInput label="Lokasi" name="location" value={location} onChange={(e) => setLocation(e.target.value)} options={dataLocation} />
                             <InputField label="Kota" name="city" value={city} onChange={(e) => setCity(e.target.value)} placeholder="Masukkan Kota" />
                         </div>
-                        <div className="flex w-full gap-5">
+                        <div className="md:flex w-full gap-5">
                             <SelectInput label="Segmen" name="segment" value={segment} onChange={(e) => setSegment(e.target.value)} options={segmentData} />
                             <SelectInput label="Aplikasi" name="application" value={application} onChange={(e) => setApplication(e.target.value)} options={cargoTypesData} />
                             <InputField label="LoadingUnit" name="loadingUnit" value={loadingUnit} onChange={(e) => setLoadingUnit(e.target.value)} placeholder="Masukkan LoadingUnit" />
@@ -302,7 +302,7 @@ const ProfileVisitEditor: React.FC = () => {
                     {/* Operational */}
                     <div className="w-full py-8 px-8 rounded-lg my-4 bg-slate-100">
                         <h2 className="font-semibold">Operational</h2>
-                        <div className="flex w-full gap-5">
+                        <div className="md:flex w-full gap-5">
                             <InputField label="Number of Day Per Week" type="number" name="dayPerWeek" value={dayPerWeek} onChange={(e) => setDayPerWeek(e.target.value)} placeholder="Masukkan jumlah hari kerja" />
                             <InputField label="Number of Trip Per Day" type="number" name="tripPerDay" value={tripPerDay} onChange={(e) => setTripPerDay(e.target.value)} placeholder="Masukkan jumlah trip dalam sehari" />
                             <InputField label="Running Distance Per Trip" type="number" name="distancePerTrip" value={distancePerTrip} onChange={(e) => setDistancePerTrip(e.target.value)} placeholder="Jarak dalam sekali trip" />
@@ -329,20 +329,20 @@ const ProfileVisitEditor: React.FC = () => {
 
                     <div className="w-full py-8 px-8 rounded-lg my-4 bg-slate-100">
                         <h2 className="font-semibold">Road Condition</h2>
-                        <div className="flex w-full gap-5">
+                        <div className="md:flex w-full gap-5">
                             <InputField label="Jalan Tol (%)" type="number" name="highway" value={highway} onChange={(e) => setHighway(e.target.value)} placeholder="Masukkan kondisi jalan tol" />
                             <InputField label="Jalan Kota (%)" type="number" name="cityRoad" value={cityRoad} onChange={(e) => setCityRoad(e.target.value)} placeholder="Masukkan kondisi jalan kota" />
                             <InputField label="Jalan Desa (%)" type="number" name="countryRoad" value={countryRoad} onChange={(e) => setCountryRoad(e.target.value)} placeholder="Masukkan kondisi jalan desa" />
                         </div>
-                        <div className="flex w-full gap-5">
+                        <div className="md:flex w-full gap-5">
                             <InputField label="Jalan Aspal (%)" type="number" name="onRoad" value={onRoad} onChange={(e) => setOnRoad(e.target.value)} placeholder="Masukkan kondisi jalan aspal" />
                             <InputField label="Jalan Off-Road (%)" type="number" name="offRoad" value={offRoad} onChange={(e) => setOffRoad(e.target.value)} placeholder="Masukkan kondisi off-road" />
                         </div>
-                        <div className="flex w-full gap-5">
+                        <div className="md:flex w-full gap-5">
                             <InputField label="Jalan Datar (%)" type="number" name="flatRoad" value={flatRoad} onChange={(e) => setFlatRoad(e.target.value)} placeholder="Masukkan kondisi jalan datar" />
                             <InputField label="Jalan Menanjak (%)" type="number" name="climbRoad" value={climbRoad} onChange={(e) => setClimbRoad(e.target.value)} placeholder="Masukkan kondisi jalan menanjak" />
                         </div>
-                        <div className="flex w-full gap-5">
+                        <div className="md:flex w-full gap-5">
                             <InputField label="Maximum Slope (%)" type="number" name="maximumSlope" value={maximumSlope} onChange={(e) => setMaximumSlope(e.target.value)} placeholder="Kemiringan Maksimal" />
                             <InputField label="Loading Ratio (%)" type="number" name="loadingRatio" value={loadingRatio} onChange={(e) => setLoadingRatio(e.target.value)} placeholder="Rasio Muatan" />
                             <InputField label="How Many Years Does Customer Want to Use This Unit?" type="number" name="yearsOfUse" value={yearsOfUse} onChange={(e) => setYearsOfUse(e.target.value)} placeholder="Years of Use" />

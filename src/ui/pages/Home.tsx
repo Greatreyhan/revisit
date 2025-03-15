@@ -135,7 +135,7 @@ const Home: React.FC = () => {
 
       {/* Articles */}
       <div className="w-full py-8">
-        <h2 className="text-center md:text-3xl text-2xl font-normal uppercase text-base-dark pt-24">
+        <h2 className="text-center md:text-3xl text-2xl font-normal uppercase text-base-dark pt-8">
           WHAT'S NEW?
         </h2>
         <p className="mx-auto md:w-5/12 w-10/12 text-center text-base-light mt-4 text-sm">

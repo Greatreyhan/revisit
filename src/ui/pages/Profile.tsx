@@ -8,28 +8,28 @@ import { useFirebase } from "../../utils/FirebaseContext";
 
 const Profile: React.FC = () => {
   const {getFromDatabase} = useFirebase()
-  const [keyArticle, setKeyArticle] = useState<string[]>([]);
-  const [keyPorto, setKeyPorto] = useState<string[]>([]);
+  const [report, setReport] = useState<string[]>([]);
+  const [visit, setVisit] = useState<string[]>([]);
   const [keyCareer, setKeyCareer] = useState<string[]>([]);
   const [keyClient, setKeyClient] = useState<string[]>([]);
   const [keyService, setKeyService] = useState<string[]>([]);
 
   useEffect(() => {
     // Fetch articles
-    getFromDatabase("article").then(data => {
+    getFromDatabase("report").then(data => {
       const dataConverted: Article | null = data;
       if (dataConverted) {
         const keys = Object.keys(dataConverted);
-        setKeyArticle(keys);
+        setReport(keys);
       }
     });
 
     // Fetch portfolios
-    getFromDatabase("portofolio").then(data => {
+    getFromDatabase("visit").then(data => {
       const dataConverted: Portofolio | null = data;
       if (dataConverted) {
         const keys = Object.keys(dataConverted);
-        setKeyPorto(keys);
+        setVisit(keys);
       }
     });
 
@@ -67,7 +67,7 @@ const Profile: React.FC = () => {
       <div className="w-72 bg-slate-100 px-8 py-4 rounded-md">
         <h2 className="text-lg text-slate-900">Total Report</h2>
         <p className="text-4xl text-primary flex justify-end items-end mt-4 font-bold">
-          {keyArticle.length}
+          {report.length}
           <span className="text-sm font-light ml-2">report</span>
         </p>
       </div>
@@ -76,7 +76,7 @@ const Profile: React.FC = () => {
       <div className="w-72 bg-slate-100 px-8 py-4 rounded-md">
         <h2 className="text-lg text-slate-900">Total Visit</h2>
         <p className="text-4xl text-primary flex justify-end items-end mt-4 font-bold">
-          {keyPorto.length}
+          {visit.length}
           <span className="text-sm font-light ml-2">visit</span>
         </p>
       </div>

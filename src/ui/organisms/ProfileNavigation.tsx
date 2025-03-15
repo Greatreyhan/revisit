@@ -31,8 +31,9 @@ const ProfileNavigation: React.FC = () => {
             </div>
 
             {/* Small Navigation */}
-            <div className='flex md:hidden w-full fixed bg-slate-200 top-0 justify-start'>
+            <div className='flex md:hidden w-full fixed bg-slate-200 top-0 justify-between items-center'>
                 <MdOutlineMenu className='text-5xl p-2 m-1 cursor-pointer' onClick={()=>setShowNav(!showNav)} />
+                <img className='w-20' src={Logo} alt="Logo" />
             </div>
 
             {/* Navigation Mini */}

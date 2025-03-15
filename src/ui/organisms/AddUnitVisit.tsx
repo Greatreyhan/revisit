@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import InputField from '../molecules/InputField';
 import { MdAdd, MdDelete, MdEdit } from 'react-icons/md';
 import SelectInput from '../molecules/SelectInput';
 import { UnitVisit } from '../interface/Visit';
 
 
-interface AddUnitVisitProps{
-    units : UnitVisit[]
+interface AddUnitVisitProps {
+    units: UnitVisit[]
     setUnits: (units: UnitVisit[]) => void;
 }
 
@@ -42,7 +42,7 @@ const modelMap: Record<string, string[]> = {
 };
 
 
-const AddUnitVisit: React.FC<AddUnitVisitProps> = ({ units, setUnits }) =>  {
+const AddUnitVisit: React.FC<AddUnitVisitProps> = ({ units, setUnits }) => {
     const [trademark, setTrademark] = useState<string>("");
     const [typeUnit, setTypeUnit] = useState<string>("");
     const [dataModel, setDataModel] = useState<string[]>([])
@@ -52,22 +52,64 @@ const AddUnitVisit: React.FC<AddUnitVisitProps> = ({ units, setUnits }) =>  {
     const [goods, setGoods] = useState<string>("");
     const [bodyMaker, setBodyMaker] = useState<string>("");
     const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
+    const [editIndex, setEditIndex] = useState<number | null>(null);
 
-    useEffect(()=>console.log(units),[])
-
-    const handleAddUnit = () => {
+    const handleAddOrUpdateUnit = () => {
         if (trademark && typeUnit && qtyUnit && rearBodyType && goods && payload && bodyMaker) {
-            const newUnit: UnitVisit = { trademark, typeUnit, qtyUnit, rearBodyType, payload, goods, bodyMaker };
-            setUnits([...units, newUnit]);
-            setTrademark("");
-            setTypeUnit("");
-            setQtyUnit("");
-            setRearBodyType("");
-            setPayload("");
-            setGoods("")
-            setBodyMaker("")
-            setIsPopupOpen(false);
+            const newUnit: UnitVisit = { 
+                trademark, 
+                typeUnit, 
+                qtyUnit, 
+                rearBodyType, 
+                payload, 
+                goods, 
+                bodyMaker,
+            };
+
+            if (editIndex !== null) {
+                const updatedUnits = [...units];
+                updatedUnits[editIndex] = newUnit;
+                setUnits(updatedUnits);
+                setEditIndex(null);
+            } else {
+                setUnits([...units, newUnit]);
+            }
+            resetForm();
         }
+    };
+
+    const handleEdit = (index: number) => {
+        const unit = units[index];
+        setTrademark(unit.trademark);
+        setTypeUnit(unit.typeUnit);
+        setDataModel(modelMap[unit.trademark] || []);
+        setQtyUnit(unit.qtyUnit);
+        setGoods(unit.goods); // Menggunakan state yang sesuai
+        setRearBodyType(unit.rearBodyType); // Menggunakan state yang sesuai
+        setPayload(unit.payload); // Menggunakan state yang sesuai
+        setBodyMaker(unit.bodyMaker);
+        setEditIndex(index);
+        setIsPopupOpen(true);
+    };
+
+    const handleDelete = () => {
+        if (editIndex !== null) {
+            const updatedUnits = units.filter((_, index) => index !== editIndex);
+            setUnits(updatedUnits);
+            resetForm();
+        }
+    };
+
+    const resetForm = () => {
+        setTrademark("");
+        setTypeUnit("");
+        setDataModel([]);
+        setQtyUnit("");
+        setRearBodyType("");
+        setPayload("");
+        setGoods("");
+        setBodyMaker("");
+        setIsPopupOpen(false);
     };
 
     return (
@@ -83,10 +125,10 @@ const AddUnitVisit: React.FC<AddUnitVisitProps> = ({ units, setUnits }) =>  {
                                 <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Merk</th>
                                 <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Model</th>
                                 <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Qty</th>
-                                <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Rear Body Type</th>
-                                <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Payload</th>
-                                <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Goods</th>
-                                <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900 w-24">Body Maker</th>
+                                <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900 md:table-cell hidden">Rear Body Type</th>
+                                <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900 md:table-cell hidden">Payload</th>
+                                <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900 md:table-cell hidden">Goods</th>
+                                <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900 w-24 md:table-cell hidden">Body Maker</th>
                                 <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900 w-24">Action</th>
                             </tr>
                         </thead>
@@ -97,24 +139,17 @@ const AddUnitVisit: React.FC<AddUnitVisitProps> = ({ units, setUnits }) =>  {
                                     <td className="border p-1.5 dark:border-dark-5 text-center">{unit.trademark}</td>
                                     <td className="border p-1.5 dark:border-dark-5 text-center">{unit.typeUnit}</td>
                                     <td className="border p-1.5 dark:border-dark-5 text-center">{unit.qtyUnit}</td>
-                                    <td className="border p-1.5 dark:border-dark-5 text-center">{unit.rearBodyType}</td>
-                                    <td className="border p-1.5 dark:border-dark-5 text-center">{unit.payload}</td>
-                                    <td className="border p-1.5 dark:border-dark-5 text-center">{unit.goods}</td>
-                                    <td className="border p-1.5 dark:border-dark-5 text-center">{unit.bodyMaker}</td>
+                                    <td className="border p-1.5 dark:border-dark-5 text-center md:table-cell hidden">{unit.rearBodyType}</td>
+                                    <td className="border p-1.5 dark:border-dark-5 text-center md:table-cell hidden">{unit.payload}</td>
+                                    <td className="border p-1.5 dark:border-dark-5 text-center md:table-cell hidden">{unit.goods}</td>
+                                    <td className="border p-1.5 dark:border-dark-5 text-center md:table-cell hidden">{unit.bodyMaker}</td>
                                     <td className="border-t p-1.5 flex gap-x-3 justify-around items-center">
                                         <button
                                             type="button"
                                             className="p-2 text-sky-800 rounded-full bg-sky-100"
-                                            onClick={() => console.log('delete')}
+                                            onClick={() => handleEdit(index)}
                                         >
                                             <MdEdit />
-                                        </button>
-                                        <button
-                                            className="p-2 text-rose-800 rounded-full bg-rose-100"
-                                            type="button"
-                                            onClick={() => console.log('delete')}
-                                        >
-                                            <MdDelete />
                                         </button>
                                     </td>
                                 </tr>
@@ -150,8 +185,9 @@ const AddUnitVisit: React.FC<AddUnitVisitProps> = ({ units, setUnits }) =>  {
                         <InputField label="Goods" name="goods" value={goods} onChange={(e) => setGoods(e.target.value)} placeholder="Masukkan jenis Muatan" />
                         <InputField label="Body Maker" name="bodyMaker" value={bodyMaker} onChange={(e) => setBodyMaker(e.target.value)} placeholder="Body Maker" />
                         <div className="flex justify-end gap-5 mt-4">
-                            <button type="button" className="bg-white text-primary px-4 py-2 rounded-md" onClick={() => setIsPopupOpen(false)}>Batal</button>
-                            <button type="button" className="text-white bg-primary px-4 py-2 rounded-md" onClick={handleAddUnit}>Simpan</button>
+                            <button type="button" className="bg-white text-primary px-4 py-2 rounded-md" onClick={() => resetForm()}>Batal</button>
+                            {editIndex !== null && <button type="button" className="text-white bg-primary px-4 py-2 rounded-md flex items-center" onClick={handleDelete}><MdDelete className='mr-1' />Hapus</button>}
+                            <button type="button" className="text-white bg-primary px-4 py-2 rounded-md" onClick={handleAddOrUpdateUnit}>Simpan</button>
                         </div>
                     </div>
                 </div>

@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import InputField from '../molecules/InputField';
 import { MdAdd, MdDelete, MdEdit } from 'react-icons/md';
 import SelectInput from '../molecules/SelectInput';
 import { Unit } from '../interface/Report';
 
-interface AddUnitProps{
-    units : Unit[]
+interface AddUnitProps {
+    units: Unit[]
     setUnits: (units: Unit[]) => void;
 }
 
@@ -41,30 +41,62 @@ const modelMap: Record<string, string[]> = {
 };
 
 
-const AddUnit: React.FC<AddUnitProps> = ({ units, setUnits }) =>  {
+const AddUnit: React.FC<AddUnitProps> = ({ units, setUnits }) => {
     const [trademark, setTrademark] = useState<string>("");
     const [typeUnit, setTypeUnit] = useState<string>("");
-    const [dataModel, setDataModel] = useState<string[]>([])
+    const [dataModel, setDataModel] = useState<string[]>([]);
     const [qtyUnit, setQtyUnit] = useState<string>("");
     const [goodType, setGoodType] = useState<string>("");
     const [route, setRoute] = useState<string>("");
     const [distance, setDistance] = useState<string>("");
     const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
+    const [editIndex, setEditIndex] = useState<number | null>(null);
 
-    useEffect(()=>console.log(units),[])
-
-    const handleAddUnit = () => {
+    const handleAddOrUpdateUnit = () => {
         if (trademark && typeUnit && qtyUnit && goodType && route && distance) {
             const newUnit: Unit = { trademark, typeUnit, qtyUnit, goodType, route, distance };
-            setUnits([...units, newUnit]);
-            setTrademark("");
-            setTypeUnit("");
-            setQtyUnit("");
-            setGoodType("");
-            setRoute("");
-            setDistance("");
-            setIsPopupOpen(false);
+
+            if (editIndex !== null) {
+                const updatedUnits = [...units];
+                updatedUnits[editIndex] = newUnit;
+                setUnits(updatedUnits);
+                setEditIndex(null);
+            } else {
+                setUnits([...units, newUnit]);
+            }
+            resetForm();
         }
+    };
+
+
+    const handleEdit = (index: number) => {
+        const unit = units[index];
+        setTrademark(unit.trademark);
+        setTypeUnit(unit.typeUnit);
+        setDataModel(modelMap[unit.trademark] || []);
+        setQtyUnit(unit.qtyUnit);
+        setGoodType(unit.goodType);
+        setRoute(unit.route);
+        setDistance(unit.distance);
+        setEditIndex(index);
+        setIsPopupOpen(true);
+    };
+
+    const handleDelete = () => {
+        if (editIndex !== null) {
+            const updatedUnits = units.filter((_, index) => index !== editIndex);
+            setUnits(updatedUnits);
+            resetForm();
+        }
+    };
+    const resetForm = () => {
+        setTrademark("");
+        setTypeUnit("");
+        setQtyUnit("");
+        setGoodType("");
+        setRoute("");
+        setDistance("");
+        setIsPopupOpen(false);
     };
 
     return (
@@ -80,9 +112,9 @@ const AddUnit: React.FC<AddUnitProps> = ({ units, setUnits }) =>  {
                                 <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Merk</th>
                                 <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Model</th>
                                 <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Qty</th>
-                                <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Good</th>
-                                <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Route</th>
-                                <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Distance (KM)</th>
+                                <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900 md:table-cell hidden">Good</th>
+                                <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900 md:table-cell hidden">Route</th>
+                                <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900 md:table-cell hidden">Distance (KM)</th>
                                 <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900 w-24">Action</th>
                             </tr>
                         </thead>
@@ -93,23 +125,16 @@ const AddUnit: React.FC<AddUnitProps> = ({ units, setUnits }) =>  {
                                     <td className="border p-1.5 dark:border-dark-5 text-center">{unit.trademark}</td>
                                     <td className="border p-1.5 dark:border-dark-5 text-center">{unit.typeUnit}</td>
                                     <td className="border p-1.5 dark:border-dark-5 text-center">{unit.qtyUnit}</td>
-                                    <td className="border p-1.5 dark:border-dark-5 text-center">{unit.goodType}</td>
-                                    <td className="border p-1.5 dark:border-dark-5 text-center">{unit.route}</td>
-                                    <td className="border p-1.5 dark:border-dark-5 text-center">{unit.distance}</td>
+                                    <td className="border p-1.5 dark:border-dark-5 text-center md:table-cell hidden">{unit.goodType}</td>
+                                    <td className="border p-1.5 dark:border-dark-5 text-center md:table-cell hidden">{unit.route}</td>
+                                    <td className="border p-1.5 dark:border-dark-5 text-center md:table-cell hidden">{unit.distance}</td>
                                     <td className="border-t p-1.5 flex gap-x-3 justify-around items-center">
                                         <button
                                             type="button"
                                             className="p-2 text-sky-800 rounded-full bg-sky-100"
-                                            onClick={() => console.log('delete')}
+                                            onClick={() => handleEdit(index)}
                                         >
                                             <MdEdit />
-                                        </button>
-                                        <button
-                                            className="p-2 text-rose-800 rounded-full bg-rose-100"
-                                            type="button"
-                                            onClick={() => console.log('delete')}
-                                        >
-                                            <MdDelete />
                                         </button>
                                     </td>
                                 </tr>
@@ -144,8 +169,9 @@ const AddUnit: React.FC<AddUnitProps> = ({ units, setUnits }) =>  {
                         <InputField label="Rute" name="route" value={route} onChange={(e) => setRoute(e.target.value)} placeholder="Masukkan rute perjalanan" />
                         <InputField type="number" label="Jarak Tempuh (KM)" name="distance" value={distance} onChange={(e) => setDistance(e.target.value)} placeholder="Masukkan jarak tempuh" />
                         <div className="flex justify-end gap-5 mt-4">
-                            <button type="button" className="bg-white text-primary px-4 py-2 rounded-md" onClick={() => setIsPopupOpen(false)}>Batal</button>
-                            <button type="button" className="text-white bg-primary px-4 py-2 rounded-md" onClick={handleAddUnit}>Simpan</button>
+                            <button type="button" className="bg-white text-primary px-4 py-2 rounded-md" onClick={() => resetForm()}>Batal</button>
+                            {editIndex !== null && <button type="button" className="text-white bg-primary px-4 py-2 rounded-md flex items-center" onClick={handleDelete}><MdDelete className='mr-1' />Hapus</button>}
+                            <button type="button" className="text-white bg-primary px-4 py-2 rounded-md" onClick={handleAddOrUpdateUnit}>Simpan</button>
                         </div>
                     </div>
                 </div>

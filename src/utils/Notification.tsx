@@ -13,7 +13,7 @@ const Notification = () => {
         if (message.message !== "") {
             const timer = setInterval(() => {
                 clearMessage();
-            }, 3000);
+            }, 10000);
 
             return () => clearInterval(timer);
         }

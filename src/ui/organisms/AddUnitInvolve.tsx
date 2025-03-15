@@ -16,10 +16,36 @@ const AddUnitInvolve: React.FC<AddUnitInvolveProps> = ({ unitInvolves, setUnitIn
     const [VINInvolve, setVINInvolve] = useState<string>('');
     const [MileageInvolve, setMileageInvolve] = useState<string>('');
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [editIndex, setEditIndex] = useState<number | null>(null);
 
     const handleAddUnit = () => {
         if (VINInvolve && MileageInvolve) {
-            setUnitInvolves([...unitInvolves, { VIN: VINInvolve, mileage: MileageInvolve }]);
+            if (editIndex !== null) {
+                const updatedUnits = [...unitInvolves];
+                updatedUnits[editIndex] = { VIN: VINInvolve, mileage: MileageInvolve };
+                setUnitInvolves(updatedUnits);
+                setEditIndex(null);
+            } else {
+                setUnitInvolves([...unitInvolves, { VIN: VINInvolve, mileage: MileageInvolve }]);
+            }
+            setVINInvolve('');
+            setMileageInvolve('');
+            setIsModalOpen(false);
+        }
+    };
+
+    const handleEditUnit = (index: number) => {
+        setVINInvolve(unitInvolves[index].VIN);
+        setMileageInvolve(unitInvolves[index].mileage);
+        setEditIndex(index);
+        setIsModalOpen(true);
+    };
+
+    const handleDeleteUnit = () => {
+        if (editIndex !== null) {
+            const updatedUnits = unitInvolves.filter((_, index) => index !== editIndex);
+            setUnitInvolves(updatedUnits);
+            setEditIndex(null);
             setVINInvolve('');
             setMileageInvolve('');
             setIsModalOpen(false);
@@ -50,16 +76,9 @@ const AddUnitInvolve: React.FC<AddUnitInvolveProps> = ({ unitInvolves, setUnitIn
                                     <button
                                         type="button"
                                         className="p-2 text-sky-800 rounded-full bg-sky-100"
-                                        onClick={() => console.log('delete')}
+                                        onClick={() => handleEditUnit(index)}
                                     >
                                         <MdEdit />
-                                    </button>
-                                    <button
-                                        className="p-2 text-rose-800 rounded-full bg-rose-100"
-                                        type="button"
-                                        onClick={() => console.log('delete')}
-                                    >
-                                        <MdDelete />
                                     </button>
                                 </td>
                             </tr>
@@ -74,7 +93,7 @@ const AddUnitInvolve: React.FC<AddUnitInvolveProps> = ({ unitInvolves, setUnitIn
                     <MdAdd className="mr-2" />
                     Tambah Unit Terlibat
                 </button>
-                
+
             </div>
 
             {/* Pop Up */}
@@ -85,8 +104,13 @@ const AddUnitInvolve: React.FC<AddUnitInvolveProps> = ({ unitInvolves, setUnitIn
                         <InputField label="VIN Unit Terlibat" name="VINInvolve" value={VINInvolve} onChange={(e) => setVINInvolve(e.target.value)} placeholder="Masukkan VIN unit yang terlibat" />
                         <InputField label="Jarak Tempuh Unit Terlibat (KM)" type="number" name="MileageInvolve" value={MileageInvolve} onChange={(e) => setMileageInvolve(e.target.value)} placeholder="Masukkan jarak tempuh unit yang terlibat" />
                         <div className="flex justify-end mt-4">
-                            <button type="button" onClick={handleAddUnit} className="px-4 py-2 bg-primary text-white rounded">Tambah</button>
                             <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 bg-white text-primary rounded mr-2">Batal</button>
+                            {editIndex !== null && (
+                                <button type="button" onClick={handleDeleteUnit} className="px-4 py-2 bg-primary flex items-center text-white rounded">
+                                    <MdDelete className="mr-1" /> Hapus
+                                </button>
+                            )}
+                            <button type="button" onClick={handleAddUnit} className="px-4 py-2 bg-primary text-white rounded">Tambah</button>
                         </div>
                     </div>
                 </div>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import InputField from "../molecules/InputField";
-import { MdAdd, MdDelete, MdEdit } from "react-icons/md";
+import { MdAdd, MdEdit } from "react-icons/md";
 
 interface InvestigationItem {
     content: string;
@@ -11,30 +11,51 @@ interface InvestigationItem {
 
 interface AddContentInvestigationProps {
     investigations: InvestigationItem[];
-    onAddInvestigation: (investigation: InvestigationItem) => void;
+    setInvestigations: (investigation: InvestigationItem[]) => void;
 }
 
-const AddContentInvestigation: React.FC<AddContentInvestigationProps> = ({ investigations, onAddInvestigation }) => {
+const AddContentInvestigation: React.FC<AddContentInvestigationProps> = ({ investigations, setInvestigations }) => {
     const [content, setContent] = useState<string>("");
     const [result, setResult] = useState<string>("");
     const [standard, setStandard] = useState<string>("");
     const [judge, setJudge] = useState<string>("");
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [editIndex, setEditIndex] = useState<number | null>(null);
 
-    const handleAddInvestigation = () => {
+    const handleAddOrEditInvestigation = () => {
         if (content && result && standard && judge) {
             const newInvestigation = { content, result, standard, judge };
-            onAddInvestigation(newInvestigation);
 
-            // Reset input fields
+            if (editIndex !== null) {
+                const updatedInvestigations = [...investigations];
+                updatedInvestigations[editIndex] = newInvestigation;
+                setInvestigations(updatedInvestigations);
+            } else {
+                setInvestigations([...investigations, newInvestigation]);
+            }
+
             setContent("");
             setResult("");
             setStandard("");
             setJudge("");
             setIsModalOpen(false);
+            setEditIndex(null);
         }
     };
 
+    const handleEdit = (index: number) => {
+        setEditIndex(index);
+        const inv = investigations[index];
+        setContent(inv.content);
+        setResult(inv.result);
+        setStandard(inv.standard);
+        setJudge(inv.judge);
+        setIsModalOpen(true);
+    };
+
+    const handleDelete = (index: number) => {
+        setInvestigations(investigations.filter((_, i) => i !== index));
+    };
     return (
         <div>
             {/* View */}
@@ -59,11 +80,8 @@ const AddContentInvestigation: React.FC<AddContentInvestigationProps> = ({ inves
                                 <td className="border p-1.5">{inv.standard}</td>
                                 <td className="border p-1.5">{inv.judge}</td>
                                 <td className="border p-1.5 flex gap-x-3 justify-around items-center">
-                                    <button type="button" className="p-2 text-sky-800 rounded-full bg-sky-100">
+                                    <button onClick={() => handleEdit(index)} type="button" className="p-2 text-sky-800 rounded-full bg-sky-100">
                                         <MdEdit />
-                                    </button>
-                                    <button className="p-2 text-rose-800 rounded-full bg-rose-100" type="button">
-                                        <MdDelete />
                                     </button>
                                 </td>
                             </tr>
@@ -92,7 +110,10 @@ const AddContentInvestigation: React.FC<AddContentInvestigationProps> = ({ inves
 
                         <div className="flex justify-end gap-2 mt-4">
                             <button type="button" className="text-primary px-4 py-2 rounded-md" onClick={() => setIsModalOpen(false)}>Batal</button>
-                            <button type="button" className="bg-primary text-white px-4 py-2 rounded-md" onClick={handleAddInvestigation}>Simpan</button>
+                            {editIndex !== null && (
+                                <button type="button" className="bg-primary text-white px-4 py-2 rounded-md" onClick={() => { handleDelete(editIndex); setIsModalOpen(false); }}>Hapus</button>
+                            )}
+                            <button type="button" className="bg-primary text-white px-4 py-2 rounded-md" onClick={handleAddOrEditInvestigation}>Simpan</button>
                         </div>
                     </div>
                 </div>

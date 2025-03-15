@@ -70,7 +70,6 @@ const ProfileReportEditor: React.FC = () => {
     const [historyMaintenance, setHistoryMaintenance] = useState<string>("");
     const [FATemporaryInvestigation, setFATemporaryInvestigation] = useState<string>("");
 
-
     // Result
     const [investigationResult, setInvestigationResult] = useState<string>("");
     const [customerVoice, setCustomerVoice] = useState<string>("");
@@ -238,9 +237,6 @@ const ProfileReportEditor: React.FC = () => {
         }
     }, [id]);
 
-    const handleAddInvestigation = (newInvestigation: InvestigationItem) => {
-        setInvestigations((prev) => [...prev, newInvestigation]);
-    };
 
 
     return (
@@ -267,7 +263,7 @@ const ProfileReportEditor: React.FC = () => {
                         Import TIR
                     </button>
                 </div>
-                <form className="w-10/12 flex flex-col mx-auto my-8 justify-around items-center" onSubmit={handleSendData}>
+                <form className="md:w-10/12 w-11/12 flex flex-col mx-auto my-4 justify-around items-center" onSubmit={handleSendData}>
                     <TextField
                         label="Context"
                         name="context"
@@ -280,14 +276,14 @@ const ProfileReportEditor: React.FC = () => {
                     {/* General Information */}
                     <div className="w-full py-8 px-8 rounded-lg my-4 bg-slate-100">
                         <h2 className="font-semibold">General Information</h2>
-                        <div className="flex w-full gap-5">
+                        <div className="md:flex w-full gap-5">
                             <SelectInput label="Large Classification" name="Large Classification" value={largeClassification} onChange={(e) => { setLargeClassification(e.target.value); setDataMiddleClassification(classificationMap[e.target.value] || []); }} options={problemCategoriesData} />
 
                             <SelectInput label="Middle Classification" name="Middle Classification" value={middleClassification} onChange={(e) => setMiddleClassification(e.target.value)} options={dataMiddleClassification} />
 
                             <InputField label="Part Problem" name="partProblem" value={partProblem} onChange={(e) => setPartProblem(e.target.value)} placeholder="Nama Part" />
                         </div>
-                        <div className="flex w-full gap-5">
+                        <div className="md:flex w-full gap-5">
                             <InputField label="Visitor" name="visitor" value={visitor} onChange={(e) => setVisitor(e.target.value)} placeholder="Visitor" />
                             <InputField label="Reviewer" name="reviewer" value={reviewer} onChange={(e) => setReviewer(e.target.value)} placeholder="Reviewer" />
                             <InputField label="Approval" name="approval" value={approval} onChange={(e) => setApproval(e.target.value)} placeholder="Approval" />
@@ -296,36 +292,36 @@ const ProfileReportEditor: React.FC = () => {
 
                     <div className="w-full py-8 px-8 rounded-lg my-4 bg-slate-100">
                         <h2 className="font-semibold">Basic Information</h2>
-                        <div className="flex w-full gap-5">
+                        <div className="md:flex w-full gap-5">
                             <InputField label="Nama Customer" name="customerName" value={customerName} onChange={(e) => setCustomerName(e.target.value)} placeholder="Masukkan Nama Customer" />
                             <SelectInput label="Dealer" name="dealer" value={dealer} onChange={(e) => setDealer(e.target.value)} options={DealerData} />
                         </div>
-                        <div className="flex w-full gap-5">
+                        <div className="md:flex w-full gap-5">
                             <SelectInput label="Area" name="area" value={area} onChange={(e) => { setArea(e.target.value); setDataLocation(areaMap[e.target.value] || []); }} options={areaData} />
                             <SelectInput label="Lokasi" name="location" value={location} onChange={(e) => setLocation(e.target.value)} options={dataLocation} />
                             <InputField label="Kota" name="city" value={city} onChange={(e) => setCity(e.target.value)} placeholder="Masukkan Kota" />
                         </div>
-                        <div className="flex w-full gap-5">
+                        <div className="md:flex w-full gap-5">
                             <SelectInput label="Seri Kendaraan" name="series" value={series} onChange={(e) => setSeries(e.target.value)} options={seriesData} />
                             <SelectInput label="Tipe Kendaraan" name="vehicleType" value={vehicleType} onChange={(e) => setVehicleType(e.target.value)} options={vehicleTypesData} />
                             <SelectInput label="Model Fokus" name="focusModel" value={focusModel} onChange={(e) => setFocusModel(e.target.value)} options={focusModelsData} />
                         </div>
-                        <div className="flex w-full gap-5">
+                        <div className="md:flex w-full gap-5">
                             <SelectInput label="Tipe Euro" name="euroType" value={euroType} onChange={(e) => setEuroType(e.target.value)} options={euroTypeData} />
                             <InputField label="VIN" name="VIN" value={VIN} onChange={(e) => setVIN(e.target.value)} placeholder="Masukkan VIN" />
                             <InputField label="EGN" name="EGN" value={EGN} onChange={(e) => setEGN(e.target.value)} placeholder="Masukkan EGN" />
                         </div>
-                        <div className="flex w-full gap-5">
+                        <div className="md:flex w-full gap-5">
                             <InputField label="Payload (KG)" name="payload" type="number" value={payload} onChange={(e) => setPayload(e.target.value)} placeholder="Masukkan Payload" />
                             <InputField label="Jarak Tempuh (KM)" name="mileage" type="number" value={mileage} onChange={(e) => setMileage(e.target.value)} placeholder="Masukkan Jarak Tempuh" />
                             <SelectInput label="Karoseri" name="karoseri" value={karoseri} onChange={(e) => setKaroseri(e.target.value)} options={karoseriCustomersData} />
                         </div>
-                        <div className="flex w-full gap-5">
+                        <div className="md:flex w-full gap-5">
                             <SelectInput label="Segmen" name="segment" value={segment} onChange={(e) => setSegment(e.target.value)} options={segmentData} />
                             <SelectInput label="Aplikasi" name="application" value={application} onChange={(e) => setApplication(e.target.value)} options={cargoTypesData} />
                             <InputField label="LoadingUnit" name="loadingUnit" value={loadingUnit} onChange={(e) => setLoadingUnit(e.target.value)} placeholder="Masukkan LoadingUnit" />
                         </div>
-                        <div className="flex w-full gap-5">
+                        <div className="md:flex w-full gap-5">
                             <InputField label="Tanggal Produksi" name="productionDate" type="date" value={productionDate} onChange={(e) => setProductionDate(e.target.value)} />
                             <InputField label="Tanggal Masalah" name="problemDate" type="date" value={problemDate} onChange={(e) => setProblemDate(e.target.value)} />
                             <InputField label="Tanggal Kunjungan" name="visitDate" type="date" value={visitDate} onChange={(e) => setVisitDate(e.target.value)} />
@@ -336,16 +332,16 @@ const ProfileReportEditor: React.FC = () => {
 
                     <div className="w-full py-8 px-8 rounded-lg my-4 bg-slate-100">
                         <h2 className="font-semibold">Road Condition</h2>
-                        <div className="flex w-full gap-5">
+                        <div className="md:flex w-full gap-5">
                             <InputField label="Jalan Tol (%)" type="number" name="highway" value={highway} onChange={(e) => setHighway(e.target.value)} placeholder="Masukkan kondisi jalan tol" />
                             <InputField label="Jalan Kota (%)" type="number" name="cityRoad" value={cityRoad} onChange={(e) => setCityRoad(e.target.value)} placeholder="Masukkan kondisi jalan kota" />
                             <InputField label="Jalan Desa (%)" type="number" name="countryRoad" value={countryRoad} onChange={(e) => setCountryRoad(e.target.value)} placeholder="Masukkan kondisi jalan desa" />
                         </div>
-                        <div className="flex w-full gap-5">
+                        <div className="md:flex w-full gap-5">
                             <InputField label="Jalan Aspal (%)" type="number" name="onRoad" value={onRoad} onChange={(e) => setOnRoad(e.target.value)} placeholder="Masukkan kondisi jalan aspal" />
                             <InputField label="Jalan Off-Road (%)" type="number" name="offRoad" value={offRoad} onChange={(e) => setOffRoad(e.target.value)} placeholder="Masukkan kondisi off-road" />
                         </div>
-                        <div className="flex w-full gap-5">
+                        <div className="md:flex w-full gap-5">
                             <InputField label="Jalan Datar (%)" type="number" name="flatRoad" value={flatRoad} onChange={(e) => setFlatRoad(e.target.value)} placeholder="Masukkan kondisi jalan datar" />
                             <InputField label="Jalan Menanjak (%)" type="number" name="climbRoad" value={climbRoad} onChange={(e) => setClimbRoad(e.target.value)} placeholder="Masukkan kondisi jalan menanjak" />
                         </div>
@@ -396,7 +392,7 @@ const ProfileReportEditor: React.FC = () => {
                     {/* Content of Investigation */}
                     <div className="w-full py-8 px-8 rounded-lg my-4 bg-slate-100">
                         <h2 className="font-semibold">Content of Investigation</h2>
-                        <AddContentInvestigation investigations={investigations} onAddInvestigation={handleAddInvestigation} />
+                        <AddContentInvestigation investigations={investigations} setInvestigations={setInvestigations} />
                     </div>
 
                     {/* Attachment */}

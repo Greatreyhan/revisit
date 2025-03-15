@@ -20,7 +20,7 @@ const ProfileTemplate: React.FC<ProfileTemplateProps> = ({ children }) => {
   }
   if (user) {
     return (
-      <div className="flex w-screen">
+      <div className="flex w-full">
         <Notification />
         <div className="md:w-2/12">
           <ProfileNavigation />
