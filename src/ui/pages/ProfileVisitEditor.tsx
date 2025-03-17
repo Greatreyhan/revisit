@@ -13,7 +13,7 @@ import { UnitVisit } from "../interface/Visit";
 import AddUnitVisit from "../organisms/AddUnitVisit";
 
 
-const ProfileVisitEditor: React.FC = () => {    
+const ProfileVisitEditor: React.FC = () => {
     const { saveToDatabase, getFromDatabase, uploadImage, loading } = useFirebase()
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
@@ -311,7 +311,7 @@ const ProfileVisitEditor: React.FC = () => {
                     </div>
 
                     <div className="w-full py-8 px-8 rounded-lg my-4 bg-slate-100">
-                    <h2 className="font-semibold mb-4">Map Operation</h2>
+                        <h2 className="font-semibold mb-4">Map Operation</h2>
                         {mapAttached && (
                             <a href={mapAttached} target="_blank" rel="noreferrer">
                                 <img className="w-full h-full rounded-md" src={mapAttached} alt="Article" />
@@ -408,6 +408,15 @@ const ProfileVisitEditor: React.FC = () => {
                         <AddAttachment attachments={attachments} setAttachments={setAttachments} />
                     </div>
 
+                    <div className="fixed md:hidden block bottom-5 right-5">
+                        <button
+                            type="submit"
+                            className="mt-4 p-3 inline-flex justify-center items-center bg-primary rounded-full text-white font-semibold"
+                        >
+                            <BiSave className="text-2xl" />
+                        </button>
+                    </div>
+
                     {/* <div className="mt-8 w-full">
                         <Editor HTML={HTML} setDataEdit={setDataEdit} />
                     </div> */}
@@ -425,13 +434,13 @@ const ProfileVisitEditor: React.FC = () => {
                             <BiSave className="mr-2" />
                             Save
                         </button>
-                        <button
+                        {/* <button
                             type="button"
                             className="mt-4 px-6 py-2 inline-flex justify-center items-center bg-primary rounded-full text-white font-semibold"
                         >
                             <BiSave className="mr-2" />
                             Export
-                        </button>
+                        </button> */}
                     </div>
                 </form>
             </div>

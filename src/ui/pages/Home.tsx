@@ -4,7 +4,6 @@ import { HeroHome} from "../../assets/images";
 import { ServiceCard } from "../organisms";
 import { onValue, ref as rtdbref } from "firebase/database";
 import { FIREBASE_DB } from "../../config/firebaseinit";
-import MiniBlog from "../organisms/MiniBlog";
 
 interface SubserviceItem {
   id: string;
@@ -121,7 +120,7 @@ const Home: React.FC = () => {
       </div>
 
       {/* CTA Section */}
-      <div className="bg-base-dark w-11/12 md:w-10/12 mx-auto md:p-14 py-8 px-6 rounded-3xl md:text-left text-center">
+      {/* <div className="bg-base-dark w-11/12 md:w-10/12 mx-auto md:p-14 mb-8 py-8 px-6 rounded-3xl md:text-left text-center">
         <h3 className="md:text-4xl text-3xl text-white uppercase font-semibold">
           Got an Idea?
         </h3>
@@ -131,10 +130,10 @@ const Home: React.FC = () => {
         <button className="bg-slate-50 text-base-dark px-6 py-2 rounded-xl mt-5">
           Learn More
         </button>
-      </div>
+      </div> */}
 
       {/* Articles */}
-      <div className="w-full py-8">
+      {/* <div className="w-full py-8">
         <h2 className="text-center md:text-3xl text-2xl font-normal uppercase text-base-dark pt-8">
           WHAT'S NEW?
         </h2>
@@ -145,7 +144,7 @@ const Home: React.FC = () => {
         <div className="flex flex-wrap justify-between w-10/12 mx-auto">
         <MiniBlog />
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

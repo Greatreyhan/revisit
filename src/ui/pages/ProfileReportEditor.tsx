@@ -70,6 +70,7 @@ const ProfileReportEditor: React.FC = () => {
     const [historyMaintenance, setHistoryMaintenance] = useState<string>("");
     const [FATemporaryInvestigation, setFATemporaryInvestigation] = useState<string>("");
 
+
     // Result
     const [investigationResult, setInvestigationResult] = useState<string>("");
     const [customerVoice, setCustomerVoice] = useState<string>("");
@@ -264,6 +265,8 @@ const ProfileReportEditor: React.FC = () => {
                     </button>
                 </div>
                 <form className="md:w-10/12 w-11/12 flex flex-col mx-auto my-4 justify-around items-center" onSubmit={handleSendData}>
+
+
                     <TextField
                         label="Context"
                         name="context"
@@ -454,6 +457,15 @@ const ProfileReportEditor: React.FC = () => {
                         />
                     </div>
 
+                    <div className="fixed md:hidden block bottom-5 right-5">
+                        <button
+                            type="submit"
+                            className="mt-4 p-3 inline-flex justify-center items-center bg-primary rounded-full text-white font-semibold"
+                        >
+                            <BiSave className="text-2xl" />
+                        </button>
+                    </div>
+
                     {/* <div className="mt-8 w-full">
                         <Editor HTML={HTML} setDataEdit={setDataEdit} />
                     </div> */}
@@ -471,13 +483,13 @@ const ProfileReportEditor: React.FC = () => {
                             <BiSave className="mr-2" />
                             Save
                         </button>
-                        <button
+                        {/* <button
                             type="button"
                             className="mt-4 px-6 py-2 inline-flex justify-center items-center bg-primary rounded-full text-white font-semibold"
                         >
                             <BiSave className="mr-2" />
                             Export
-                        </button>
+                        </button> */}
                     </div>
                 </form>
             </div>

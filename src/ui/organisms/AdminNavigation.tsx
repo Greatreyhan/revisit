@@ -1,6 +1,6 @@
 import React from 'react';
 import { IoMdApps } from "react-icons/io";
-import { MdInsertPageBreak, MdOutlineDesignServices, MdPerson, MdWork } from "react-icons/md";
+import { MdPerson } from "react-icons/md";
 import { TbReportSearch } from "react-icons/tb";
 import { MdOutlineLogout } from "react-icons/md";
 import { Logo } from '../../assets/icons';
@@ -34,25 +34,13 @@ const AdminNavigation: React.FC = () => {
                     <IoMdApps className='text-2xl mr-1' />
                     <span>Dashboard</span>
                 </a>
-                <a href='/admin/portofolio' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
-                    <MdInsertPageBreak className='text-2xl mr-1' />
-                    <span>Portofolio</span>
-                </a>
                 <a href='/admin/article' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
                     <TbReportSearch className='text-2xl mr-1' />
                     <span>Blog</span>
                 </a>
-                <a href='/admin/career' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
-                    <MdWork className='text-2xl mr-1' />
-                    <span>Career</span>
-                </a>
-                <a href='/admin/service' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
-                    <MdOutlineDesignServices className='text-2xl mr-1' />
-                    <span>Service</span>
-                </a>
-                <a href='/admin/client' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
+                <a href='/admin/user' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
                     <MdPerson className='text-2xl mr-1' />
-                    <span>Client</span>
+                    <span>User</span>
                 </a>
             </div>
 

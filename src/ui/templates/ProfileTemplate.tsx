@@ -8,17 +8,26 @@ interface ProfileTemplateProps {
   children: ReactNode;
 }
 
-const ProfileTemplate: React.FC<ProfileTemplateProps> = ({ children }) => {
-  const { user, loading } = useFirebase();
 
-  if (loading) {
+const ProfileTemplate: React.FC<ProfileTemplateProps> = ({ children }) => {
+  const { user, loading, authData } = useFirebase();
+
+  // useEffect(() => {
+  //   console.log(authData)
+  //   // Fetch authorization
+  // }, [authData])
+
+  if (loading || authData.type === "") {
     return (
       <div className='w-screen h-screen z-50 justify-center items-center flex fixed top-0 left-0 bg-black bg-opacity-20'>
         <div className='loader'></div>
       </div>
     );
   }
-  if (user) {
+  if (user && authData.type === "admin") {
+    return <Navigate to="/admin" />
+  }
+  if (user || authData.type === "user") {
     return (
       <div className="flex w-full">
         <Notification />
@@ -30,7 +39,8 @@ const ProfileTemplate: React.FC<ProfileTemplateProps> = ({ children }) => {
         </div>
       </div>
     );
-  } else {
+  }
+  else {
     return <Navigate to="/login" />
   }
 };

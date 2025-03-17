@@ -45,11 +45,11 @@ const ProfileNavigation: React.FC = () => {
                     </a>
                     <a href='/report' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
                         <MdInsertPageBreak className='text-2xl mr-1' />
-                        <span>Report</span>
+                        <span>Investigation</span>
                     </a>
                     <a href='/visit' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
                         <MdLocationPin className='text-2xl mr-1' />
-                        <span>Visit</span>
+                        <span>Regular Visit</span>
                     </a>
                     <a href='/assistant' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
                         <RiCustomerServiceFill className='text-2xl mr-1' />
@@ -75,11 +75,11 @@ const ProfileNavigation: React.FC = () => {
                 </a>
                 <a href='/report' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
                     <MdInsertPageBreak className='text-2xl mr-1' />
-                    <span>Report</span>
+                    <span>Investigation</span>
                 </a>
                 <a href='/visit' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
                     <MdLocationPin className='text-2xl mr-1' />
-                    <span>Visit</span>
+                    <span>Regular Visit</span>
                 </a>
                 <a href='/assistant' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
                     <RiCustomerServiceFill className='text-2xl mr-1' />

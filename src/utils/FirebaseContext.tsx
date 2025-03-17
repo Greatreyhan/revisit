@@ -16,12 +16,18 @@ interface Message{
     type : string
 }
 
+interface AuthDataProps{
+    email: string
+    type : string
+}
+
 // Define the context type
 interface FirebaseContextType {
     user: User | null;
+    authData: AuthDataProps;
     loading: boolean;
     signIn: (email: string, password: string) => Promise<void>;
-    signUp: (email: string, password: string) => Promise<void>;
+    signUp: (email: string, password: string, dealer: string, location: string) => Promise<void>;
     signOut: () => Promise<void>;
     message: Message;
     setMessage : (obj:Message) => void;
@@ -48,18 +54,39 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({ children }
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [message, setMessage]  = useState<Message>({message:"",type:""})
+    const [authData, setAuthData] = useState<AuthDataProps>({email:"", type:""})
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (authUser) => {
+
+        const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, async (authUser) => {
+            await getFromDatabase(`user/${authUser?.uid}`).then(data => {
+                if (data) {
+                    console.log(data)
+                    setAuthData(data)
+                }
+            });
             setUser(authUser);
             setLoading(false);
         });
         return () => unsubscribe();
+        
     }, []);
+
+    const saveToDatabase = async (path: string, data: any): Promise<void> => {
+        try {
+            const dbRef = rtdbRef(FIREBASE_DB, path);
+            await set(dbRef, data);
+            setMessage({message:"Succesfully Save Data",type:"info"})
+        } catch (err: any) {
+            setMessage({message:"Error saving data :" + err.message,type:"error"})
+            throw new Error(err.message || 'Error saving data');
+        }
+    };
+
 
     const signIn = async (email: string, password: string): Promise<void> => {
         try {
-            await signInWithEmailAndPassword(FIREBASE_AUTH, email, password);
+            signInWithEmailAndPassword(FIREBASE_AUTH, email, password);
             setMessage({message:"Succesfully Log In",type:"info"})
         } catch (err: any) {
             setMessage({message:"Error signing in:"+err.message,type:"error"})
@@ -67,9 +94,12 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({ children }
         }
     };
 
-    const signUp = async (email: string, password: string): Promise<void> => {
+
+    const signUp = async (email: string, password: string, location: string, dealer: string): Promise<void> => {
         try {
-            await createUserWithEmailAndPassword(FIREBASE_AUTH, email, password);
+            const dataUser = await createUserWithEmailAndPassword(FIREBASE_AUTH, email, password);
+            await saveToDatabase(`user/${dataUser.user.uid}`, {email: dataUser.user.email ,type:"user", dealer: dealer, location: location});
+            await signOut(FIREBASE_AUTH);
             setMessage({message:"Succesfully Sign Up",type:"info"})
         } catch (err: any) {
             setMessage({message:"Error signing up :" + err.message,type:"error"})
@@ -95,17 +125,6 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({ children }
             setMessage({message:"Error fetch data :" + err.message,type:"error"})
 
             throw new Error(err.message || 'Error fetching data');
-        }
-    };
-
-    const saveToDatabase = async (path: string, data: any): Promise<void> => {
-        try {
-            const dbRef = rtdbRef(FIREBASE_DB, path);
-            await set(dbRef, data);
-            setMessage({message:"Succesfully Save Data",type:"info"})
-        } catch (err: any) {
-            setMessage({message:"Error saving data :" + err.message,type:"error"})
-            throw new Error(err.message || 'Error saving data');
         }
     };
 
@@ -148,6 +167,7 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({ children }
 
     const value: FirebaseContextType = {
         user,
+        authData,
         loading,
         signIn,
         signUp,

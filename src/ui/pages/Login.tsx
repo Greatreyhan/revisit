@@ -14,7 +14,7 @@ const Login = () => {
   };
 
   if (user) {
-    return <Navigate to="/admin" />;
+    return <Navigate to="/profile" />;
   }
 
   return (

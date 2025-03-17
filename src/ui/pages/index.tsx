@@ -1,11 +1,7 @@
 import Home from "./Home"
-import Service from "./Service"
-import Aboutus from "./AboutUs"
-import Portofolio from "./Portofolio"
-import Contactus from "./ContactUs"
 import Blog from "./Blog"
 import Article from "./Article"
 import Admin from "./Admin"
 import Login from "./Login"
 import SignUp from "./SignUp"
-export {Home, Aboutus, Service, Portofolio, Contactus, Blog, Article, Admin, Login, SignUp}
+export {Home, Blog, Article, Admin, Login, SignUp}

@@ -113,11 +113,19 @@ const AddContentInvestigation: React.FC<AddContentInvestigationProps> = ({ inves
                             {editIndex !== null && (
                                 <button type="button" className="bg-primary text-white px-4 py-2 rounded-md" onClick={() => { handleDelete(editIndex); setIsModalOpen(false); }}>Hapus</button>
                             )}
-                            <button type="button" className="bg-primary text-white px-4 py-2 rounded-md" onClick={handleAddOrEditInvestigation}>Simpan</button>
+                            <button
+                                type="button"
+                                className="bg-primary text-white px-4 py-2 rounded-md disabled:bg-gray-400"
+                                onClick={handleAddOrEditInvestigation}
+                                disabled={!content.trim() || !result.trim() || !standard.trim() || !judge.trim()}
+                            >
+                                Simpan
+                            </button>
                         </div>
                     </div>
                 </div>
             )}
+
         </div>
     );
 };
