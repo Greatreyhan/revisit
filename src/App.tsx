@@ -29,6 +29,7 @@ import AdminVisit from "./ui/pages/AdminVisit";
 import AdminSchedule from "./ui/pages/AdminSchedule";
 import AdminReportViewer from "./ui/pages/AdminReportViewer";
 import AdminVisitViewer from "./ui/pages/AdminVisitViewer";
+import ProfileSetting from "./ui/pages/ProfileSetting";
 
 function App() {
 
@@ -62,6 +63,7 @@ function App() {
     { path: "/schedule/editor", element: <ProfileScheduleEditor />, type: "profile" },
     { path: "/schedule/editor/:id", element: <ProfileScheduleEditor />, type: "profile" },
 
+    { path: "/setting", element: <ProfileSetting />, type: "profile" },
 
     // Admin Template Routes
     { path: "/admin/add-article", element: <AdminArticleEditor />, type: "admin" },

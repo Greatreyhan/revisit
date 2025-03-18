@@ -8,6 +8,7 @@ import {
     createUserWithEmailAndPassword,
     signOut,
     User,
+    updatePassword,
 } from 'firebase/auth';
 import { ref as rtdbRef, set, get, remove } from 'firebase/database';
 
@@ -38,6 +39,7 @@ interface FirebaseContextType {
     getFromDatabase: (path: string) => Promise<any>;
     saveToDatabase: (path: string, data: any) => Promise<void>;
     deleteFromDatabase: (path: string) => Promise<void>;
+    setUpdatePassword: (lastPassword:string,newPassword: string) => Promise<void>
     uploadImage: (e: React.ChangeEvent<HTMLInputElement>, setImage: (value: string) => void) => void;  // New method signature
 }
 
@@ -93,7 +95,7 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({ children }
     const signIn = async (email: string, password: string): Promise<void> => {
         try {
             setLoading(true);
-            signInWithEmailAndPassword(FIREBASE_AUTH, email, password);
+            await signInWithEmailAndPassword(FIREBASE_AUTH, email, password);
             setMessage({message:"Succesfully Log In",type:"info"})
             setLoading(false);
         } catch (err: any) {
@@ -181,6 +183,24 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({ children }
             setLoading(false);
         }
     };
+
+    const setUpdatePassword = async (lastPassword:string, newPassword:string) =>{
+        setLoading(true);
+        if (user) {
+            try {
+                signIn((user?.email || ""), lastPassword);
+                await updatePassword(user, newPassword);
+                setLoading(false);
+                setMessage({message:"Succesfully Change Password",type:"info"})
+            } catch (err:any) {
+                setLoading(false);
+                setMessage({message:"Error update password :" + err.message,type:"error"})
+            }
+        } else {
+            setMessage({message:"User Not Found!",type:"error"})
+        }
+        setLoading(false);
+    }
     
 
     const value: FirebaseContextType = {
@@ -193,6 +213,7 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({ children }
         message,
         waiting,
         setMessage,
+        setUpdatePassword,
         getFromDatabase,
         saveToDatabase,
         deleteFromDatabase,

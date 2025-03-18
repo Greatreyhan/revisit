@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IoMdApps } from "react-icons/io";
+import { IoMdApps, IoMdSettings } from "react-icons/io";
 import { MdInsertPageBreak, MdLocationPin, MdOutlineMenu, MdOutlineSecurity } from "react-icons/md";
 import { MdOutlineLogout } from "react-icons/md";
 import { Logo } from '../../assets/icons';
@@ -85,6 +85,10 @@ const ProfileNavigation: React.FC = () => {
                 <a href='/schedule' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
                     <IoCalendarSharp className='text-2xl mr-1' />
                     <span>Schedule</span>
+                </a>
+                <a href='/setting' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
+                    <IoMdSettings className='text-2xl mr-1' />
+                    <span>Setting</span>
                 </a>
                 {/* <a href='/iasb' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
                     <RiCustomerServiceFill className='text-2xl mr-1' />

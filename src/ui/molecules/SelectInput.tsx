@@ -5,11 +5,12 @@ type SelectInputProps = {
     name: string;
     value: string;
     required?: boolean;
+    disabled?:boolean;
     onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
     options: string[];
 };
 
-const SelectInput: React.FC<SelectInputProps> = ({ label, name, value, required=false, onChange, options }) => {
+const SelectInput: React.FC<SelectInputProps> = ({ label, name, value, required=false, disabled=false, onChange, options }) => {
     return (
         <div className="flex flex-col w-full">
             <label className="mt-4 text-xs my-2 text-gray-700" htmlFor={name}>
@@ -20,6 +21,7 @@ const SelectInput: React.FC<SelectInputProps> = ({ label, name, value, required=
                 required={required}
                 value={value}
                 onChange={onChange}
+                disabled={disabled}
                 name={name}
                 id={name}
             >
