@@ -5,15 +5,15 @@ import { Logo2 } from "../../assets/images";
 import { ReportData } from "../interface/Report";
 
 const ReportViewer: React.FC = () => {
-    const { getFromDatabase,user } = useFirebase()
-    const { id } = useParams<{ id: string }>();
+    const { getFromDatabase } = useFirebase()
+    const { uid,id } = useParams<{ uid:string, id: string }>();
 
     // Context
     const [dataReport,setDataReport] = useState<ReportData>()
 
     useEffect(() => {
         if (id) {
-            getFromDatabase(`report/${user?.uid}/${id}`).then((data) => {
+            getFromDatabase(`report/${uid}/${id}`).then((data) => {
                 if (data) {
                     setDataReport(data);
                 }
