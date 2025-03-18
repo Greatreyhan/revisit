@@ -13,7 +13,7 @@ import { UnitVisit } from "../interface/Visit";
 import AddUnitVisit from "../organisms/AddUnitVisit";
 
 
-const ProfileVisitEditor: React.FC = () => {
+const AdminVisitEditor: React.FC = () => {
     const { saveToDatabase, getFromDatabase, uploadImage, loading, user } = useFirebase()
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
@@ -38,8 +38,8 @@ const ProfileVisitEditor: React.FC = () => {
     const [location, setLocation] = useState<string>("");
     const [city, setCity] = useState<string>("");
     const [segment, setSegment] = useState<string>("");
-    // const [application, setApplication] = useState<string>("");
-    // const [loadingUnit, setLoadingUnit] = useState<string>("");
+    const [application, setApplication] = useState<string>("");
+    const [loadingUnit, setLoadingUnit] = useState<string>("");
 
     // Map
     const [mapAttached, setMapAttached] = useState<string>("");
@@ -81,7 +81,7 @@ const ProfileVisitEditor: React.FC = () => {
         e.preventDefault();
 
         // Validasi minimal, bisa dikembangkan lebih lanjut
-        if (!customerName || !location) {
+        if (!context || !customerName || !location) {
             console.log("Beberapa data penting masih kosong!");
             return;
         }
@@ -114,8 +114,8 @@ const ProfileVisitEditor: React.FC = () => {
             location,
             city,
             segment,
-            // application,
-            // loadingUnit,
+            application,
+            loadingUnit,
 
             // General Information
             dayPerWeek,
@@ -159,10 +159,10 @@ const ProfileVisitEditor: React.FC = () => {
             getFromDatabase(`visit/${user?.uid}/${id}`).then((data) => {
                 if (data) {
                     // Array data
-                    setAttachments(data.attachments || []);
-                    setInvestigations(data.investigations || [])
-                    setUnits(data.units || [])
-                    setUnitInvolves(data.unitInvolves || [])
+                    setAttachments(data.attachments);
+                    setInvestigations(data.investigations)
+                    setUnits(data.units)
+                    setUnitInvolves(data.unitInvolves)
 
                     // Context
                     setContext(data.context || "");
@@ -182,8 +182,8 @@ const ProfileVisitEditor: React.FC = () => {
                     setCity(data.city || "");
                     setDealer(data.dealer || "");
                     setSegment(data.segment || "");
-                    // setApplication(data.application || "");
-                    // setLoadingUnit(data.loadingUnit || "");
+                    setApplication(data.application || "");
+                    setLoadingUnit(data.loadingUnit || "");
                     setVisitDate(data.visitDate || "");
                     setDateOperation(data.dateOperation || "");
 
@@ -254,6 +254,7 @@ const ProfileVisitEditor: React.FC = () => {
                         value={context}
                         onChange={(e) => setContext(e.target.value)}
                         placeholder="Masukkan context"
+                        required={true}
                     />
 
                     {/* General Information */}
@@ -262,34 +263,33 @@ const ProfileVisitEditor: React.FC = () => {
                         <div className="md:flex w-full gap-5">
                             <InputField label="Form Number" name="Form Number" value={formNumber} onChange={(e) => setFormNumber(e.target.value)} placeholder="Form Number" />
 
-                            <InputField required={true} label="Visitor Name" name="Visitor Name" value={visitorName} onChange={(e) => setVisitorName(e.target.value)} placeholder="Visitor Name" />
+                            <InputField label="Visitor Name" name="Visitor Name" value={visitorName} onChange={(e) => setVisitorName(e.target.value)} placeholder="Visitor Name" />
 
-                            <InputField required={true} label="Tanggal Kunjungan" name="visitDate" type="date" value={visitDate} onChange={(e) => setVisitDate(e.target.value)} />
+                            <InputField label="Tanggal Kunjungan" name="visitDate" type="date" value={visitDate} onChange={(e) => setVisitDate(e.target.value)} />
                         </div>
                         <div className="md:flex w-full gap-5">
-                            <InputField required={true} label="Visitor" name="visitor" value={visitor} onChange={(e) => setVisitor(e.target.value)} placeholder="Visitor" />
+                            <InputField label="Visitor" name="visitor" value={visitor} onChange={(e) => setVisitor(e.target.value)} placeholder="Visitor" />
                             <InputField label="Reviewer" name="reviewer" value={reviewer} onChange={(e) => setReviewer(e.target.value)} placeholder="Reviewer" />
                             <InputField label="Approval" name="approval" value={approval} onChange={(e) => setApproval(e.target.value)} placeholder="Approval" />
                         </div>
                     </div>
 
-                    {/* Basic Information */}
                     <div className="w-full py-8 px-8 rounded-lg my-4 bg-slate-100">
                         <h2 className="font-semibold">Basic Information</h2>
                         <div className="md:flex w-full gap-5">
-                            <InputField required={true} label="Nama Customer" name="customerName" value={customerName} onChange={(e) => setCustomerName(e.target.value)} placeholder="Masukkan Nama Customer" />
-                            <SelectInput required={true} label="Dealer" name="dealer" value={dealer} onChange={(e) => setDealer(e.target.value)} options={DealerData} />
+                            <InputField label="Nama Customer" name="customerName" value={customerName} onChange={(e) => setCustomerName(e.target.value)} placeholder="Masukkan Nama Customer" />
+                            <SelectInput label="Dealer" name="dealer" value={dealer} onChange={(e) => setDealer(e.target.value)} options={DealerData} />
                             <InputField label="Tanggal Operasi" name="dateOperation" type="date" value={dateOperation} onChange={(e) => setDateOperation(e.target.value)} />
                         </div>
                         <div className="md:flex w-full gap-5">
-                            <SelectInput required={true} label="Area" name="area" value={area} onChange={(e) => { setArea(e.target.value); setDataLocation(areaMap[e.target.value] || []); }} options={areaData} />
-                            <SelectInput required={true} label="Lokasi" name="location" value={location} onChange={(e) => setLocation(e.target.value)} options={dataLocation} />
-                            <InputField required={true} label="Kota" name="city" value={city} onChange={(e) => setCity(e.target.value)} placeholder="Masukkan Kota" />
+                            <SelectInput label="Area" name="area" value={area} onChange={(e) => { setArea(e.target.value); setDataLocation(areaMap[e.target.value] || []); }} options={areaData} />
+                            <SelectInput label="Lokasi" name="location" value={location} onChange={(e) => setLocation(e.target.value)} options={dataLocation} />
+                            <InputField label="Kota" name="city" value={city} onChange={(e) => setCity(e.target.value)} placeholder="Masukkan Kota" />
                         </div>
                         <div className="md:flex w-full gap-5">
-                            <SelectInput required={true}  label="Segmen" name="segment" value={segment} onChange={(e) => setSegment(e.target.value)} options={segmentData} />
-                            {/* <SelectInput label="Aplikasi" name="application" value={application} onChange={(e) => setApplication(e.target.value)} options={cargoTypesData} /> */}
-                            {/* <InputField label="LoadingUnit" name="loadingUnit" value={loadingUnit} onChange={(e) => setLoadingUnit(e.target.value)} placeholder="Masukkan LoadingUnit" /> */}
+                            <SelectInput label="Segmen" name="segment" value={segment} onChange={(e) => setSegment(e.target.value)} options={segmentData} />
+                            <SelectInput label="Aplikasi" name="application" value={application} onChange={(e) => setApplication(e.target.value)} options={cargoTypesData} />
+                            <InputField label="LoadingUnit" name="loadingUnit" value={loadingUnit} onChange={(e) => setLoadingUnit(e.target.value)} placeholder="Masukkan LoadingUnit" />
                         </div>
                     </div>
 
@@ -318,6 +318,7 @@ const ProfileVisitEditor: React.FC = () => {
                             </a>
                         )}
                         <input
+                            required
                             className="mt-4 w-full text-center"
                             onChange={(e) => uploadImage(e, setMapAttached)}
                             name="map"
@@ -357,7 +358,7 @@ const ProfileVisitEditor: React.FC = () => {
                             value={reasonOfPurchase}
                             onChange={(e) => setReasonOfPurchase(e.target.value)}
                             placeholder="Alasan Pembelian Unit"
-
+                            required={true}
                         />
                         <TextField
                             label="Customer Information"
@@ -365,7 +366,7 @@ const ProfileVisitEditor: React.FC = () => {
                             value={customerInfo}
                             onChange={(e) => setCustomerInfo(e.target.value)}
                             placeholder="Informasi Customer"
-
+                            required={true}
                         />
                         <TextField
                             label="Service Information"
@@ -373,7 +374,7 @@ const ProfileVisitEditor: React.FC = () => {
                             value={serviceInfo}
                             onChange={(e) => setServiceInfo(e.target.value)}
                             placeholder="Informasi Service"
-
+                            required={true}
                         />
                         <TextField
                             label="Sparepart Information"
@@ -381,7 +382,7 @@ const ProfileVisitEditor: React.FC = () => {
                             value={sparepartInfo}
                             onChange={(e) => setSparepartInfo(e.target.value)}
                             placeholder="Informasi Sparepart"
-
+                            required={true}
                         />
                         <TextField
                             label="Technical Information"
@@ -389,7 +390,7 @@ const ProfileVisitEditor: React.FC = () => {
                             value={technicalInfo}
                             onChange={(e) => setTechnicalInfo(e.target.value)}
                             placeholder="Informasi Teknis"
-
+                            required={true}
                         />
                         <TextField
                             label="Competitor Information"
@@ -397,7 +398,7 @@ const ProfileVisitEditor: React.FC = () => {
                             value={competitorInfo}
                             onChange={(e) => setCompetitorInfo(e.target.value)}
                             placeholder="Informasi Kompetitor"
-
+                            required={true}
                         />
                     </div>
 
@@ -447,4 +448,4 @@ const ProfileVisitEditor: React.FC = () => {
     );
 };
 
-export default ProfileVisitEditor;
+export default AdminVisitEditor;

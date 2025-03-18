@@ -4,16 +4,16 @@ import { useFirebase } from "../../utils/FirebaseContext";
 import { Logo2 } from "../../assets/images";
 import { VisitData } from "../interface/Visit";
 
-const VisitViewer: React.FC = () => {
-    const { getFromDatabase,user } = useFirebase()
-    const { id } = useParams<{ id: string }>();
+const AdminVisitViewer: React.FC = () => {
+    const { getFromDatabase } = useFirebase()
+    const { uid, id } = useParams<{ uid: string, id: string }>();
 
     // Context
     const [dataVisit, setDataVisit] = useState<VisitData>()
 
     useEffect(() => {
         if (id) {
-            getFromDatabase(`visit/${user?.uid}/${id}`).then((data) => {
+            getFromDatabase(`visit/${uid}/${id}`).then((data) => {
                 console.log(id)
                 if (data) {
                     setDataVisit(data);
@@ -357,4 +357,4 @@ const VisitViewer: React.FC = () => {
     );
 };
 
-export default VisitViewer
+export default AdminVisitViewer

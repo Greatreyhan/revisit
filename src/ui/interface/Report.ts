@@ -25,6 +25,8 @@ export interface UnitInvolve {
 }
 
 export interface ReportData {
+    userId? : string;
+    reportId? : string;
     context: string;
     largeClassification: string;
     dataMiddleClassification: string[];

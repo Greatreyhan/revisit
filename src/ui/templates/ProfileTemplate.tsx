@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 import { useFirebase } from "../../utils/FirebaseContext";
 import Notification from '../../utils/Notification';
 import ProfileNavigation from '../organisms/ProfileNavigation';
-
+import "../styles/LoadingAnimation.css"
 interface ProfileTemplateProps {
   children: ReactNode;
 }

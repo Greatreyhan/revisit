@@ -6,15 +6,14 @@ import { ReportData } from "../interface/Report";
 import { IoMdSettings } from "react-icons/io";
 
 const ProfileReport = () => {
-  const { getFromDatabase, deleteFromDatabase } = useFirebase();
+  const { getFromDatabase, deleteFromDatabase, user } = useFirebase();
   const [dataArticle, setDataArticle] = useState<{ [key: string]: ReportData }>({});
   const [keyArticle, setKeyArticle] = useState<string[]>([]);
   const [keyData, setKeyData] = useState<string>("")
 
   useEffect(() => {
-    getFromDatabase(`report`).then((data) => {
+    getFromDatabase(`report/${user?.uid}`).then((data) => {
       if (data) {
-        console.log(data)
         const key = Object.keys(data);
         setKeyArticle(key);
         setDataArticle(data);

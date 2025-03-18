@@ -7,7 +7,7 @@ import { Client } from "../interface/Client";
 import { useFirebase } from "../../utils/FirebaseContext";
 
 const Profile: React.FC = () => {
-  const {getFromDatabase} = useFirebase()
+  const {getFromDatabase, user} = useFirebase()
   const [report, setReport] = useState<string[]>([]);
   const [visit, setVisit] = useState<string[]>([]);
   const [keyCareer, setKeyCareer] = useState<string[]>([]);
@@ -16,7 +16,7 @@ const Profile: React.FC = () => {
 
   useEffect(() => {
     // Fetch articles
-    getFromDatabase("report").then(data => {
+    getFromDatabase("report/"+user?.uid).then(data => {
       const dataConverted: Article | null = data;
       if (dataConverted) {
         const keys = Object.keys(dataConverted);
@@ -25,7 +25,7 @@ const Profile: React.FC = () => {
     });
 
     // Fetch portfolios
-    getFromDatabase("visit").then(data => {
+    getFromDatabase("visit/"+user?.uid).then(data => {
       const dataConverted: Portofolio | null = data;
       if (dataConverted) {
         const keys = Object.keys(dataConverted);
@@ -34,7 +34,7 @@ const Profile: React.FC = () => {
     });
 
     // Fetch career
-    getFromDatabase("career").then(data => {
+    getFromDatabase("career/"+user?.uid).then(data => {
       const dataConverted: Career | null = data;
       if (dataConverted) {
         const keys = Object.keys(dataConverted);
@@ -43,7 +43,7 @@ const Profile: React.FC = () => {
     });
 
     // Fetch service
-    getFromDatabase("service").then(data => {
+    getFromDatabase("service/"+user?.uid).then(data => {
       const dataConverted: Service | null = data;
       if (dataConverted) {
         const keys = Object.keys(dataConverted);
@@ -52,7 +52,7 @@ const Profile: React.FC = () => {
     });
 
     // Fetch client
-    getFromDatabase("client").then(data => {
+    getFromDatabase("client/"+user?.uid).then(data => {
       const dataConverted: Client | null = data;
       if (dataConverted) {
         const keys = Object.keys(dataConverted);
@@ -83,28 +83,28 @@ const Profile: React.FC = () => {
 
       {/* Display Number of Career */}
       <div className="w-72 bg-slate-100 px-8 py-4 rounded-md">
-        <h2 className="text-lg text-slate-900">Total Warranty</h2>
+        <h2 className="text-lg text-slate-900">Total Schedule</h2>
         <p className="text-4xl text-primary flex justify-end items-end mt-4 font-bold">
           {keyCareer.length}
-          <span className="text-sm font-light ml-2">claim</span>
+          <span className="text-sm font-light ml-2">schedule</span>
         </p>
       </div>
 
       {/* Display Number of Career */}
       <div className="w-72 bg-slate-100 px-8 py-4 rounded-md">
-        <h2 className="text-lg text-slate-900">Total Visit</h2>
+        <h2 className="text-lg text-slate-900">Total IASB</h2>
         <p className="text-4xl text-primary flex justify-end items-end mt-4 font-bold">
           {keyService.length}
-          <span className="text-sm font-light ml-2">visit</span>
+          <span className="text-sm font-light ml-2">doc.</span>
         </p>
       </div>
 
       {/* Display Number of Career */}
       <div className="w-72 bg-slate-100 px-8 py-4 rounded-md">
-        <h2 className="text-lg text-slate-900">Total Customer</h2>
+        <h2 className="text-lg text-slate-900">Total Literature</h2>
         <p className="text-4xl text-primary flex justify-end items-end mt-4 font-bold">
           {keyClient.length}
-          <span className="text-sm font-light ml-2">customer</span>
+          <span className="text-sm font-light ml-2">doc.</span>
         </p>
       </div>
     </div>

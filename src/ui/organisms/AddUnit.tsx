@@ -156,7 +156,7 @@ const AddUnit: React.FC<AddUnitProps> = ({ units, setUnits }) => {
             {isPopupOpen && (
 
                 <div className="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50">
-                    <div className="bg-white p-6 rounded shadow-lg w-1/3">
+                    <div className="bg-white p-6 rounded shadow-lg md:w-1/3">
                         <h2 className="text-lg font-bold mb-4">Tambah Unit Terlibat</h2>
                         <div className="flex w-full gap-5">
                             <SelectInput label="Merek" name="trademark" value={trademark} onChange={(e) => { setTrademark(e.target.value); setDataModel(modelMap[e.target.value] || []); }} options={merkData} />

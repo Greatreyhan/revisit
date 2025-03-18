@@ -14,8 +14,8 @@ import { areaData, areaMap, cargoTypesData, classificationMap, DealerData, euroT
 import { AttachmentItem, InvestigationItem, Unit, UnitInvolve } from "../interface/Report";
 
 
-const ProfileReportEditor: React.FC = () => {
-    const { saveToDatabase, getFromDatabase, user, waiting} = useFirebase()
+const AdminReportEditor: React.FC = () => {
+    const { saveToDatabase, getFromDatabase, loading, user} = useFirebase()
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
 
@@ -87,7 +87,13 @@ const ProfileReportEditor: React.FC = () => {
 
     const handleSendData = async (e: React.FormEvent) => {
         e.preventDefault();
-        waiting(true)
+
+        // Validasi minimal, bisa dikembangkan lebih lanjut
+        if (!context || !customerName || !location || !phenomenon) {
+            console.log("Beberapa data penting masih kosong!");
+            return;
+        }
+
         const newData = {
             attachments,
             investigations,
@@ -154,24 +160,21 @@ const ProfileReportEditor: React.FC = () => {
         try {
             console.log(newData)
             await saveToDatabase(`report/${user?.uid}/${id || Date.now()}`, newData);
-            waiting(false)
             navigate("/report"); // Navigasi ke halaman setelah submit
         } catch (error) {
             console.error("Error saving data:", error);
-            waiting(false)
         }
     };
 
     useEffect(() => {
         if (id) {
-            waiting(true)
             getFromDatabase(`report/${user?.uid}/${id}`).then((data) => {
                 if (data) {
                     // Array data
-                    setAttachments(data.attachments || []);
-                    setInvestigations(data.investigations || [])
-                    setUnits(data.units || [])
-                    setUnitInvolves(data.unitInvolves || [])
+                    setAttachments(data.attachments);
+                    setInvestigations(data.investigations)
+                    setUnits(data.units)
+                    setUnitInvolves(data.unitInvolves)
 
                     // Context
                     setContext(data.context || "");
@@ -232,7 +235,6 @@ const ProfileReportEditor: React.FC = () => {
                     setDifficultPoint(data.difficultPoint || "");
                 }
             });
-            waiting(false)
         }
     }, [id]);
 
@@ -241,6 +243,11 @@ const ProfileReportEditor: React.FC = () => {
     return (
         <div className="App overflow-x-hidden">
             <div className="pt-16">
+                {loading && (
+                    <div className="w-full h-full fixed bg-black bg-opacity-50 z-50 top-0 flex justify-center items-center">
+                        <div className="loader"></div>
+                    </div>
+                )}
                 <div className="w-10/12 mx-auto flex justify-between">
                     <button
                         type="button"
@@ -266,21 +273,21 @@ const ProfileReportEditor: React.FC = () => {
                         value={context}
                         onChange={(e) => setContext(e.target.value)}
                         placeholder="Masukkan context"
-                    
+                        required={true}
                     />
 
                     {/* General Information */}
                     <div className="w-full py-8 px-8 rounded-lg my-4 bg-slate-100">
                         <h2 className="font-semibold">General Information</h2>
                         <div className="md:flex w-full gap-5">
-                            <SelectInput required={true} label="Large Classification" name="Large Classification" value={largeClassification} onChange={(e) => { setLargeClassification(e.target.value); setDataMiddleClassification(classificationMap[e.target.value] || []); }} options={problemCategoriesData} />
+                            <SelectInput label="Large Classification" name="Large Classification" value={largeClassification} onChange={(e) => { setLargeClassification(e.target.value); setDataMiddleClassification(classificationMap[e.target.value] || []); }} options={problemCategoriesData} />
 
-                            <SelectInput required={true} label="Middle Classification" name="Middle Classification" value={middleClassification} onChange={(e) => setMiddleClassification(e.target.value)} options={dataMiddleClassification} />
+                            <SelectInput label="Middle Classification" name="Middle Classification" value={middleClassification} onChange={(e) => setMiddleClassification(e.target.value)} options={dataMiddleClassification} />
 
-                            <InputField required={true} label="Part Problem" name="partProblem" value={partProblem} onChange={(e) => setPartProblem(e.target.value)} placeholder="Nama Part" />
+                            <InputField label="Part Problem" name="partProblem" value={partProblem} onChange={(e) => setPartProblem(e.target.value)} placeholder="Nama Part" />
                         </div>
                         <div className="md:flex w-full gap-5">
-                            <InputField required={true} label="Visitor" name="visitor" value={visitor} onChange={(e) => setVisitor(e.target.value)} placeholder="Visitor" />
+                            <InputField label="Visitor" name="visitor" value={visitor} onChange={(e) => setVisitor(e.target.value)} placeholder="Visitor" />
                             <InputField label="Reviewer" name="reviewer" value={reviewer} onChange={(e) => setReviewer(e.target.value)} placeholder="Reviewer" />
                             <InputField label="Approval" name="approval" value={approval} onChange={(e) => setApproval(e.target.value)} placeholder="Approval" />
                         </div>
@@ -289,23 +296,23 @@ const ProfileReportEditor: React.FC = () => {
                     <div className="w-full py-8 px-8 rounded-lg my-4 bg-slate-100">
                         <h2 className="font-semibold">Basic Information</h2>
                         <div className="md:flex w-full gap-5">
-                            <InputField required={true} label="Nama Customer" name="customerName" value={customerName} onChange={(e) => setCustomerName(e.target.value)} placeholder="Masukkan Nama Customer" />
-                            <SelectInput required={true} label="Dealer" name="dealer" value={dealer} onChange={(e) => setDealer(e.target.value)} options={DealerData} />
+                            <InputField label="Nama Customer" name="customerName" value={customerName} onChange={(e) => setCustomerName(e.target.value)} placeholder="Masukkan Nama Customer" />
+                            <SelectInput label="Dealer" name="dealer" value={dealer} onChange={(e) => setDealer(e.target.value)} options={DealerData} />
                         </div>
                         <div className="md:flex w-full gap-5">
-                            <SelectInput required={true} label="Area" name="area" value={area} onChange={(e) => { setArea(e.target.value); setDataLocation(areaMap[e.target.value] || []); }} options={areaData} />
-                            <SelectInput required={true} label="Lokasi" name="location" value={location} onChange={(e) => setLocation(e.target.value)} options={dataLocation} />
-                            <InputField required={true} label="Kota" name="city" value={city} onChange={(e) => setCity(e.target.value)} placeholder="Masukkan Kota" />
+                            <SelectInput label="Area" name="area" value={area} onChange={(e) => { setArea(e.target.value); setDataLocation(areaMap[e.target.value] || []); }} options={areaData} />
+                            <SelectInput label="Lokasi" name="location" value={location} onChange={(e) => setLocation(e.target.value)} options={dataLocation} />
+                            <InputField label="Kota" name="city" value={city} onChange={(e) => setCity(e.target.value)} placeholder="Masukkan Kota" />
                         </div>
                         <div className="md:flex w-full gap-5">
-                            <SelectInput required={true} label="Seri Kendaraan" name="series" value={series} onChange={(e) => setSeries(e.target.value)} options={seriesData} />
-                            <SelectInput required={true} label="Tipe Kendaraan" name="vehicleType" value={vehicleType} onChange={(e) => setVehicleType(e.target.value)} options={vehicleTypesData} />
-                            <SelectInput required={true} label="Model Fokus" name="focusModel" value={focusModel} onChange={(e) => setFocusModel(e.target.value)} options={focusModelsData} />
+                            <SelectInput label="Seri Kendaraan" name="series" value={series} onChange={(e) => setSeries(e.target.value)} options={seriesData} />
+                            <SelectInput label="Tipe Kendaraan" name="vehicleType" value={vehicleType} onChange={(e) => setVehicleType(e.target.value)} options={vehicleTypesData} />
+                            <SelectInput label="Model Fokus" name="focusModel" value={focusModel} onChange={(e) => setFocusModel(e.target.value)} options={focusModelsData} />
                         </div>
                         <div className="md:flex w-full gap-5">
-                            <SelectInput required={true} label="Tipe Euro" name="euroType" value={euroType} onChange={(e) => setEuroType(e.target.value)} options={euroTypeData} />
-                            <InputField required={true} label="VIN" name="VIN" value={VIN} onChange={(e) => setVIN(e.target.value)} placeholder="Masukkan VIN" />
-                            <InputField required={true} label="EGN" name="EGN" value={EGN} onChange={(e) => setEGN(e.target.value)} placeholder="Masukkan EGN" />
+                            <SelectInput label="Tipe Euro" name="euroType" value={euroType} onChange={(e) => setEuroType(e.target.value)} options={euroTypeData} />
+                            <InputField label="VIN" name="VIN" value={VIN} onChange={(e) => setVIN(e.target.value)} placeholder="Masukkan VIN" />
+                            <InputField label="EGN" name="EGN" value={EGN} onChange={(e) => setEGN(e.target.value)} placeholder="Masukkan EGN" />
                         </div>
                         <div className="md:flex w-full gap-5">
                             <InputField label="Payload (KG)" name="payload" type="number" value={payload} onChange={(e) => setPayload(e.target.value)} placeholder="Masukkan Payload" />
@@ -323,7 +330,7 @@ const ProfileReportEditor: React.FC = () => {
                             <InputField label="Tanggal Kunjungan" name="visitDate" type="date" value={visitDate} onChange={(e) => setVisitDate(e.target.value)} />
                             {/* <InputField label="Perbedaan Tanggal" name="dateDifference" value={dateDifference} onChange={(e) => setDateDifference(e.target.value)} placeholder="Masukkan Perbedaan Tanggal" /> */}
                         </div>
-                        <SelectInput required={true} label="Status" name="status" value={status} onChange={(e) => setStatus(e.target.value)} options={["Breakdown", "Operational"]} />
+                        <SelectInput label="Status" name="status" value={status} onChange={(e) => setStatus(e.target.value)} options={["Breakdown", "Operational"]} />
                     </div>
 
                     <div className="w-full py-8 px-8 rounded-lg my-4 bg-slate-100">
@@ -365,7 +372,7 @@ const ProfileReportEditor: React.FC = () => {
                             value={phenomenon}
                             onChange={(e) => setPhenomenon(e.target.value)}
                             placeholder="Jelaskan fenomena masalah"
-                        
+                            required={true}
                         />
                         <TextField
                             label="Riwayat Perawatan"
@@ -373,7 +380,7 @@ const ProfileReportEditor: React.FC = () => {
                             value={historyMaintenance}
                             onChange={(e) => setHistoryMaintenance(e.target.value)}
                             placeholder="Masukkan riwayat perawatan"
-                        
+                            required={true}
                         />
                         <TextField
                             label="Investigasi Sementara"
@@ -381,7 +388,7 @@ const ProfileReportEditor: React.FC = () => {
                             value={FATemporaryInvestigation}
                             onChange={(e) => setFATemporaryInvestigation(e.target.value)}
                             placeholder="Masukkan hasil investigasi sementara"
-                        
+                            required={true}
                         />
                     </div>
 
@@ -406,7 +413,7 @@ const ProfileReportEditor: React.FC = () => {
                             value={investigationResult}
                             onChange={(e) => setInvestigationResult(e.target.value)}
                             placeholder="Masukkan hasil investigasi akhir"
-
+                            required
                         />
                         <TextField
                             label="Pendapat Pelanggan"
@@ -414,7 +421,7 @@ const ProfileReportEditor: React.FC = () => {
                             value={customerVoice}
                             onChange={(e) => setCustomerVoice(e.target.value)}
                             placeholder="Masukkan pendapat pelanggan"
-
+                            required
                         />
                         <TextField
                             label="Tindakan Sementara"
@@ -422,7 +429,7 @@ const ProfileReportEditor: React.FC = () => {
                             value={temporaryAction}
                             onChange={(e) => setTemporaryAction(e.target.value)}
                             placeholder="Masukkan tindakan sementara"
-
+                            required
                         />
                         <TextField
                             label="PR yang Perlu Dikerjakan"
@@ -430,7 +437,7 @@ const ProfileReportEditor: React.FC = () => {
                             value={homework}
                             onChange={(e) => setHomework(e.target.value)}
                             placeholder="Masukkan PR yang perlu dikerjakan"
-
+                            required
                         />
                         <TextField
                             label="Kasus Lain TIR"
@@ -438,7 +445,7 @@ const ProfileReportEditor: React.FC = () => {
                             value={otherCaseTIR}
                             onChange={(e) => setOtherCaseTIR(e.target.value)}
                             placeholder="Masukkan kasus lain TIR"
-
+                            required
                         />
                         <TextField
                             label="Poin Sulit"
@@ -446,7 +453,7 @@ const ProfileReportEditor: React.FC = () => {
                             value={difficultPoint}
                             onChange={(e) => setDifficultPoint(e.target.value)}
                             placeholder="Masukkan poin sulit"
-
+                            required
                         />
                     </div>
 
@@ -490,4 +497,4 @@ const ProfileReportEditor: React.FC = () => {
     );
 };
 
-export default ProfileReportEditor;
+export default AdminReportEditor;

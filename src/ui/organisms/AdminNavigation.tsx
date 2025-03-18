@@ -1,10 +1,11 @@
 import React from 'react';
 import { IoMdApps } from "react-icons/io";
-import { MdPerson } from "react-icons/md";
+import { MdArticle, MdOutlineCalendarMonth, MdPerson } from "react-icons/md";
 import { TbReportSearch } from "react-icons/tb";
 import { MdOutlineLogout } from "react-icons/md";
 import { Logo } from '../../assets/icons';
 import { useFirebase } from '../../utils/FirebaseContext'; // Update the path as needed
+import { Link } from 'react-router-dom';
 
 const AdminNavigation: React.FC = () => {
     const { signOut } = useFirebase();
@@ -25,7 +26,7 @@ const AdminNavigation: React.FC = () => {
         <div className='md:w-2/12 md:h-screen bg-slate-100 flex flex-col justify-between py-8 fixed left-0 top-0'>
             {/* Logo */}
             <div className='flex justify-center'>
-                <img className='w-32' src={Logo} alt="Logo" />
+                <Link to={'/'}><img className="w-32" src={Logo} alt="Logo" /></Link>
             </div>
 
             {/* List Menu */}
@@ -34,8 +35,20 @@ const AdminNavigation: React.FC = () => {
                     <IoMdApps className='text-2xl mr-1' />
                     <span>Dashboard</span>
                 </a>
-                <a href='/admin/article' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
+                <a href='/admin/report' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
                     <TbReportSearch className='text-2xl mr-1' />
+                    <span>Report Investigation</span>
+                </a>
+                <a href='/admin/visit' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
+                    <TbReportSearch className='text-2xl mr-1' />
+                    <span>Report Reguler</span>
+                </a>
+                <a href='/admin/schedule' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
+                    <MdOutlineCalendarMonth className='text-2xl mr-1' />
+                    <span>Schedule Visit</span>
+                </a>
+                <a href='/admin/article' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
+                    <MdArticle className='text-2xl mr-1' />
                     <span>Blog</span>
                 </a>
                 <a href='/admin/user' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>

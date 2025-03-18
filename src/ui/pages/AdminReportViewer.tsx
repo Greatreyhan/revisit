@@ -4,16 +4,16 @@ import { useFirebase } from "../../utils/FirebaseContext";
 import { Logo2 } from "../../assets/images";
 import { ReportData } from "../interface/Report";
 
-const ReportViewer: React.FC = () => {
-    const { getFromDatabase,user } = useFirebase()
-    const { id } = useParams<{ id: string }>();
+const AdminReportViewer: React.FC = () => {
+    const { getFromDatabase } = useFirebase()
+    const { uid,id } = useParams<{ uid: string ,id: string }>();
 
     // Context
     const [dataReport,setDataReport] = useState<ReportData>()
 
     useEffect(() => {
         if (id) {
-            getFromDatabase(`report/${user?.uid}/${id}`).then((data) => {
+            getFromDatabase(`report/${uid}/${id}`).then((data) => {
                 if (data) {
                     setDataReport(data);
                 }
@@ -327,4 +327,4 @@ const ReportViewer: React.FC = () => {
     );
 };
 
-export default ReportViewer
+export default AdminReportViewer

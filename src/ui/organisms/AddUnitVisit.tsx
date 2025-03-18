@@ -133,7 +133,7 @@ const AddUnitVisit: React.FC<AddUnitVisitProps> = ({ units, setUnits }) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {units.map((unit, index) => (
+                            {units?.map((unit, index) => (
                                 <tr key={index} className="text-gray-700">
                                     <td className="border p-1.5 dark:border-dark-5 text-center">{index + 1}</td>
                                     <td className="border p-1.5 dark:border-dark-5 text-center">{unit.trademark}</td>
@@ -171,17 +171,17 @@ const AddUnitVisit: React.FC<AddUnitVisitProps> = ({ units, setUnits }) => {
             {isPopupOpen && (
 
                 <div className="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50">
-                    <div className="bg-white p-6 rounded shadow-lg w-1/3">
-                        <h2 className="text-lg font-bold mb-4">Tambah Unit Terlibat</h2>
+                    <div className="bg-white p-6 rounded shadow-lg md:w-1/3">
+                        <h2 className="text-lg font-bold mb-4">Tambah Unit Customer</h2>
                         <div className="flex w-full gap-5">
                             <SelectInput label="Merek" name="trademark" value={trademark} onChange={(e) => { setTrademark(e.target.value); setDataModel(modelMap[e.target.value] || []); }} options={merkData} />
                             <SelectInput label="Tipe Unit" name="typeUnit" value={typeUnit} onChange={(e) => setTypeUnit(e.target.value)} options={dataModel} />
                         </div>
                         <div className="flex w-full gap-5">
                             <InputField label="Jumlah Unit" type='number' name="qtyUnit" value={qtyUnit} onChange={(e) => setQtyUnit(e.target.value)} placeholder="Masukkan jumlah unit" />
-                            <InputField label="Tipe Barang" name="rearBodyType" value={rearBodyType} onChange={(e) => setRearBodyType(e.target.value)} placeholder="Masukkan tipe barang" />
+                            <InputField label="Tipe Barang" name="rearBodyType" value={rearBodyType} onChange={(e) => setRearBodyType(e.target.value)} placeholder="Rear Body Type" />
                         </div>
-                        <InputField type="number" label="Jarak Tempuh (KM)" name="payload" value={payload} onChange={(e) => setPayload(e.target.value)} placeholder="Masukkan jarak tempuh" />
+                        <InputField type="number" label="Payload (KG)" name="payload" value={payload} onChange={(e) => setPayload(e.target.value)} placeholder="Payload" />
                         <InputField label="Goods" name="goods" value={goods} onChange={(e) => setGoods(e.target.value)} placeholder="Masukkan jenis Muatan" />
                         <InputField label="Body Maker" name="bodyMaker" value={bodyMaker} onChange={(e) => setBodyMaker(e.target.value)} placeholder="Body Maker" />
                         <div className="flex justify-end gap-5 mt-4">

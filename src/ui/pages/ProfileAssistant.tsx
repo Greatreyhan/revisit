@@ -9,7 +9,7 @@ interface AssistantData {
   desc: string;
 }
 
-const ProfileAssistant = () => {
+const ProfileIASB = () => {
   const {getFromDatabase, deleteFromDatabase } = useFirebase();
   const [dataArticle, setDataArticle] = useState<{ [key: string]: AssistantData }>({});
   const [keyArticle, setKeyArticle] = useState<string[]>([]);
@@ -77,4 +77,4 @@ const ProfileAssistant = () => {
   );
 };
 
-export default ProfileAssistant;
+export default ProfileIASB;

@@ -4,7 +4,7 @@ import { useFirebase } from "../../utils/FirebaseContext";
 const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { signUp, user } = useFirebase();
+  const { user } = useFirebase();
 
   const handleSubmit = async (e:React.FormEvent) => {
     e.preventDefault();

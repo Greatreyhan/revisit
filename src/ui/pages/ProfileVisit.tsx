@@ -6,13 +6,13 @@ import { VisitData } from "../interface/Visit";
 import { IoMdSettings } from "react-icons/io";
 
 const ProfileVisit = () => {
-  const { getFromDatabase, deleteFromDatabase } = useFirebase();
+  const { getFromDatabase, deleteFromDatabase, user } = useFirebase();
   const [dataArticle, setDataArticle] = useState<{ [key: string]: VisitData }>({});
   const [keyArticle, setKeyArticle] = useState<string[]>([]);
   const [keyData, setKeyData] = useState<string>("")
 
   useEffect(() => {
-    getFromDatabase(`visit`).then((data) => {
+    getFromDatabase(`visit/${user?.uid}`).then((data) => {
       if (data) {
         console.log(data)
         const key = Object.keys(data);
@@ -114,7 +114,7 @@ const ProfileVisit = () => {
                 <td className="border p-4 dark:border-dark-5">{dataArticle[key]?.customerName}</td>
                 <td className="border p-4 dark:border-dark-5 md:table-cell hidden">{dataArticle[key]?.segment}</td>
                 <td className="border p-4 dark:border-dark-5">{dataArticle[key]?.area}</td>
-                <td className="border p-4 dark:border-dark-5 text-center">  {dataArticle[key]?.units.reduce((total, unit) => total + parseInt(unit.qtyUnit, 10), 0)}</td>
+                <td className="border p-4 dark:border-dark-5 text-center">  {dataArticle[key]?.units?.reduce((total, unit) => total + parseInt(unit.qtyUnit, 10), 0) || 0}</td>
                 <td className="border-t p-4 md:flex gap-x-3 justify-around items-center hidden">
                   <Link
                     className="p-2 text-sky-800 rounded-full bg-sky-100"

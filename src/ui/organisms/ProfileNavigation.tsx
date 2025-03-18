@@ -6,6 +6,7 @@ import { Logo } from '../../assets/icons';
 import { useFirebase } from '../../utils/FirebaseContext'; // Update the path as needed
 import { RiCustomerServiceFill } from 'react-icons/ri';
 import { IoCalendarSharp } from 'react-icons/io5';
+import { Link } from 'react-router-dom';
 
 const ProfileNavigation: React.FC = () => {
     const { signOut } = useFirebase();
@@ -27,13 +28,13 @@ const ProfileNavigation: React.FC = () => {
         <div className='md:w-2/12 md:h-screen bg-slate-100 flex flex-col justify-between py-8 fixed left-0 top-0'>
             {/* Logo */}
             <div className='md:flex hidden justify-center'>
-                <img className='w-32' src={Logo} alt="Logo" />
+            <Link to={'/'}><img className="w-32" src={Logo} alt="Logo" /></Link>
             </div>
 
             {/* Small Navigation */}
             <div className='flex md:hidden w-full fixed bg-slate-200 top-0 justify-between items-center'>
                 <MdOutlineMenu className='text-5xl p-2 m-1 cursor-pointer' onClick={()=>setShowNav(!showNav)} />
-                <img className='w-20' src={Logo} alt="Logo" />
+                <Link to={'/'}><img className="w-20" src={Logo} alt="Logo" /></Link>
             </div>
 
             {/* Navigation Mini */}
@@ -51,18 +52,18 @@ const ProfileNavigation: React.FC = () => {
                         <MdLocationPin className='text-2xl mr-1' />
                         <span>Regular Visit</span>
                     </a>
-                    <a href='/assistant' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
-                        <RiCustomerServiceFill className='text-2xl mr-1' />
-                        <span>Assistant</span>
-                    </a>
                     <a href='/schedule' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
                         <IoCalendarSharp className='text-2xl mr-1' />
                         <span>Schedule</span>
                     </a>
-                    <a href='/warranty' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
+                    {/* <a href='/iasb' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
+                        <RiCustomerServiceFill className='text-2xl mr-1' />
+                        <span>IASB</span>
+                    </a> */}
+                    {/* <a href='/literature' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
                         <MdOutlineSecurity className='text-2xl mr-1' />
-                        <span>Warranty</span>
-                    </a>
+                        <span>Literature</span>
+                    </a> */}
                 </div>
             </div>
 
@@ -81,18 +82,18 @@ const ProfileNavigation: React.FC = () => {
                     <MdLocationPin className='text-2xl mr-1' />
                     <span>Regular Visit</span>
                 </a>
-                <a href='/assistant' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
-                    <RiCustomerServiceFill className='text-2xl mr-1' />
-                    <span>Assistant</span>
-                </a>
                 <a href='/schedule' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
                     <IoCalendarSharp className='text-2xl mr-1' />
                     <span>Schedule</span>
                 </a>
-                <a href='/warranty' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
-                    <MdOutlineSecurity className='text-2xl mr-1' />
-                    <span>Warranty</span>
+                {/* <a href='/iasb' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
+                    <RiCustomerServiceFill className='text-2xl mr-1' />
+                    <span>IASB</span>
                 </a>
+                <a href='/literature' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
+                    <MdOutlineSecurity className='text-2xl mr-1' />
+                    <span>Literature</span>
+                </a> */}
             </div>
 
             {/* Logout */}

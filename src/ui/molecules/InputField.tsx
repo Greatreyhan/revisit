@@ -5,6 +5,7 @@ type InputFieldProps = {
   name: string;
   type?: string;
   value: string;
+  required?: boolean;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
 };
@@ -14,6 +15,7 @@ const InputField: React.FC<InputFieldProps> = ({
   name,
   type = "text",
   value,
+  required = false,
   onChange,
   placeholder,
 }) => {
@@ -24,7 +26,7 @@ const InputField: React.FC<InputFieldProps> = ({
       </label>
       <input
         className="ounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-primary-light focus:rounded-lg focus:border-transparent"
-        required
+        required={required}
         value={value}
         onChange={onChange}
         name={name}

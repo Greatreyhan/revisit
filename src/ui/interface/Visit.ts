@@ -26,6 +26,9 @@ export interface UnitInvolve {
 }
 
 export interface VisitData {
+    reportId?: string;
+    userId?: string;
+
     // Context
     context: string;
     
@@ -46,8 +49,8 @@ export interface VisitData {
     location: string;
     city: string;
     segment: string;
-    application: string;
-    loadingUnit: string;
+    // application: string;
+    // loadingUnit: string;
     
     // Operational
     dayPerWeek: string;

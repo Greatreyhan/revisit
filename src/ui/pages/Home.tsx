@@ -4,6 +4,7 @@ import { HeroHome} from "../../assets/images";
 import { ServiceCard } from "../organisms";
 import { onValue, ref as rtdbref } from "firebase/database";
 import { FIREBASE_DB } from "../../config/firebaseinit";
+import MiniBlog from "../organisms/MiniBlog";
 
 interface SubserviceItem {
   id: string;
@@ -133,7 +134,7 @@ const Home: React.FC = () => {
       </div> */}
 
       {/* Articles */}
-      {/* <div className="w-full py-8">
+      <div className="w-full py-8">
         <h2 className="text-center md:text-3xl text-2xl font-normal uppercase text-base-dark pt-8">
           WHAT'S NEW?
         </h2>
@@ -144,7 +145,7 @@ const Home: React.FC = () => {
         <div className="flex flex-wrap justify-between w-10/12 mx-auto">
         <MiniBlog />
         </div>
-      </div> */}
+      </div>
     </div>
   );
 };

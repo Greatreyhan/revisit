@@ -10,6 +10,7 @@ const AdminUserEditor: React.FC = () => {
     const { signUp } = useFirebase()
     const navigate = useNavigate();
     const [email, setEmail] = useState<string>("");
+    const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [dealer, setDealer] = useState<string>("");
     const [location, setLocation] = useState<string>("");
@@ -19,7 +20,7 @@ const AdminUserEditor: React.FC = () => {
         e.preventDefault();
 
         try {
-            await signUp(email, password, dealer, location);
+            await signUp(email, password, dealer, username, location);
             navigate("/admin/user"); // Navigasi ke halaman user setelah submit
         } catch (error) {
             console.error("Error saving data:", error);
@@ -37,9 +38,11 @@ const AdminUserEditor: React.FC = () => {
                     <div className="w-full py-8 px-8 rounded-lg my-4 bg-slate-100">
                         <h2 className="font-semibold">User Information</h2>
                         <div className="md:flex w-full gap-5">
+                            <InputField label="Username" name="username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username" />
                             <InputField label="Email" name="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
                             <InputField label="Password" name="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
                         </div>
+
                         <div className="md:flex w-full gap-5">
                             <SelectInput label="Dealer" name="dealer" value={dealer} onChange={(e) => setDealer(e.target.value)} options={DealerData} />
                             <InputField label="Location" name="location" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Location" />

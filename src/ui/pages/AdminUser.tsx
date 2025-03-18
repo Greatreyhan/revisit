@@ -1,26 +1,27 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { MdDelete } from "react-icons/md";
 import { useFirebase } from "../../utils/FirebaseContext";
+import { MdDelete } from "react-icons/md";
 
 interface UserData {
   email: string;
   type: string;
   dealer: string;
   location: string;
+  name: string;
 }
 
 const AdminUser = () => {
   const {getFromDatabase, deleteFromDatabase } = useFirebase();
-  const [dataArticle, setDataArticle] = useState<{ [key: string]: UserData }>({});
-  const [keyArticle, setKeyArticle] = useState<string[]>([]);
+  const [database, setDatabase] = useState<{ [key: string]: UserData }>({});
+  const [keyDatabase, setKeyDatabase] = useState<string[]>([]);
 
   useEffect(() => {
     getFromDatabase(`user`).then((data) => {
       if (data) {
         const key = Object.keys(data);
-        setKeyArticle(key);
-        setDataArticle(data);
+        setKeyDatabase(key);
+        setDatabase(data);
       }
     });
   }, []);
@@ -28,7 +29,7 @@ const AdminUser = () => {
   return (
     <div className="w-10/12 mx-auto pt-8">
       <div className="flex items-center justify-between py-8">
-        <p>Total Articles: {keyArticle.length}</p>
+        <p>Total Articles: {keyDatabase.length}</p>
         <Link
           className="inline-flex items-center px-6 py-1.5 bg-primary rounded-full text-white"
           to={"/admin/user/add"}
@@ -42,29 +43,31 @@ const AdminUser = () => {
             <tr>
               <th className="border p-4 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">#</th>
               <th className="border p-4 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Email</th>
+              <th className="border p-4 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Username</th>
               <th className="border p-4 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Type</th>
               <th className="border p-4 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Dealer</th>
               <th className="border p-4 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Location</th>
-              {/* <th className="border p-4 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Action</th> */}
+              <th className="border p-4 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Action</th>
             </tr>
           </thead>
           <tbody>
-            {keyArticle.map((key, i) => (
+            {keyDatabase.map((key, i) => (
               <tr key={key} className="text-gray-700">
                 <td className="border p-4 dark:border-dark-5">{i + 1}</td>
-                <td className="border p-4 dark:border-dark-5">{dataArticle[key]?.email}</td>
-                <td className="border p-4 dark:border-dark-5">{dataArticle[key]?.type}</td>
-                <td className="border p-4 dark:border-dark-5">{dataArticle[key]?.dealer}</td>
-                <td className="border p-4 dark:border-dark-5">{dataArticle[key]?.location}</td>
-                {/* <td className="border-t p-4 flex gap-x-3 justify-around items-center">
+                <td className="border p-4 dark:border-dark-5">{database[key]?.email}</td>
+                <td className="border p-4 dark:border-dark-5">{database[key]?.name}</td>
+                <td className="border p-4 dark:border-dark-5">{database[key]?.type}</td>
+                <td className="border p-4 dark:border-dark-5">{database[key]?.dealer}</td>
+                <td className="border p-4 dark:border-dark-5">{database[key]?.location}</td>
+                <td className="border-t p-4 flex gap-x-3 justify-around items-center">
                   <button
                     className="p-2 text-rose-800 rounded-full bg-rose-100"
                     type="button"
-                    onClick={() => deleteFromDatabase("article/"+key)}
+                    onClick={() => deleteFromDatabase("user/"+key)}
                   >
                     <MdDelete />
                   </button>
-                </td> */}
+                </td>
               </tr>
             ))}
           </tbody>
