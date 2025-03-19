@@ -19,7 +19,7 @@ interface MapDistanceProps {
   setMarkers: (markers: MapMarkerData[]) => void;
   markers: MapMarkerData[];
   setDistance: (dist: number | null) => void;
-  distance: number | null;
+  distance: number;
   show: boolean;
   setShow: (display: boolean) => void;
 }
@@ -40,13 +40,10 @@ const MapDistance: React.FC<MapDistanceProps> = ({ setMarkers, markers, setDista
 
     const newMarker: MapMarkerData = { lat: latLng.lat(), lng: latLng.lng() };
 
-    setMarkers((current:any) => {
-      if (current.length >= 2) {
-        return [newMarker];
-      } else {
-        return [...current, newMarker];
-      }
-    });
+    setMarkers([
+      ...(markers.length >= 2 ? [] : markers),
+      newMarker,
+    ]);
 
     setDistance(null);
   }, [setMarkers, setDistance]);
@@ -73,12 +70,9 @@ const MapDistance: React.FC<MapDistanceProps> = ({ setMarkers, markers, setDista
         lng: place.geometry.location.lng(),
       };
 
-      setMarkers((prevMarkers) => {
-        const newMarkers = [...prevMarkers];
-        newMarkers[index] = location;
-        return newMarkers;
-      });
-
+      const newMarkers = [...markers];
+      newMarkers[index] = location;
+      setMarkers(newMarkers);
       mapRef.current?.panTo(location);
     }
   };
@@ -133,7 +127,6 @@ const MapDistance: React.FC<MapDistanceProps> = ({ setMarkers, markers, setDista
         zoom={8}
         center={center}
         onClick={onMapClick}
-        onLoad={(map) => (mapRef.current = map)}
       >
         {markers.map((marker, index) => (
           <Marker key={index} position={marker} />

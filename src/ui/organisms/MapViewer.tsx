@@ -1,14 +1,10 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { GoogleMap, Marker, useLoadScript } from '@react-google-maps/api';
-import type { GoogleMap as GoogleMapType } from "@react-google-maps/api";
+import { MapMarkerData } from '../interface/MapSelector';
 
-interface LatLng {
-  lat: number;
-  lng: number;
-}
 
 interface MapViewerProps {
-  mapMarkers: LatLng[];
+  mapMarkers: MapMarkerData[];
   mapDistance: number;
 }
 
@@ -34,8 +30,6 @@ const MapViewer: React.FC<MapViewerProps> = ({ mapMarkers, mapDistance }) => {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: 'AIzaSyDy_z3fG3Rb-WyX79DazneEBw5sqjpWy-s',
   });
-  const mapRef = useRef<GoogleMapType | null>(null);
-
 
   if (!isLoaded) {
     return <div>Loading...</div>;
@@ -47,7 +41,6 @@ const MapViewer: React.FC<MapViewerProps> = ({ mapMarkers, mapDistance }) => {
         mapContainerStyle={containerStyle}
         zoom={8}
         center={center}
-        onLoad={(map) => (mapRef.current = map)}
       >
         {mapMarkers?.map((marker, index) => (
           <Marker key={index} position={marker} />

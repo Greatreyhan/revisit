@@ -325,7 +325,7 @@ const ProfileVisitEditor: React.FC = () => {
                         <div className="relative w-full flex justify-center -mb-12 z-10">
                             <button className={`mt-4 px-6 py-2 justify-center items-center bg-primary rounded-full text-white font-semibold ${showMap ? "hidden" : "inline-flex"}`} onClick={()=>setShowMap(true)} type="button">Tambah Titik</button>
                         </div>
-                        <MapDistance setMarkers={setMapMarkers} markers={mapMarkers} setDistance={setMapDistance} distance={mapDistance} setShow={setShowMap} show={showMap} />
+                        <MapDistance setMarkers={setMapMarkers} markers={mapMarkers} setDistance={setMapDistance} distance={mapDistance ?? 0} setShow={setShowMap} show={showMap} />
                     </div>
 
                     <div className="w-full py-8 px-8 rounded-lg my-4 bg-slate-100">

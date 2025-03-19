@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { IoMdApps, IoMdSettings } from "react-icons/io";
-import { MdInsertPageBreak, MdLocationPin, MdOutlineMenu, MdOutlineSecurity } from "react-icons/md";
+import { MdInsertPageBreak, MdLocationPin, MdOutlineMenu } from "react-icons/md";
 import { MdOutlineLogout } from "react-icons/md";
 import { Logo } from '../../assets/icons';
 import { useFirebase } from '../../utils/FirebaseContext'; // Update the path as needed
-import { RiCustomerServiceFill } from 'react-icons/ri';
 import { IoCalendarSharp } from 'react-icons/io5';
 import { Link } from 'react-router-dom';
 

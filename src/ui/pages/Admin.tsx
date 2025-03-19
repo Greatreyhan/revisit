@@ -3,6 +3,7 @@ import { Article } from "../interface/Article";
 import { useFirebase } from "../../utils/FirebaseContext";
 import { ReportData } from "../interface/Report";
 import { VisitData } from "../interface/Visit";
+import { ScheduleData } from "../interface/Schedule";
 
 
 

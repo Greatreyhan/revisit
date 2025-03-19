@@ -1,7 +1,5 @@
 import React, { useState, useCallback } from "react";
 import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
-import type { GoogleMap as GoogleMapType, MouseEvent } from "@react-google-maps/api";
-
 const libraries: ("places" | "drawing" | "geometry")[] = ["geometry"]; // Mengaktifkan library geometry untuk perhitungan jarak
 
 const mapContainerStyle = {
@@ -29,7 +27,7 @@ const TestMap: React.FC = () => {
   const [distance, setDistance] = useState<number | null>(null);
 
   // Fungsi untuk menangani klik pada peta
-  const onMapClick = useCallback((event: MouseEvent) => {
+  const onMapClick = useCallback((event: any) => {
     // Jika sudah ada dua marker, reset untuk titik baru
     if (markers.length >= 2) {
       setMarkers([

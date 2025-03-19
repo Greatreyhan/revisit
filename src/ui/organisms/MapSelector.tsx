@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { GoogleMap, Marker, useLoadScript, Autocomplete } from "@react-google-maps/api";
-import type { GoogleMap as GoogleMapType, MouseEvent } from "@react-google-maps/api";
+import type { GoogleMap as GoogleMapType } from "@react-google-maps/api";
 
 const libraries: ("places" | "drawing" | "geometry")[] = ["places"]; // Mengaktifkan library places untuk pencarian
 
@@ -30,7 +30,7 @@ const MapSelector: React.FC = () => {
   const mapRef = useRef<GoogleMapType | null>(null);
 
   // Fungsi untuk menangani klik pada peta
-  const onMapClick = (event: MouseEvent) => {
+  const onMapClick = (event: any) => {
     setMarker({
       lat: event.latLng.lat(),
       lng: event.latLng.lng(),
@@ -43,8 +43,8 @@ const MapSelector: React.FC = () => {
       const place = autocompleteRef.current.getPlace();
       if (place.geometry) {
         const location = {
-          lat: place.geometry.location.lat(),
-          lng: place.geometry.location.lng(),
+          lat: place?.geometry?.location?.lat() || 0,
+          lng: place?.geometry?.location?.lng() || 0,
         };
         setMarker(location);
         mapRef.current?.panTo(location);
@@ -69,7 +69,6 @@ const MapSelector: React.FC = () => {
         zoom={8}
         center={marker || center}
         onClick={onMapClick}
-        onLoad={(map) => (mapRef.current = map)}
       >
         {marker && <Marker position={marker} />}
       </GoogleMap>
