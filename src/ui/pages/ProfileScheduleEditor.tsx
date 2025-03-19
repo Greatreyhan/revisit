@@ -8,71 +8,94 @@ import TextField from "../molecules/TextField";
 
 
 const ProfileScheduleEditor: React.FC = () => {
-    const { saveToDatabase, getFromDatabase, loading, user } = useFirebase()
+    const { saveToDatabase, getFromDatabase, user } = useFirebase()
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
 
-    // General Information
-    const [customer, setCustomer] = useState<string>("");
-    const [dateStart, setDateStart] = useState<string>("")
-    const [dateEnd, setDateEnd] = useState<string>("");
-    const [status, setStatus] = useState<string>("");
-    const [address, setAddress] = useState<string>("");
-    const [type, setType] = useState<string>("");
-    const [description, setDescription] = useState<string>("");
-
-
-
-
-    const handleSendData = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        const newData = {
-            customer,
-            dateStart,
-            dateEnd,
-            status,
-            address,
-            type,
-            description
+      // State untuk menyimpan data input
+      const [customer, setCustomer] = useState<string>("");
+      const [dateStart, setDateStart] = useState<string>("");
+      const [dateEnd, setDateEnd] = useState<string>("");
+      const [status, setStatus] = useState<string>("");
+      const [address, setAddress] = useState<string>("");
+      const [type, setType] = useState<string>("");
+      const [description, setDescription] = useState<string>("");
+  
+      // State untuk mengecek apakah data sudah diubah
+      const [isDataChanged, setIsDataChanged] = useState<boolean>(false);
+  
+      // Fungsi untuk mendeteksi perubahan input
+      const handleChange = (setter: React.Dispatch<React.SetStateAction<string>>) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+          setter(e.target.value);
+          setIsDataChanged(true); // Set bahwa ada perubahan data
+      };
+  
+      // Fungsi untuk menyimpan data
+      const handleSendData = async (e: React.FormEvent) => {
+          e.preventDefault();
+          
+          const newData = { customer, dateStart, dateEnd, status, address, type, description };
+  
+          try {
+              await saveToDatabase(`schedule/${user?.uid}/${id || Date.now()}`, newData);
+              setIsDataChanged(false); // Set bahwa data sudah tersimpan
+              navigate("/schedule"); // Navigasi ke halaman lain setelah menyimpan
+          } catch (error) {
+              console.error("Error saving data:", error);
+          }
+      };
+  
+      // Fetch data dari database jika ID tersedia
+      useEffect(() => {
+          if (id) {
+              getFromDatabase(`schedule/${user?.uid}/${id}`).then((data) => {
+                  if (data) {
+                      setCustomer(data.customer || "");
+                      setDateStart(data.dateStart || "");
+                      setDateEnd(data.dateEnd || "");
+                      setStatus(data.status || "");
+                      setAddress(data.address || "");
+                      setType(data.type || "");
+                      setDescription(data.description || "");
+                  }
+              });
+          }
+      }, [id]);
+  
+      useEffect(() => {
+        const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+            if (isDataChanged) {
+                event.preventDefault();
+                event.returnValue = "Anda memiliki perubahan yang belum disimpan. Apakah Anda yakin ingin keluar?";
+            }
         };
-
-        try {
-            await saveToDatabase(`schedule/${user?.uid}/${id || Date.now()}`, newData);
-            navigate("/schedule"); // Navigasi ke halaman setelah submit
-        } catch (error) {
-            console.error("Error saving data:", error);
-        }
-    };
-
-    useEffect(() => {
-        if (id) {
-            getFromDatabase(`schedule/${user?.uid}/${id}`).then((data) => {
-                if (data) {
-
-                    // General Information
-                    setCustomer(data.customer || "");
-                    setDateStart(data.dateStart || "");
-                    setDateEnd(data.dateEnd || "")
-                    setStatus(data.status || "");
-                    setAddress(data.address || "");
-                    setType(data.type || "");
-                    setDescription(data.description || "");
+    
+        const handleBackButton = (event: PopStateEvent) => {
+            if (isDataChanged) {
+                const confirmLeave = window.confirm("Anda memiliki perubahan yang belum disimpan. Apakah Anda yakin ingin meninggalkan halaman ini?");
+                if (!confirmLeave) {
+                    // Dorong kembali state agar tetap di halaman saat tombol Back ditekan
+                    window.history.pushState(null, "", window.location.href);
                 }
-            });
-        }
-    }, [id]);
-
-
+            }
+        };
+    
+        // Tambahkan state baru ke history agar kita bisa mengendalikan navigasi
+        window.history.pushState(null, "", window.location.href);
+    
+        window.addEventListener("beforeunload", handleBeforeUnload);
+        window.addEventListener("popstate", handleBackButton);
+    
+        return () => {
+            window.removeEventListener("beforeunload", handleBeforeUnload);
+            window.removeEventListener("popstate", handleBackButton);
+        };
+    }, [isDataChanged]);
+    
 
     return (
         <div className="App overflow-x-hidden">
             <div className="pt-16">
-                {loading && (
-                    <div className="w-full h-full fixed bg-black bg-opacity-50 z-50 top-0 flex justify-center items-center">
-                        <div className="loader"></div>
-                    </div>
-                )}
 
                 <form className="md:w-10/12 w-11/12 flex flex-col mx-auto my-4 justify-around items-center" onSubmit={handleSendData}>
 
@@ -80,23 +103,23 @@ const ProfileScheduleEditor: React.FC = () => {
                     <div className="w-full py-8 px-8 rounded-lg my-4 bg-slate-100">
                         <h2 className="font-semibold">General Information</h2>
                         <div className="md:flex w-full gap-5">
-                            <InputField label="Customer Name" type="text" name="customerName" value={customer} onChange={(e) => setCustomer(e.target.value)} placeholder="Nama Customer" />
-                            <InputField label="Address" type="text" name="address" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Address" />
+                            <InputField label="Customer Name" type="text" name="customerName" value={customer} onChange={handleChange(setCustomer)} placeholder="Nama Customer" />
+                            <InputField label="Address" type="text" name="address" value={address} onChange={handleChange(setAddress)} placeholder="Address" />
                         </div>
                         <div className="md:flex w-full gap-5">
-                            <InputField label="Date Start" type="datetime-local" name="dateStart" value={dateStart} onChange={(e) => setDateStart(e.target.value)} placeholder="Date Start" />
-                            <InputField label="Date End" type="datetime-local" name="dateEnd" value={dateEnd} onChange={(e) => setDateEnd(e.target.value)} placeholder="Date End" />
+                            <InputField label="Date Start" type="datetime-local" name="dateStart" value={dateStart} onChange={handleChange(setDateStart)} placeholder="Date Start" />
+                            <InputField label="Date End" type="datetime-local" name="dateEnd" value={dateEnd} onChange={handleChange(setDateEnd)} placeholder="Date End" />
                         </div>
                         <div className="md:flex w-full gap-5">
-                            <SelectInput label="Type" name="type" value={type} onChange={(e) => setType(e.target.value)} options={['investigation', 'reguler']} />
-                            <SelectInput label="Status" name="status" value={status} onChange={(e) => setStatus(e.target.value)} options={['pending', 'done']} />
+                            <SelectInput label="Type" name="type" value={type} onChange={handleChange(setType)} options={['investigation', 'reguler']} />
+                            <SelectInput label="Status" name="status" value={status} onChange={handleChange(setStatus)} options={['pending', 'done']} />
                         </div>
                         <div className="md:flex w-full gap-5">
                             <TextField
                                 label="Description"
                                 name="description"
                                 value={description}
-                                onChange={(e) => setDescription(e.target.value)}
+                                onChange={handleChange(setDescription)}
                                 placeholder="Description"
                                 required
                             />
@@ -111,14 +134,10 @@ const ProfileScheduleEditor: React.FC = () => {
                             <BiSave className="text-2xl" />
                         </button>
                     </div>
-
-                    {/* <div className="mt-8 w-full">
-                        <Editor HTML={HTML} setDataEdit={setDataEdit} />
-                    </div> */}
                     <div className="flex w-full justify-end items-center gap-x-5">
                         <Link
                             className="mt-4 px-6 py-2 inline-flex justify-center items-center bg-white text-primary border border-primary rounded-full font-semibold"
-                            to="/report"
+                            to="/schedule"
                         >
                             Kembali
                         </Link>
@@ -129,13 +148,6 @@ const ProfileScheduleEditor: React.FC = () => {
                             <BiSave className="mr-2" />
                             Save
                         </button>
-                        {/* <button
-                            type="button"
-                            className="mt-4 px-6 py-2 inline-flex justify-center items-center bg-primary rounded-full text-white font-semibold"
-                        >
-                            <BiSave className="mr-2" />
-                            Export
-                        </button> */}
                     </div>
                 </form>
             </div>

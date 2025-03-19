@@ -14,7 +14,6 @@ const ProfileVisit = () => {
   useEffect(() => {
     getFromDatabase(`visit/${user?.uid}`).then((data) => {
       if (data) {
-        console.log(data)
         const key = Object.keys(data);
         setKeyArticle(key);
         setDataArticle(data);

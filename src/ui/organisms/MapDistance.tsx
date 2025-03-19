@@ -82,17 +82,11 @@ const MapDistance: React.FC<MapDistanceProps> = ({ setMarkers, markers, setDista
 
   return (
     <div className={`${show ? "flex flex-col fixed" : "h-60"}  top-0 left-0 items-center w-full h-screen`}>
-      <div className="fixed z-50 flex items-center justify-around space-x-4 py-4 w-8/12 bg-slate-100 rounded-b-lg">
-        <button
-          className="px-6 py-1.5 bg-primary text-white rounded hover:bg-primary-dark cursor-pointer"
-          onClick={() => setShow(false)}
-          type="button"
-        >
-          Kembali
-        </button>
+      <div className="fixed px-4 z-50 flex items-center justify-around space-x-4 py-2 md:w-8/12 w-full bg-white bg-opacity-50 backdrop-blur-lg rounded-b-lg">
+
         <Autocomplete onLoad={(auto) => (startAutocompleteRef.current = auto)} onPlaceChanged={() => onPlaceSelected(startAutocompleteRef, 0)}>
           <div className="flex flex-col w-full">
-            <label className="text-sm font-semibold my-2 text-gray-700">
+            <label className="md:text-sm text-xs font-semibold my-1 text-gray-700">
               Titik Awal
             </label>
             <input
@@ -104,7 +98,7 @@ const MapDistance: React.FC<MapDistanceProps> = ({ setMarkers, markers, setDista
         </Autocomplete>
         <Autocomplete onLoad={(auto) => (endAutocompleteRef.current = auto)} onPlaceChanged={() => onPlaceSelected(endAutocompleteRef, 1)}>
           <div className="flex flex-col w-full">
-            <label className="text-sm font-semibold my-2 text-gray-700">
+            <label className="md:text-sm text-xs font-semibold my-1 text-gray-700">
               Titik Akhir
             </label>
             <input
@@ -114,13 +108,23 @@ const MapDistance: React.FC<MapDistanceProps> = ({ setMarkers, markers, setDista
             />
           </div>
         </Autocomplete>
-        <button
-          className="px-6 py-1.5 bg-primary text-white rounded hover:bg-primary-dark cursor-pointer"
-          type="button"
-          onClick={calculateDistance}
-        >
-          Pilih
-        </button>
+        <div className="md:flex-row flex-col flex gap-3">
+          <button
+            className="px-6 py-1.5 text-sm bg-primary text-white rounded hover:bg-primary-dark cursor-pointer"
+            onClick={() => setShow(false)}
+            type="button"
+          >
+            Kembali
+          </button>
+          <button
+            className="px-6 py-1.5 text-sm bg-primary text-white rounded hover:bg-primary-dark cursor-pointer"
+            type="button"
+            onClick={calculateDistance}
+          >
+            Pilih
+          </button>
+        </div>
+
       </div>
       <GoogleMap
         mapContainerStyle={mapContainerStyle}

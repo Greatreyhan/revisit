@@ -4,13 +4,16 @@ import { Navigate } from "react-router-dom";
 import { Heroimage } from "../../assets/images";
 
 const Login = () => {
+  const { waiting } = useFirebase()
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { signIn, user, message } = useFirebase();
 
   const handleSubmit = async (e:any) => {
+    waiting(true)
     e.preventDefault();
     await signIn(email, password);
+    waiting(false)
   };
 
   if (user) {

@@ -5,14 +5,22 @@ import { Logo2 } from "../../assets/images";
 import { VisitData } from "../interface/Visit";
 import MapViewer from "../organisms/MapViewer";
 
+const renderTextBlocks = (text?: string) => {
+    if (!text) return null;
+    return text.split(" ↵").map((line, index) => (
+        <p key={index} className="mb-2">{line}</p>
+    ));
+};
+
 const VisitViewer: React.FC = () => {
-    const { getFromDatabase,user } = useFirebase()
+    const { getFromDatabase,user, waiting } = useFirebase()
     const { id } = useParams<{ id: string }>();
 
     // Context
     const [dataVisit, setDataVisit] = useState<VisitData>()
 
     useEffect(() => {
+        waiting(true)
         if (id) {
             getFromDatabase(`visit/${user?.uid}/${id}`).then((data) => {
                 console.log(id)
@@ -21,6 +29,7 @@ const VisitViewer: React.FC = () => {
                 }
             });
         }
+        waiting(false)
     }, [id]);
 
 
@@ -317,27 +326,27 @@ const VisitViewer: React.FC = () => {
                             </tr>
                             <tr className="text-left w-full">
                                 <td className="border- border-br w-3/12 p-2">Reason of Purchase</td>
-                                <td className="w-9/12 p-2">: {dataVisit?.reasonOfPurchase}</td>
+                                <td className="w-9/12 p-2">: {renderTextBlocks(dataVisit?.reasonOfPurchase)}</td>
                             </tr>
                             <tr className="text-left w-full">
                                 <td className="border- border-br w-3/12 p-2">Customer Info</td>
-                                <td className="w-9/12 p-2">: {dataVisit?.customerInfo}</td>
+                                <td className="w-9/12 p-2">: {renderTextBlocks(dataVisit?.customerInfo)}</td>
                             </tr>
                             <tr className="text-left w-full">
                                 <td className="border- border-br w-3/12 p-2">Service Info</td>
-                                <td className="w-9/12 p-2">: {dataVisit?.serviceInfo}</td>
+                                <td className="w-9/12 p-2">: {renderTextBlocks(dataVisit?.serviceInfo)}</td>
                             </tr>
                             <tr className="text-left w-full">
                                 <td className="border- border-br w-3/12 p-2">Spare Parts Info</td>
-                                <td className="w-9/12 p-2">: {dataVisit?.sparepartInfo}</td>
+                                <td className="w-9/12 p-2">: {renderTextBlocks(dataVisit?.sparepartInfo)}</td>
                             </tr>
                             <tr className="text-left w-full">
                                 <td className="border- border-br w-3/12 p-2">Technical Info</td>
-                                <td className="w-9/12 p-2">: {dataVisit?.technicalInfo}</td>
+                                <td className="w-9/12 p-2">: {renderTextBlocks(dataVisit?.technicalInfo)}</td>
                             </tr>
                             <tr className="text-left w-full">
                                 <td className="border- border-br w-3/12 p-2">Competitor Info</td>
-                                <td className="w-9/12 p-2">: {dataVisit?.competitorInfo}</td>
+                                <td className="w-9/12 p-2">: {renderTextBlocks(dataVisit?.competitorInfo)}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -347,16 +356,27 @@ const VisitViewer: React.FC = () => {
 
             {/* Attachment */}
             <div className="mt-8">
-                <h2 className="font-semibold p-3 border bg-slate-50">Attachment</h2>
+                <h2 className="font-semibold text-sm">*Content Of Investigation Attachment</h2>
                 <div className="grid grid-cols-4 gap-4 mt-4">
-                    {dataVisit?.attachments.map((row, index) => (
-                        <div key={index} className="border border-gray-300 flex flex-col items-center">
-                            <img src={row.imageAttached} alt="Unit Involve" className="w-full h-60 object-cover" />
-                            <div className="bg-gray-300 text-center font-bold p-2 w-full">{row.imageDescription}</div>
+                    {dataVisit?.attachments?.map((row, index) => (
+                        <div
+                            key={index}
+                            className="border border-gray-300 flex flex-col items-center cursor-pointer"
+                            onClick={() => window.open(row.imageAttached, "_blank")}
+                        >
+                            <img
+                                src={row.imageAttached}
+                                alt="Unit Involve"
+                                className="w-full h-60 object-cover"
+                            />
+                            <div className="bg-gray-300 text-center font-bold p-2 w-full">
+                                {row.imageDescription}
+                            </div>
                         </div>
                     ))}
                 </div>
             </div>
+
         </div>
     );
 };

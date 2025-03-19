@@ -4,16 +4,23 @@ import { useFirebase } from "../../utils/FirebaseContext";
 import { Logo2 } from "../../assets/images";
 import { ReportData } from "../interface/Report";
 
+const renderTextBlocks = (text?: string) => {
+    if (!text) return null;
+    return text.split(" ↵").map((line, index) => (
+        <p key={index} className="mb-2">{line}</p>
+    ));
+};
+
 const ReportViewer: React.FC = () => {
-    const { getFromDatabase } = useFirebase()
-    const { uid,id } = useParams<{ uid:string, id: string }>();
+    const { user, getFromDatabase } = useFirebase()
+    const { id } = useParams<{ uid: string, id: string }>();
 
     // Context
-    const [dataReport,setDataReport] = useState<ReportData>()
+    const [dataReport, setDataReport] = useState<ReportData>()
 
     useEffect(() => {
         if (id) {
-            getFromDatabase(`report/${uid}/${id}`).then((data) => {
+            getFromDatabase(`report/${user?.uid}/${id}`).then((data) => {
                 if (data) {
                     setDataReport(data);
                 }
@@ -24,7 +31,7 @@ const ReportViewer: React.FC = () => {
 
     return (
         <div className="py-8 px-16 w-full">
-            
+
             <div className="flex items-center justify-between p-4">
                 <div>
                     <img src={Logo2} className="w-32" />
@@ -144,7 +151,7 @@ const ReportViewer: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {dataReport?.units.map((unit, index) => (
+                            {dataReport?.units?.map((unit, index) => (
                                 <tr key={index} className="even:bg-gray-100">
                                     <td className="border border-gray-400 px-4 text-center py-2 text-sm">{unit?.trademark}</td>
                                     <td className="border border-gray-400 px-4 text-center py-2 text-sm">{unit?.typeUnit}</td>
@@ -163,33 +170,33 @@ const ReportViewer: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody className="text-sm">
-                                <tr className="even:bg-gray-100">
-                                    <td className="border border-gray-400 px-4 py-2">Highway</td>
-                                    <td className="border border-gray-400 px-4 py-2">{dataReport?.highway}</td>
-                                </tr>
-                                <tr className="even:bg-gray-100">
-                                    <td className="border border-gray-400 px-4 py-2">City Road</td>
-                                    <td className="border border-gray-400 px-4 py-2">{dataReport?.cityRoad}</td>
-                                </tr>
-                                <tr className="even:bg-gray-100">
-                                    <td className="border border-gray-400 px-4 py-2">Country Road</td>
-                                    <td className="border border-gray-400 px-4 py-2">{dataReport?.countryRoad}</td>
-                                </tr>
-                                <tr className="even:bg-gray-100">
-                                    <td className="border border-gray-400 px-4 py-2">On Road</td>
-                                    <td className="border border-gray-400 px-4 py-2">{dataReport?.onRoad}</td>
-                                </tr>
-                                <tr className="even:bg-gray-100">
-                                    <td className="border border-gray-400 px-4 py-2">Off Road</td>
-                                    <td className="border border-gray-400 px-4 py-2">{dataReport?.offRoad}</td>
-                                </tr>
-                                <tr className="even:bg-gray-100">
-                                    <td className="border border-gray-400 px-4 py-2">Flat Road</td>
-                                    <td className="border border-gray-400 px-4 py-2">{dataReport?.flatRoad}</td>
-                                </tr><tr className="even:bg-gray-100">
-                                    <td className="border border-gray-400 px-4 py-2">Climb Road</td>
-                                    <td className="border border-gray-400 px-4 py-2">{dataReport?.climbRoad}</td>
-                                </tr>
+                            <tr className="even:bg-gray-100">
+                                <td className="border border-gray-400 px-4 py-2">Highway</td>
+                                <td className="border border-gray-400 px-4 py-2">{dataReport?.highway}</td>
+                            </tr>
+                            <tr className="even:bg-gray-100">
+                                <td className="border border-gray-400 px-4 py-2">City Road</td>
+                                <td className="border border-gray-400 px-4 py-2">{dataReport?.cityRoad}</td>
+                            </tr>
+                            <tr className="even:bg-gray-100">
+                                <td className="border border-gray-400 px-4 py-2">Country Road</td>
+                                <td className="border border-gray-400 px-4 py-2">{dataReport?.countryRoad}</td>
+                            </tr>
+                            <tr className="even:bg-gray-100">
+                                <td className="border border-gray-400 px-4 py-2">On Road</td>
+                                <td className="border border-gray-400 px-4 py-2">{dataReport?.onRoad}</td>
+                            </tr>
+                            <tr className="even:bg-gray-100">
+                                <td className="border border-gray-400 px-4 py-2">Off Road</td>
+                                <td className="border border-gray-400 px-4 py-2">{dataReport?.offRoad}</td>
+                            </tr>
+                            <tr className="even:bg-gray-100">
+                                <td className="border border-gray-400 px-4 py-2">Flat Road</td>
+                                <td className="border border-gray-400 px-4 py-2">{dataReport?.flatRoad}</td>
+                            </tr><tr className="even:bg-gray-100">
+                                <td className="border border-gray-400 px-4 py-2">Climb Road</td>
+                                <td className="border border-gray-400 px-4 py-2">{dataReport?.climbRoad}</td>
+                            </tr>
 
                         </tbody>
                     </table>
@@ -207,7 +214,9 @@ const ReportViewer: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            <td className="border border-gray-300 p-2">{dataReport?.phenomenon}</td>
+                            <tr>
+                                <td className="border border-gray-300 p-2">{renderTextBlocks(dataReport?.phenomenon)}</td>
+                            </tr>
                         </tbody>
                     </table>
                     <table className="w-3/12 border border-gray-300">
@@ -221,8 +230,8 @@ const ReportViewer: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {dataReport?.unitInvolves.map((row) => (
-                                <tr className="text-center">
+                            {dataReport?.unitInvolves?.map((row, key) => (
+                                <tr key={key} className="text-center">
                                     <td className="border border-gray-300 p-2">{row?.VIN}</td>
                                     <td className="border border-gray-300 p-2">{row?.mileage}</td>
                                 </tr>
@@ -238,7 +247,9 @@ const ReportViewer: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            <td className="border border-gray-300 p-2">{dataReport?.historyMaintenance}</td>
+                            <tr>
+                                <td className="border border-gray-300 p-2">{renderTextBlocks(dataReport?.historyMaintenance)}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -250,7 +261,9 @@ const ReportViewer: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            <td className="border border-gray-300 p-2">{dataReport?.FATemporaryInvestigation}</td>
+                            <tr>
+                                <td className="border border-gray-300 p-2">{renderTextBlocks(dataReport?.FATemporaryInvestigation)}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -258,7 +271,7 @@ const ReportViewer: React.FC = () => {
 
             {/* Content of Investigation */}
             <div className="overflow-x-auto mt-4">
-            <p className="font-semibold mt-4 text-sm">*Contents of Investigation</p>
+                <p className="font-semibold mt-4 text-sm">*Contents of Investigation</p>
 
                 <table className="w-full border-collapse border border-gray-400 text-sm">
                     <thead>
@@ -271,9 +284,9 @@ const ReportViewer: React.FC = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {dataReport?.investigations.map((row, index) => (
+                        {dataReport?.investigations?.map((row, index) => (
                             <tr key={index} className={index % 2 === 1 ? "bg-gray-100" : ""}>
-                                <td className="border border-gray-400 px-4 py-2 text-center">{index+1}</td>
+                                <td className="border border-gray-400 px-4 py-2 text-center">{index + 1}</td>
                                 <td className="border border-gray-400 px-4 py-2">{row.content}</td>
                                 <td className="border border-gray-400 px-4 py-2">{row.result}</td>
                                 <td className="border border-gray-400 px-4 py-2">{row.standard}</td>
@@ -293,12 +306,22 @@ const ReportViewer: React.FC = () => {
             <div className="mt-8">
                 <h2 className="font-semibold text-sm">*Content Of Investigation Attachment</h2>
                 <div className="grid grid-cols-4 gap-4 mt-4">
-                {dataReport?.attachments.map((row, index) => (
-                    <div key={index} className="border border-gray-300 flex flex-col items-center">
-                        <img src={row.imageAttached} alt="Unit Involve" className="w-full h-60 object-cover" />
-                        <div className="bg-gray-300 text-center font-bold p-2 w-full">{row.imageDescription}</div>
-                    </div>
-                ))}
+                    {dataReport?.attachments?.map((row, index) => (
+                        <div
+                            key={index}
+                            className="border border-gray-300 flex flex-col items-center cursor-pointer"
+                            onClick={() => window.open(row.imageAttached, "_blank")}
+                        >
+                            <img
+                                src={row.imageAttached}
+                                alt="Unit Involve"
+                                className="w-full h-60 object-cover"
+                            />
+                            <div className="bg-gray-300 text-center font-bold p-2 w-full">
+                                {row.imageDescription}
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
 
@@ -306,21 +329,25 @@ const ReportViewer: React.FC = () => {
             <div className="">
 
                 <div className="mt-6">
+                    <div className="mb-4">
+                        <h3 className="font-semibold text-sm mt-4">*Investigation Result</h3>
+                        <div className="border border-gray-300 p-4">{renderTextBlocks(dataReport?.investigationResult)}</div>
 
-                        <div className="mb-4">
-                            <h3 className="font-semibold text-sm mt-4">*Investigation Result</h3>
-                            <div className="border border-gray-300 p-4">{dataReport?.investigationResult}</div>
-                            <h3 className="font-semibold text-sm mt-4">*Customer voice</h3>
-                            <div className="border border-gray-300 p-4">{dataReport?.customerVoice}</div>
-                            <h3 className="font-semibold text-sm mt-4">*Temporary Action</h3>
-                            <div className="border border-gray-300 p-4">{dataReport?.temporaryAction}</div>
-                            <h3 className="font-semibold text-sm mt-4">*Homework</h3>
-                            <div className="border border-gray-300 p-4">{dataReport?.homework}</div>
-                            <h3 className="font-semibold text-sm mt-4">*Other case Base On TIR</h3>
-                            <div className="border border-gray-300 p-4">{dataReport?.otherCaseTIR}</div>
-                            <h3 className="font-semibold text-sm mt-4">*Difficult Point</h3>
-                            <div className="border border-gray-300 p-4">{dataReport?.difficultPoint}</div>
-                        </div>
+                        <h3 className="font-semibold text-sm mt-4">*Customer voice</h3>
+                        <div className="border border-gray-300 p-4">{renderTextBlocks(dataReport?.customerVoice)}</div>
+
+                        <h3 className="font-semibold text-sm mt-4">*Temporary Action</h3>
+                        <div className="border border-gray-300 p-4">{renderTextBlocks(dataReport?.temporaryAction)}</div>
+
+                        <h3 className="font-semibold text-sm mt-4">*Homework</h3>
+                        <div className="border border-gray-300 p-4">{renderTextBlocks(dataReport?.homework)}</div>
+
+                        <h3 className="font-semibold text-sm mt-4">*Other case Base On TIR</h3>
+                        <div className="border border-gray-300 p-4">{renderTextBlocks(dataReport?.otherCaseTIR)}</div>
+
+                        <h3 className="font-semibold text-sm mt-4">*Difficult Point</h3>
+                        <div className="border border-gray-300 p-4">{renderTextBlocks(dataReport?.difficultPoint)}</div>
+                    </div>
                 </div>
             </div>
         </div>

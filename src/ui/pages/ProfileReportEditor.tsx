@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { BiSave } from "react-icons/bi";
 import { useFirebase } from "../../utils/FirebaseContext";
-import { IoMdDownload, IoMdSearch } from "react-icons/io";
 import SelectInput from "../molecules/SelectInput";
 import InputField from "../molecules/InputField";
 import AddUnit from "../organisms/AddUnit";
@@ -15,7 +14,7 @@ import { AttachmentItem, InvestigationItem, Unit, UnitInvolve } from "../interfa
 
 
 const ProfileReportEditor: React.FC = () => {
-    const { saveToDatabase, getFromDatabase, user, waiting} = useFirebase()
+    const { saveToDatabase, getFromDatabase, user, waiting } = useFirebase()
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
 
@@ -84,7 +83,14 @@ const ProfileReportEditor: React.FC = () => {
     const [units, setUnits] = useState<Unit[]>([]);
     const [unitInvolves, setUnitInvolves] = useState<UnitInvolve[]>([])
 
+    // State untuk mengecek apakah data sudah diubah
+    const [isDataChanged, setIsDataChanged] = useState<boolean>(false);
 
+    // Fungsi untuk mendeteksi perubahan input
+    const handleChange = (setter: React.Dispatch<React.SetStateAction<string>>) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+        setter(e.target.value);
+        setIsDataChanged(true); // Set bahwa ada perubahan data
+    };
     const handleSendData = async (e: React.FormEvent) => {
         e.preventDefault();
         waiting(true)
@@ -155,6 +161,7 @@ const ProfileReportEditor: React.FC = () => {
             console.log(newData)
             await saveToDatabase(`report/${user?.uid}/${id || Date.now()}`, newData);
             waiting(false)
+            setIsDataChanged(false)
             navigate("/report"); // Navigasi ke halaman setelah submit
         } catch (error) {
             console.error("Error saving data:", error);
@@ -237,36 +244,49 @@ const ProfileReportEditor: React.FC = () => {
     }, [id]);
 
 
+    useEffect(() => {
+        const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+            if (isDataChanged) {
+                event.preventDefault();
+                event.returnValue = "Anda memiliki perubahan yang belum disimpan. Apakah Anda yakin ingin keluar?";
+            }
+        };
+
+        const handleBackButton = (event: PopStateEvent) => {
+            if (isDataChanged) {
+                const confirmLeave = window.confirm("Anda memiliki perubahan yang belum disimpan. Apakah Anda yakin ingin meninggalkan halaman ini?");
+                if (!confirmLeave) {
+                    // Dorong kembali state agar tetap di halaman saat tombol Back ditekan
+                    window.history.pushState(null, "", window.location.href);
+                }
+            }
+        };
+
+        // Tambahkan state baru ke history agar kita bisa mengendalikan navigasi
+        window.history.pushState(null, "", window.location.href);
+
+        window.addEventListener("beforeunload", handleBeforeUnload);
+        window.addEventListener("popstate", handleBackButton);
+
+        return () => {
+            window.removeEventListener("beforeunload", handleBeforeUnload);
+            window.removeEventListener("popstate", handleBackButton);
+        };
+    }, [isDataChanged]);
+
 
     return (
         <div className="App overflow-x-hidden">
             <div className="pt-16">
-                <div className="w-10/12 mx-auto flex justify-between">
-                    <button
-                        type="button"
-                        className="mt-4 px-6 py-2 inline-flex justify-center items-center bg-primary rounded-full text-white font-semibold"
-                    >
-                        <IoMdSearch className="mr-2" />
-                        Read Context
-                    </button>
-                    <button
-                        type="button"
-                        className="mt-4 px-6 py-2 inline-flex justify-center items-center bg-primary rounded-full text-white font-semibold"
-                    >
-                        <IoMdDownload className="mr-2" />
-                        Import TIR
-                    </button>
-                </div>
                 <form className="md:w-10/12 w-11/12 flex flex-col mx-auto my-4 justify-around items-center" onSubmit={handleSendData}>
-
 
                     <TextField
                         label="Context"
                         name="context"
                         value={context}
-                        onChange={(e) => setContext(e.target.value)}
+                        onChange={handleChange(setContext)}
                         placeholder="Masukkan context"
-                    
+
                     />
 
                     {/* General Information */}
@@ -275,71 +295,71 @@ const ProfileReportEditor: React.FC = () => {
                         <div className="md:flex w-full gap-5">
                             <SelectInput required={true} label="Large Classification" name="Large Classification" value={largeClassification} onChange={(e) => { setLargeClassification(e.target.value); setDataMiddleClassification(classificationMap[e.target.value] || []); }} options={problemCategoriesData} />
 
-                            <SelectInput required={true} label="Middle Classification" name="Middle Classification" value={middleClassification} onChange={(e) => setMiddleClassification(e.target.value)} options={dataMiddleClassification} />
+                            <SelectInput required={true} label="Middle Classification" name="Middle Classification" value={middleClassification} onChange={handleChange(setMiddleClassification)} options={dataMiddleClassification} />
 
-                            <InputField required={true} label="Part Problem" name="partProblem" value={partProblem} onChange={(e) => setPartProblem(e.target.value)} placeholder="Nama Part" />
+                            <InputField required={true} label="Part Problem" name="partProblem" value={partProblem} onChange={handleChange(setPartProblem)} placeholder="Nama Part" />
                         </div>
                         <div className="md:flex w-full gap-5">
-                            <InputField required={true} label="Visitor" name="visitor" value={visitor} onChange={(e) => setVisitor(e.target.value)} placeholder="Visitor" />
-                            <InputField label="Reviewer" name="reviewer" value={reviewer} onChange={(e) => setReviewer(e.target.value)} placeholder="Reviewer" />
-                            <InputField label="Approval" name="approval" value={approval} onChange={(e) => setApproval(e.target.value)} placeholder="Approval" />
+                            <InputField required={true} label="Visitor" name="visitor" value={visitor} onChange={handleChange(setVisitor)} placeholder="Visitor" />
+                            <InputField label="Reviewer" name="reviewer" value={reviewer} onChange={handleChange(setReviewer)} placeholder="Reviewer" />
+                            <InputField label="Approval" name="approval" value={approval} onChange={handleChange(setApproval)} placeholder="Approval" />
                         </div>
                     </div>
 
                     <div className="w-full py-8 px-8 rounded-lg my-4 bg-slate-100">
                         <h2 className="font-semibold">Basic Information</h2>
                         <div className="md:flex w-full gap-5">
-                            <InputField required={true} label="Nama Customer" name="customerName" value={customerName} onChange={(e) => setCustomerName(e.target.value)} placeholder="Masukkan Nama Customer" />
-                            <SelectInput required={true} label="Dealer" name="dealer" value={dealer} onChange={(e) => setDealer(e.target.value)} options={DealerData} />
+                            <InputField required={true} label="Nama Customer" name="customerName" value={customerName} onChange={handleChange(setCustomerName)} placeholder="Masukkan Nama Customer" />
+                            <SelectInput required={true} label="Dealer" name="dealer" value={dealer} onChange={handleChange(setDealer)} options={DealerData} />
                         </div>
                         <div className="md:flex w-full gap-5">
-                            <SelectInput required={true} label="Area" name="area" value={area} onChange={(e) => { setArea(e.target.value); setDataLocation(areaMap[e.target.value] || []); }} options={areaData} />
-                            <SelectInput required={true} label="Lokasi" name="location" value={location} onChange={(e) => setLocation(e.target.value)} options={dataLocation} />
-                            <InputField required={true} label="Kota" name="city" value={city} onChange={(e) => setCity(e.target.value)} placeholder="Masukkan Kota" />
+                            <SelectInput required={true} label="Area" name="area" value={area} onChange={(e)=>{ setArea(e.target.value); setDataLocation(areaMap[e.target.value] || []); }} options={areaData} />
+                            <SelectInput required={true} label="Lokasi" name="location" value={location} onChange={handleChange(setLocation)} options={dataLocation} />
+                            <InputField required={true} label="Kota" name="city" value={city} onChange={handleChange(setCity)} placeholder="Masukkan Kota" />
                         </div>
                         <div className="md:flex w-full gap-5">
-                            <SelectInput required={true} label="Seri Kendaraan" name="series" value={series} onChange={(e) => setSeries(e.target.value)} options={seriesData} />
-                            <SelectInput required={true} label="Tipe Kendaraan" name="vehicleType" value={vehicleType} onChange={(e) => setVehicleType(e.target.value)} options={vehicleTypesData} />
-                            <SelectInput required={true} label="Model Fokus" name="focusModel" value={focusModel} onChange={(e) => setFocusModel(e.target.value)} options={focusModelsData} />
+                            <SelectInput required={true} label="Seri Kendaraan" name="series" value={series} onChange={handleChange(setSeries)} options={seriesData} />
+                            <SelectInput required={true} label="Tipe Kendaraan" name="vehicleType" value={vehicleType} onChange={handleChange(setVehicleType)} options={vehicleTypesData} />
+                            <SelectInput required={true} label="Model Fokus" name="focusModel" value={focusModel} onChange={handleChange(setFocusModel)} options={focusModelsData} />
                         </div>
                         <div className="md:flex w-full gap-5">
-                            <SelectInput required={true} label="Tipe Euro" name="euroType" value={euroType} onChange={(e) => setEuroType(e.target.value)} options={euroTypeData} />
-                            <InputField required={true} label="VIN" name="VIN" value={VIN} onChange={(e) => setVIN(e.target.value)} placeholder="Masukkan VIN" />
-                            <InputField required={true} label="EGN" name="EGN" value={EGN} onChange={(e) => setEGN(e.target.value)} placeholder="Masukkan EGN" />
+                            <SelectInput required={true} label="Tipe Euro" name="euroType" value={euroType} onChange={handleChange(setEuroType)} options={euroTypeData} />
+                            <InputField required={true} label="VIN" name="VIN" value={VIN} onChange={handleChange(setVIN)} placeholder="Masukkan VIN" />
+                            <InputField required={true} label="EGN" name="EGN" value={EGN} onChange={handleChange(setEGN)} placeholder="Masukkan EGN" />
                         </div>
                         <div className="md:flex w-full gap-5">
-                            <InputField label="Payload (KG)" name="payload" type="number" value={payload} onChange={(e) => setPayload(e.target.value)} placeholder="Masukkan Payload" />
-                            <InputField label="Jarak Tempuh (KM)" name="mileage" type="number" value={mileage} onChange={(e) => setMileage(e.target.value)} placeholder="Masukkan Jarak Tempuh" />
-                            <SelectInput label="Karoseri" name="karoseri" value={karoseri} onChange={(e) => setKaroseri(e.target.value)} options={karoseriCustomersData} />
+                            <InputField label="Payload (KG)" name="payload" type="number" value={payload} onChange={handleChange(setPayload)} placeholder="Masukkan Payload" />
+                            <InputField label="Jarak Tempuh (KM)" name="mileage" type="number" value={mileage} onChange={handleChange(setMileage)} placeholder="Masukkan Jarak Tempuh" />
+                            <SelectInput label="Karoseri" name="karoseri" value={karoseri} onChange={handleChange(setKaroseri)} options={karoseriCustomersData} />
                         </div>
                         <div className="md:flex w-full gap-5">
-                            <SelectInput label="Segmen" name="segment" value={segment} onChange={(e) => setSegment(e.target.value)} options={segmentData} />
-                            <SelectInput label="Aplikasi" name="application" value={application} onChange={(e) => setApplication(e.target.value)} options={cargoTypesData} />
-                            <InputField label="LoadingUnit" name="loadingUnit" value={loadingUnit} onChange={(e) => setLoadingUnit(e.target.value)} placeholder="Masukkan LoadingUnit" />
+                            <SelectInput label="Segmen" name="segment" value={segment} onChange={handleChange(setSegment)} options={segmentData} />
+                            <SelectInput label="Aplikasi" name="application" value={application} onChange={handleChange(setApplication)} options={cargoTypesData} />
+                            <InputField label="LoadingUnit" name="loadingUnit" value={loadingUnit} onChange={handleChange(setLoadingUnit)} placeholder="Masukkan LoadingUnit" />
                         </div>
                         <div className="md:flex w-full gap-5">
-                            <InputField label="Tanggal Produksi" name="productionDate" type="date" value={productionDate} onChange={(e) => setProductionDate(e.target.value)} />
-                            <InputField label="Tanggal Masalah" name="problemDate" type="date" value={problemDate} onChange={(e) => setProblemDate(e.target.value)} />
-                            <InputField label="Tanggal Kunjungan" name="visitDate" type="date" value={visitDate} onChange={(e) => setVisitDate(e.target.value)} />
-                            {/* <InputField label="Perbedaan Tanggal" name="dateDifference" value={dateDifference} onChange={(e) => setDateDifference(e.target.value)} placeholder="Masukkan Perbedaan Tanggal" /> */}
+                            <InputField label="Tanggal Produksi" name="productionDate" type="date" value={productionDate} onChange={handleChange(setProductionDate)} />
+                            <InputField label="Tanggal Masalah" name="problemDate" type="date" value={problemDate} onChange={handleChange(setProblemDate)} />
+                            <InputField label="Tanggal Kunjungan" name="visitDate" type="date" value={visitDate} onChange={handleChange(setVisitDate)} />
+                            {/* <InputField label="Perbedaan Tanggal" name="dateDifference" value={dateDifference} onChange={handleChange(setDateDifference)} placeholder="Masukkan Perbedaan Tanggal" /> */}
                         </div>
-                        <SelectInput required={true} label="Status" name="status" value={status} onChange={(e) => setStatus(e.target.value)} options={["Breakdown", "Operational"]} />
+                        <SelectInput required={true} label="Status" name="status" value={status} onChange={handleChange(setStatus)} options={["Breakdown", "Operational"]} />
                     </div>
 
                     <div className="w-full py-8 px-8 rounded-lg my-4 bg-slate-100">
                         <h2 className="font-semibold">Road Condition</h2>
                         <div className="md:flex w-full gap-5">
-                            <InputField label="Jalan Tol (%)" type="number" name="highway" value={highway} onChange={(e) => setHighway(e.target.value)} placeholder="Masukkan kondisi jalan tol" />
-                            <InputField label="Jalan Kota (%)" type="number" name="cityRoad" value={cityRoad} onChange={(e) => setCityRoad(e.target.value)} placeholder="Masukkan kondisi jalan kota" />
-                            <InputField label="Jalan Desa (%)" type="number" name="countryRoad" value={countryRoad} onChange={(e) => setCountryRoad(e.target.value)} placeholder="Masukkan kondisi jalan desa" />
+                            <InputField label="Jalan Tol (%)" type="number" name="highway" value={highway} onChange={handleChange(setHighway)} placeholder="Masukkan kondisi jalan tol" />
+                            <InputField label="Jalan Kota (%)" type="number" name="cityRoad" value={cityRoad} onChange={handleChange(setCityRoad)} placeholder="Masukkan kondisi jalan kota" />
+                            <InputField label="Jalan Desa (%)" type="number" name="countryRoad" value={countryRoad} onChange={handleChange(setCountryRoad)} placeholder="Masukkan kondisi jalan desa" />
                         </div>
                         <div className="md:flex w-full gap-5">
-                            <InputField label="Jalan Aspal (%)" type="number" name="onRoad" value={onRoad} onChange={(e) => setOnRoad(e.target.value)} placeholder="Masukkan kondisi jalan aspal" />
-                            <InputField label="Jalan Off-Road (%)" type="number" name="offRoad" value={offRoad} onChange={(e) => setOffRoad(e.target.value)} placeholder="Masukkan kondisi off-road" />
+                            <InputField label="Jalan Aspal (%)" type="number" name="onRoad" value={onRoad} onChange={handleChange(setOnRoad)} placeholder="Masukkan kondisi jalan aspal" />
+                            <InputField label="Jalan Off-Road (%)" type="number" name="offRoad" value={offRoad} onChange={handleChange(setOffRoad)} placeholder="Masukkan kondisi off-road" />
                         </div>
                         <div className="md:flex w-full gap-5">
-                            <InputField label="Jalan Datar (%)" type="number" name="flatRoad" value={flatRoad} onChange={(e) => setFlatRoad(e.target.value)} placeholder="Masukkan kondisi jalan datar" />
-                            <InputField label="Jalan Menanjak (%)" type="number" name="climbRoad" value={climbRoad} onChange={(e) => setClimbRoad(e.target.value)} placeholder="Masukkan kondisi jalan menanjak" />
+                            <InputField label="Jalan Datar (%)" type="number" name="flatRoad" value={flatRoad} onChange={handleChange(setFlatRoad)} placeholder="Masukkan kondisi jalan datar" />
+                            <InputField label="Jalan Menanjak (%)" type="number" name="climbRoad" value={climbRoad} onChange={handleChange(setClimbRoad)} placeholder="Masukkan kondisi jalan menanjak" />
                         </div>
                     </div>
 
@@ -363,25 +383,25 @@ const ProfileReportEditor: React.FC = () => {
                             label="Fenomena"
                             name="phenomenon"
                             value={phenomenon}
-                            onChange={(e) => setPhenomenon(e.target.value)}
+                            onChange={handleChange(setPhenomenon)}
                             placeholder="Jelaskan fenomena masalah"
-                        
+
                         />
                         <TextField
                             label="Riwayat Perawatan"
                             name="historyMaintenance"
                             value={historyMaintenance}
-                            onChange={(e) => setHistoryMaintenance(e.target.value)}
+                            onChange={handleChange(setHistoryMaintenance)}
                             placeholder="Masukkan riwayat perawatan"
-                        
+
                         />
                         <TextField
                             label="Investigasi Sementara"
                             name="FATemporaryInvestigation"
                             value={FATemporaryInvestigation}
-                            onChange={(e) => setFATemporaryInvestigation(e.target.value)}
+                            onChange={handleChange(setFATemporaryInvestigation)}
                             placeholder="Masukkan hasil investigasi sementara"
-                        
+
                         />
                     </div>
 
@@ -404,7 +424,7 @@ const ProfileReportEditor: React.FC = () => {
                             label="Hasil Investigasi Akhir"
                             name="investigationResult"
                             value={investigationResult}
-                            onChange={(e) => setInvestigationResult(e.target.value)}
+                            onChange={handleChange(setInvestigationResult)}
                             placeholder="Masukkan hasil investigasi akhir"
 
                         />
@@ -412,7 +432,7 @@ const ProfileReportEditor: React.FC = () => {
                             label="Pendapat Pelanggan"
                             name="customerVoice"
                             value={customerVoice}
-                            onChange={(e) => setCustomerVoice(e.target.value)}
+                            onChange={handleChange(setCustomerVoice)}
                             placeholder="Masukkan pendapat pelanggan"
 
                         />
@@ -420,7 +440,7 @@ const ProfileReportEditor: React.FC = () => {
                             label="Tindakan Sementara"
                             name="temporaryAction"
                             value={temporaryAction}
-                            onChange={(e) => setTemporaryAction(e.target.value)}
+                            onChange={handleChange(setTemporaryAction)}
                             placeholder="Masukkan tindakan sementara"
 
                         />
@@ -428,7 +448,7 @@ const ProfileReportEditor: React.FC = () => {
                             label="PR yang Perlu Dikerjakan"
                             name="homework"
                             value={homework}
-                            onChange={(e) => setHomework(e.target.value)}
+                            onChange={handleChange(setHomework)}
                             placeholder="Masukkan PR yang perlu dikerjakan"
 
                         />
@@ -436,7 +456,7 @@ const ProfileReportEditor: React.FC = () => {
                             label="Kasus Lain TIR"
                             name="otherCaseTIR"
                             value={otherCaseTIR}
-                            onChange={(e) => setOtherCaseTIR(e.target.value)}
+                            onChange={handleChange(setOtherCaseTIR)}
                             placeholder="Masukkan kasus lain TIR"
 
                         />
@@ -444,7 +464,7 @@ const ProfileReportEditor: React.FC = () => {
                             label="Poin Sulit"
                             name="difficultPoint"
                             value={difficultPoint}
-                            onChange={(e) => setDifficultPoint(e.target.value)}
+                            onChange={handleChange(setDifficultPoint)}
                             placeholder="Masukkan poin sulit"
 
                         />

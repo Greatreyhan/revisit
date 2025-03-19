@@ -3,6 +3,7 @@ export default {
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
+    './node_modules/react-photo-editor/dist/*.js', // Add this line
   ],
   theme: {
     extend: {

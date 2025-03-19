@@ -23,10 +23,10 @@ const ProfileReport = () => {
 
   return (
     <div className="w-10/12 mx-auto pt-8">
-      <div onClick={()=>setKeyData("")} className={`fixed w-screen h-screen bg-black top-0 left-0 bg-opacity-40 ${keyData == "" ? "hidden" : "flex"} justify-center items-center`}>
+      <div onClick={() => setKeyData("")} className={`fixed w-screen h-screen bg-black top-0 left-0 bg-opacity-40 ${keyData == "" ? "hidden" : "flex"} justify-center items-center`}>
         <div className={`pb-6 bg-slate-50 rounded-lg flex flex-col`}>
           <div className="relative">
-              <button onClick={()=>setKeyData("")} className="absolute right-0 top-0" type="button"><MdClose className="text-5xl bg-red-700 text-white p-3 rounded-tr-lg" /></button>
+            <button onClick={() => setKeyData("")} className="absolute right-0 top-0" type="button"><MdClose className="text-5xl bg-red-700 text-white p-3 rounded-tr-lg" /></button>
             <table className="w-full">
               <thead>
                 <tr className="">
@@ -65,7 +65,7 @@ const ProfileReport = () => {
               <button
                 className="text-rose-800 px-4 py-2 rounded-lg bg-rose-100 flex items-center"
                 type="button"
-                onClick={() => deleteFromDatabase("report/" + keyData)}
+                onClick={() => deleteFromDatabase("report/" + user?.uid + "/" + keyData)}
               >
                 <MdDelete className="text-md mr-1" />
                 <p className="text-sm">Delete Data</p>
@@ -123,7 +123,7 @@ const ProfileReport = () => {
                   <button
                     className="p-2 text-rose-800 rounded-full bg-rose-100"
                     type="button"
-                    onClick={() => deleteFromDatabase("report/" + key)}
+                    onClick={() => deleteFromDatabase("report/" + user?.uid + "/" + key)}
                   >
                     <MdDelete />
                   </button>

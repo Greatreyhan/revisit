@@ -30,10 +30,10 @@ import AdminSchedule from "./ui/pages/AdminSchedule";
 import AdminReportViewer from "./ui/pages/AdminReportViewer";
 import AdminVisitViewer from "./ui/pages/AdminVisitViewer";
 import ProfileSetting from "./ui/pages/ProfileSetting";
+
 function App() {
 
   const routes = [
-    // Testing
 
     // Landing Template Routes
     { path: "/", element: <Home />, type: "landing" },
