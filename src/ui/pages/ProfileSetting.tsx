@@ -57,8 +57,8 @@ const ProfileSetting: React.FC = () => {
                         </div>
 
                         <div className="md:flex w-full gap-5">
-                            <InputField label="LastPassword" name="LastPassword" type="password" value={lastPassword} onChange={(e) => setLastPassword(e.target.value)} placeholder="*****" />
-                            <InputField label="NewPassword" name="NewPassword" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="*****" />
+                            <InputField label="Last Password" name="LastPassword" type="password" value={lastPassword} onChange={(e) => setLastPassword(e.target.value)} placeholder="*****" />
+                            <InputField label="New Password" name="NewPassword" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="*****" />
                         </div>
                     </div>
 

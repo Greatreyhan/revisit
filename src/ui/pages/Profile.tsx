@@ -10,7 +10,7 @@ const Profile: React.FC = () => {
   const {getFromDatabase, user} = useFirebase()
   const [report, setReport] = useState<string[]>([]);
   const [visit, setVisit] = useState<string[]>([]);
-  const [keyCareer, setKeyCareer] = useState<string[]>([]);
+  const [schedule, setSchedule] = useState<string[]>([]);
   const [keyClient, setKeyClient] = useState<string[]>([]);
   const [keyService, setKeyService] = useState<string[]>([]);
 
@@ -34,11 +34,11 @@ const Profile: React.FC = () => {
     });
 
     // Fetch career
-    getFromDatabase("career/"+user?.uid).then(data => {
+    getFromDatabase("schedule/"+user?.uid).then(data => {
       const dataConverted: Career | null = data;
       if (dataConverted) {
         const keys = Object.keys(dataConverted);
-        setKeyCareer(keys);
+        setSchedule(keys);
       }
     });
 
@@ -85,26 +85,26 @@ const Profile: React.FC = () => {
       <div className="w-72 bg-slate-100 px-8 py-4 rounded-md">
         <h2 className="text-lg text-slate-900">Total Schedule</h2>
         <p className="text-4xl text-primary flex justify-end items-end mt-4 font-bold">
-          {keyCareer.length}
+          {schedule.length}
           <span className="text-sm font-light ml-2">schedule</span>
         </p>
       </div>
 
       {/* Display Number of Career */}
       <div className="w-72 bg-slate-100 px-8 py-4 rounded-md">
-        <h2 className="text-lg text-slate-900">Total IASB</h2>
+        <h2 className="text-lg text-slate-900">Total Client</h2>
         <p className="text-4xl text-primary flex justify-end items-end mt-4 font-bold">
           {keyService.length}
-          <span className="text-sm font-light ml-2">doc.</span>
+          <span className="text-sm font-light ml-2">person</span>
         </p>
       </div>
 
       {/* Display Number of Career */}
       <div className="w-72 bg-slate-100 px-8 py-4 rounded-md">
-        <h2 className="text-lg text-slate-900">Total Literature</h2>
+        <h2 className="text-lg text-slate-900">Total Unit</h2>
         <p className="text-4xl text-primary flex justify-end items-end mt-4 font-bold">
           {keyClient.length}
-          <span className="text-sm font-light ml-2">doc.</span>
+          <span className="text-sm font-light ml-2">unit</span>
         </p>
       </div>
     </div>

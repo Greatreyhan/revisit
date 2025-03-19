@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import { Navigate } from "react-router-dom";
 import { useFirebase } from "../../utils/FirebaseContext";
 import Notification from '../../utils/Notification';
@@ -10,24 +10,31 @@ interface ProfileTemplateProps {
 
 
 const ProfileTemplate: React.FC<ProfileTemplateProps> = ({ children }) => {
-  const { user, loading, authData } = useFirebase();
+  const { user, loading, authData, waiting } = useFirebase();
 
-  // useEffect(() => {
-  //   console.log(authData)
-  //   // Fetch authorization
-  // }, [authData])
+  useEffect(() => {
+    console.log(authData)
+    // Fetch authorization
+  }, [authData])
 
-  if (loading || authData.type === "") {
+  if (loading && authData.type === "") {
+    waiting(true)
     return (
       <div className='w-screen h-screen z-50 justify-center items-center flex fixed top-0 left-0 bg-black bg-opacity-20'>
         <div className='loader'></div>
       </div>
     );
   }
+  if (!loading && authData.type === "") {
+    waiting(false)
+    return <Navigate to="/login" />
+  }
   if (user && authData.type === "admin") {
+    waiting(false)
     return <Navigate to="/admin" />
   }
   if (user || authData.type === "user") {
+    waiting(false)
     return (
       <div className="flex w-full">
         <Notification />

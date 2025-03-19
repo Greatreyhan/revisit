@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 import { useFirebase } from "../../utils/FirebaseContext";
 import { Logo2 } from "../../assets/images";
 import { VisitData } from "../interface/Visit";
+import MapDistance from "../organisms/MapDistance";
+import MapViewer from "../organisms/MapViewer";
 
 const VisitViewer: React.FC = () => {
     const { getFromDatabase,user } = useFirebase()
@@ -187,7 +189,10 @@ const VisitViewer: React.FC = () => {
                         </thead>
                         <tbody>
                             <tr>
-                                <td colSpan={2}><img className="w-full mb-8" src={dataVisit?.mapAttached} /></td>
+                                <td colSpan={2}>
+                                    <MapViewer mapMarkers={dataVisit?.mapMarkers} mapDistance={dataVisit?.mapDistance} />
+                                    {/* <img className="w-full mb-8" src={dataVisit?.mapAttached} /> */}
+                                </td>
                             </tr>
                             <tr className="text-left w-full">
                                 <td className=" w-3/12 p-2">Number of day per week</td>

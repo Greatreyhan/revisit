@@ -7,14 +7,16 @@ import SelectInput from "../molecules/SelectInput";
 import InputField from "../molecules/InputField";
 import AddAttachment from "../organisms/AddAttachment";
 import TextField from "../molecules/TextField";
-import { areaData, areaMap, cargoTypesData, DealerData, segmentData } from "../../utils/masterData";
+import { areaData, areaMap, DealerData, segmentData } from "../../utils/masterData";
 import { AttachmentItem, InvestigationItem, UnitInvolve } from "../interface/Report";
 import { UnitVisit } from "../interface/Visit";
 import AddUnitVisit from "../organisms/AddUnitVisit";
+import { MapMarkerData } from "../interface/MapSelector";
+import MapDistance from "../organisms/MapDistance";
 
 
 const ProfileVisitEditor: React.FC = () => {
-    const { saveToDatabase, getFromDatabase, uploadImage, loading, user } = useFirebase()
+    const { saveToDatabase, getFromDatabase, loading, user } = useFirebase()
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
 
@@ -75,7 +77,11 @@ const ProfileVisitEditor: React.FC = () => {
     const [investigations, setInvestigations] = useState<InvestigationItem[]>([]);
     const [units, setUnits] = useState<UnitVisit[]>([]);
     const [unitInvolves, setUnitInvolves] = useState<UnitInvolve[]>([])
+    const [mapMarkers,setMapMarkers] = useState<MapMarkerData[]>([])
+    const [mapDistance, setMapDistance] = useState<number | null>(0)
 
+    // UI
+    const [showMap, setShowMap] = useState<boolean>(false)
 
     const handleSendData = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -105,6 +111,8 @@ const ProfileVisitEditor: React.FC = () => {
 
             // Map
             mapAttached,
+            mapMarkers,
+            mapDistance,
 
             // Customer Information
             customerName,
@@ -195,6 +203,8 @@ const ProfileVisitEditor: React.FC = () => {
 
                     // Map
                     setMapAttached(data.mapAttached || "")
+                    setMapMarkers(data.mapMarkers || [])
+                    setMapDistance(data.mapDistance || 0)
 
                     // Road Condition
                     setHighway(data.highway || "");
@@ -312,18 +322,10 @@ const ProfileVisitEditor: React.FC = () => {
 
                     <div className="w-full py-8 px-8 rounded-lg my-4 bg-slate-100">
                         <h2 className="font-semibold mb-4">Map Operation</h2>
-                        {mapAttached && (
-                            <a href={mapAttached} target="_blank" rel="noreferrer">
-                                <img className="w-full h-full rounded-md" src={mapAttached} alt="Article" />
-                            </a>
-                        )}
-                        <input
-                            className="mt-4 w-full text-center"
-                            onChange={(e) => uploadImage(e, setMapAttached)}
-                            name="map"
-                            id="map"
-                            type="file"
-                        />
+                        <div className="relative w-full flex justify-center -mb-12 z-10">
+                            <button className={`mt-4 px-6 py-2 justify-center items-center bg-primary rounded-full text-white font-semibold ${showMap ? "hidden" : "inline-flex"}`} onClick={()=>setShowMap(true)} type="button">Tambah Titik</button>
+                        </div>
+                        <MapDistance setMarkers={setMapMarkers} markers={mapMarkers} setDistance={setMapDistance} distance={mapDistance} setShow={setShowMap} show={showMap} />
                     </div>
 
                     <div className="w-full py-8 px-8 rounded-lg my-4 bg-slate-100">
@@ -422,7 +424,7 @@ const ProfileVisitEditor: React.FC = () => {
                     <div className="flex w-full justify-end items-center gap-x-5">
                         <Link
                             className="mt-4 px-6 py-2 inline-flex justify-center items-center bg-white text-primary border border-primary rounded-full font-semibold"
-                            to="/report"
+                            to="/visit"
                         >
                             Kembali
                         </Link>

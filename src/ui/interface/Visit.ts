@@ -1,3 +1,5 @@
+import { MapMarkerData } from "./MapSelector";
+
 export interface AttachmentItem {
     imageAttached: string;
     imageDescription: string;
@@ -58,6 +60,8 @@ export interface VisitData {
     distancePerTrip: string;
     routeOfTrip: string;
     mapAttached: string;
+    mapMarkers: MapMarkerData[];
+    mapDistance: number;
     
     // Road Condition
     highway: string;
