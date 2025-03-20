@@ -3,10 +3,10 @@ import { useParams } from "react-router-dom";
 import { useFirebase } from "../../utils/FirebaseContext";
 import { Logo2 } from "../../assets/images";
 import { VisitData } from "../interface/Visit";
-import MapViewer from "../organisms/MapViewer";
 import { useReactToPrint } from "react-to-print";
-import "../styles/PrintStyle.css"
 import { MdPrint } from "react-icons/md";
+import MapViewer from "../organisms/MapViewer";
+import "../styles/PrintStyle.css"
 
 const renderTextBlocks = (text?: string) => {
     if (!text) return null;
@@ -15,28 +15,26 @@ const renderTextBlocks = (text?: string) => {
     ));
 };
 
-const VisitViewer: React.FC = () => {
-    const { getFromDatabase, user, waiting } = useFirebase()
-    const { id } = useParams<{ id: string }>();
+const DealerVisitViewer: React.FC = () => {
+    const { getFromDatabase } = useFirebase()
+    const { uid, id } = useParams<{ uid: string, id: string }>();
 
     // Print
     const contentRef = useRef<HTMLDivElement>(null);
-    const reactToPrintFn = useReactToPrint({ contentRef });
+    const reactToPrintFn = useReactToPrint({ contentRef })
 
     // Context
     const [dataVisit, setDataVisit] = useState<VisitData>()
 
     useEffect(() => {
-        waiting(true)
         if (id) {
-            getFromDatabase(`visit/${user?.uid}/${id}`).then((data) => {
+            getFromDatabase(`visit/${uid}/${id}`).then((data) => {
                 console.log(id)
                 if (data) {
                     setDataVisit(data);
                 }
             });
         }
-        waiting(false)
     }, [id]);
 
 
@@ -389,4 +387,4 @@ const VisitViewer: React.FC = () => {
     );
 };
 
-export default VisitViewer
+export default DealerVisitViewer

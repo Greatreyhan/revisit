@@ -14,21 +14,19 @@ const AdminUserEditor: React.FC = () => {
     const [password, setPassword] = useState<string>("");
     const [dealer, setDealer] = useState<string>("");
     const [location, setLocation] = useState<string>("");
-
+    const [authorization, setAuthorization] = useState<string>("");
 
     const handleSendData = async (e: React.FormEvent) => {
         e.preventDefault();
 
         try {
-            await signUp(email, password, dealer, username, location);
+            await signUp(email, password, dealer, username, location, authorization);
             navigate("/admin/user"); // Navigasi ke halaman user setelah submit
         } catch (error) {
             console.error("Error saving data:", error);
         }
 
     };
-
-
 
     return (
         <div className="App overflow-x-hidden">
@@ -44,6 +42,7 @@ const AdminUserEditor: React.FC = () => {
                         </div>
 
                         <div className="md:flex w-full gap-5">
+                            <SelectInput label="Authorization" name="authorization" value={authorization} onChange={(e) => setAuthorization(e.target.value)} options={["user","admin","dealer"]} />
                             <SelectInput label="Dealer" name="dealer" value={dealer} onChange={(e) => setDealer(e.target.value)} options={DealerData} />
                             <InputField label="Location" name="location" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Location" />
                         </div>

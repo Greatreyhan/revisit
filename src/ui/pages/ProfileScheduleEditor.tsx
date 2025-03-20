@@ -5,72 +5,78 @@ import { useFirebase } from "../../utils/FirebaseContext";
 import SelectInput from "../molecules/SelectInput";
 import InputField from "../molecules/InputField";
 import TextField from "../molecules/TextField";
+import { MapMarkerData } from "../interface/MapSelector";
+import MapSelector from "../organisms/MapSelector";
 
 
 const ProfileScheduleEditor: React.FC = () => {
-    const { saveToDatabase, getFromDatabase, user } = useFirebase()
+    const { saveToDatabase, getFromDatabase, user, authData } = useFirebase()
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
 
-      // State untuk menyimpan data input
-      const [customer, setCustomer] = useState<string>("");
-      const [dateStart, setDateStart] = useState<string>("");
-      const [dateEnd, setDateEnd] = useState<string>("");
-      const [status, setStatus] = useState<string>("");
-      const [address, setAddress] = useState<string>("");
-      const [type, setType] = useState<string>("");
-      const [description, setDescription] = useState<string>("");
-  
-      // State untuk mengecek apakah data sudah diubah
-      const [isDataChanged, setIsDataChanged] = useState<boolean>(false);
-  
-      // Fungsi untuk mendeteksi perubahan input
-      const handleChange = (setter: React.Dispatch<React.SetStateAction<string>>) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-          setter(e.target.value);
-          setIsDataChanged(true); // Set bahwa ada perubahan data
-      };
-  
-      // Fungsi untuk menyimpan data
-      const handleSendData = async (e: React.FormEvent) => {
-          e.preventDefault();
-          
-          const newData = { customer, dateStart, dateEnd, status, address, type, description };
-  
-          try {
-              await saveToDatabase(`schedule/${user?.uid}/${id || Date.now()}`, newData);
-              setIsDataChanged(false); // Set bahwa data sudah tersimpan
-              navigate("/schedule"); // Navigasi ke halaman lain setelah menyimpan
-          } catch (error) {
-              console.error("Error saving data:", error);
-          }
-      };
-  
-      // Fetch data dari database jika ID tersedia
-      useEffect(() => {
-          if (id) {
-              getFromDatabase(`schedule/${user?.uid}/${id}`).then((data) => {
-                  if (data) {
-                      setCustomer(data.customer || "");
-                      setDateStart(data.dateStart || "");
-                      setDateEnd(data.dateEnd || "");
-                      setStatus(data.status || "");
-                      setAddress(data.address || "");
-                      setType(data.type || "");
-                      setDescription(data.description || "");
-                  }
-              });
-          }
-      }, [id]);
-  
-      useEffect(() => {
+    // State untuk menyimpan data input
+    const [customer, setCustomer] = useState<string>("");
+    const [dateStart, setDateStart] = useState<string>("");
+    const [dateEnd, setDateEnd] = useState<string>("");
+    const [status, setStatus] = useState<string>("");
+    const [address, setAddress] = useState<string>("");
+    const [type, setType] = useState<string>("");
+    const [description, setDescription] = useState<string>("");
+
+    // State untuk mengecek apakah data sudah diubah
+    const [isDataChanged, setIsDataChanged] = useState<boolean>(false);
+    const [mapMarkers, setMapMarkers] = useState<MapMarkerData[]>()
+    const [showMap, setShowMap] = useState<boolean>(false)
+    
+
+    // Fungsi untuk mendeteksi perubahan input
+    const handleChange = (setter: React.Dispatch<React.SetStateAction<string>>) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+        setter(e.target.value);
+        setIsDataChanged(true); // Set bahwa ada perubahan data
+    };
+
+    // Fungsi untuk menyimpan data
+    const handleSendData = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        const newData = { customer, dateStart, dateEnd, status, address, type, description, mapMarkers, dealer: authData?.dealer ?? "" };
+
+        try {
+            await saveToDatabase(`schedule/${user?.uid}/${id || Date.now()}`, newData);
+            setIsDataChanged(false); // Set bahwa data sudah tersimpan
+            navigate("/schedule"); // Navigasi ke halaman lain setelah menyimpan
+        } catch (error) {
+            console.error("Error saving data:", error);
+        }
+    };
+
+    // Fetch data dari database jika ID tersedia
+    useEffect(() => {
+        if (id) {
+            getFromDatabase(`schedule/${user?.uid}/${id}`).then((data) => {
+                if (data) {
+                    setCustomer(data.customer || "");
+                    setDateStart(data.dateStart || "");
+                    setDateEnd(data.dateEnd || "");
+                    setStatus(data.status || "");
+                    setAddress(data.address || "");
+                    setType(data.type || "");
+                    setDescription(data.description || "");
+                    setMapMarkers(data.mapMarkers || [])
+                }
+            });
+        }
+    }, [id]);
+
+    useEffect(() => {
         const handleBeforeUnload = (event: BeforeUnloadEvent) => {
             if (isDataChanged) {
                 event.preventDefault();
                 event.returnValue = "Anda memiliki perubahan yang belum disimpan. Apakah Anda yakin ingin keluar?";
             }
         };
-    
-        const handleBackButton = (event: PopStateEvent) => {
+
+        const handleBackButton = () => {
             if (isDataChanged) {
                 const confirmLeave = window.confirm("Anda memiliki perubahan yang belum disimpan. Apakah Anda yakin ingin meninggalkan halaman ini?");
                 if (!confirmLeave) {
@@ -79,19 +85,19 @@ const ProfileScheduleEditor: React.FC = () => {
                 }
             }
         };
-    
+
         // Tambahkan state baru ke history agar kita bisa mengendalikan navigasi
         window.history.pushState(null, "", window.location.href);
-    
+
         window.addEventListener("beforeunload", handleBeforeUnload);
         window.addEventListener("popstate", handleBackButton);
-    
+
         return () => {
             window.removeEventListener("beforeunload", handleBeforeUnload);
             window.removeEventListener("popstate", handleBackButton);
         };
     }, [isDataChanged]);
-    
+
 
     return (
         <div className="App overflow-x-hidden">
@@ -124,6 +130,14 @@ const ProfileScheduleEditor: React.FC = () => {
                                 required
                             />
                         </div>
+                    </div>
+
+                    <div className="w-full py-8 px-8 rounded-lg my-4 bg-slate-100">
+                        <h2 className="font-semibold mb-4">Map Location</h2>
+                        <div className="relative w-full flex justify-center -mb-12 z-10">
+                            <button className={`mt-4 px-6 py-2 justify-center items-center bg-primary rounded-full text-white font-semibold ${showMap ? "hidden" : "inline-flex"}`} onClick={() => setShowMap(true)} type="button">Tambah Titik</button>
+                        </div>
+                        <MapSelector setMarkers={setMapMarkers} markers={mapMarkers || []} setShow={setShowMap} show={showMap} />
                     </div>
 
                     <div className="fixed md:hidden block bottom-5 right-5">

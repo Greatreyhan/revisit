@@ -69,7 +69,7 @@ const ProfileSchedule = () => {
                   <button
                     className="p-2 text-rose-800 rounded-full bg-rose-100"
                     type="button"
-                    onClick={() => deleteFromDatabase("schedule/" + key)}
+                    onClick={() => deleteFromDatabase("schedule/" + user?.uid + "/" + key)}
                   >
                     <MdDelete />
                   </button>

@@ -1,8 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useFirebase } from "../../utils/FirebaseContext";
 import { Logo2 } from "../../assets/images";
 import { VisitData } from "../interface/Visit";
+import { useReactToPrint } from "react-to-print";
+import { MdPrint } from "react-icons/md";
+import MapViewer from "../organisms/MapViewer";
+import "../styles/PrintStyle.css"
 
 const renderTextBlocks = (text?: string) => {
     if (!text) return null;
@@ -14,6 +18,10 @@ const renderTextBlocks = (text?: string) => {
 const AdminVisitViewer: React.FC = () => {
     const { getFromDatabase } = useFirebase()
     const { uid, id } = useParams<{ uid: string, id: string }>();
+
+    // Print
+    const contentRef = useRef<HTMLDivElement>(null);
+    const reactToPrintFn = useReactToPrint({ contentRef })
 
     // Context
     const [dataVisit, setDataVisit] = useState<VisitData>()
@@ -31,42 +39,43 @@ const AdminVisitViewer: React.FC = () => {
 
 
     return (
-        <div className="py-8 px-16 w-full">
-
+        <div ref={contentRef} className="py-8 px-16 w-full ">
+            <div onClick={() => reactToPrintFn()} className="fixed button-print z-50 bottom-6 right-6 bg-red-700 text-white p-3 w-16 h-16 flex justify-center items-center rounded-full">
+                <button type="button">
+                    <MdPrint className="text-3xl" />
+                </button>
+            </div>
             {/* Header */}
             <div className="flex items-center justify-between p-4">
                 <div>
                     <img src={Logo2} className="w-32" />
                 </div>
-                <table className="w-2/12 text-sm mt-8">
-
-                    <tbody>
-                        <tr className="text-left w-full">
-                            <td className=" w-4/12">No. Form</td>
-                            <td className=" w-8/12">: {id}</td>
-                        </tr>
-                        <tr className="text-left w-full">
-                            <td className=" w-4/12">Div/Dept</td>
-                            <td className=" w-8/12">: TWF</td>
-                        </tr>
-                        <tr className="text-left w-full">
-                            <td className=" w-4/12">Rev.</td>
-                            <td className=" w-8/12">: 1</td>
-                        </tr>
-
-                    </tbody>
-                </table>
-                {/* <div>
-                    <p className="text-sm">No. Form : 12345</p>
-                    <p className="text-sm">Div/Dept : TWF</p>
-                    <p className="text-sm">Rev. : 2</p>
-                </div> */}
+                <div className="flex justify-end ml-auto">
+                    <table className="text-sm mt-8">
+                        <tbody>
+                            <tr className="text-left">
+                                <td className="pr-4">No. Form</td>
+                                <td>: {id}</td>
+                            </tr>
+                            <tr className="text-left">
+                                <td className="pr-4">Div/Dept</td>
+                                <td>: TWF</td>
+                            </tr>
+                            <tr className="text-left">
+                                <td className="pr-4">Rev.</td>
+                                <td>: 1</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
+
+
             <hr className="border" />
             <hr className="mt-0.5 border" />
 
             {/* General Information */}
-            <div className="mt-4 flex justify-around items-center">
+            <div className="mt-4 flex justify-around items-center avoid-break">
 
                 <div className="w-3/12 flex justify-around">
                     <div className="w-4/12 p-1 text-center border">
@@ -88,28 +97,28 @@ const AdminVisitViewer: React.FC = () => {
                     <h1 className="text-4xl">Inspection Report</h1>
                 </div>
 
-                <table className="w-2/12 text-sm mt-8">
-
-                    <tbody>
-                        <tr className="text-left w-full">
-                            <td className=" w-4/12">Field</td>
-                            <td className=" w-8/12">: {id}</td>
-                        </tr>
-                        <tr className="text-left w-full">
-                            <td className=" w-4/12">Name</td>
-                            <td className=" w-8/12">: TWF</td>
-                        </tr>
-                        <tr className="text-left w-full">
-                            <td className=" w-4/12">Visit Date</td>
-                            <td className=" w-8/12">: 1</td>
-                        </tr>
-
-                    </tbody>
-                </table>
+                <div className="flex justify-end ml-auto">
+                    <table className="text-sm mt-8">
+                        <tbody>
+                            <tr className="text-left">
+                                <td className="pr-4">Field</td>
+                                <td>: {id}</td>
+                            </tr>
+                            <tr className="text-left">
+                                <td className="pr-4">Name</td>
+                                <td>: {dataVisit?.visitorName}</td>
+                            </tr>
+                            <tr className="text-left">
+                                <td className="pr-4">Visit Date</td>
+                                <td>: {dataVisit?.visitDate}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             {/* Basic Information */}
-            <div>
+            <div className="avoid-break">
                 <div className="flex">
                     <table className="w-full border mt-8">
                         <thead>
@@ -148,7 +157,7 @@ const AdminVisitViewer: React.FC = () => {
             </div>
 
             {/* Ownership Units */}
-            <div>
+            <div className="avoid-break">
                 <div className="overflow-x-auto flex mt-8">
                     <table className="border-collapse border w-full">
                         <thead>
@@ -184,8 +193,8 @@ const AdminVisitViewer: React.FC = () => {
             </div>
 
             {/* Operational */}
-            <div>
-                <div className="flex">
+            <div className="avoid-break">
+                <div className="flex child-break-before">
                     <table className="w-full border mt-8">
                         <thead>
                             <tr className="">
@@ -194,7 +203,10 @@ const AdminVisitViewer: React.FC = () => {
                         </thead>
                         <tbody>
                             <tr>
-                                <td colSpan={2}><img className="w-full mb-8" src={dataVisit?.mapAttached} /></td>
+                                <td colSpan={2}>
+                                    <MapViewer mapMarkers={dataVisit?.mapMarkers ?? []} mapDistance={dataVisit?.mapDistance ?? 0} />
+                                    {/* <img className="w-full mb-8" src={dataVisit?.mapAttached} /> */}
+                                </td>
                             </tr>
                             <tr className="text-left w-full">
                                 <td className=" w-3/12 p-2">Number of day per week</td>
@@ -218,7 +230,7 @@ const AdminVisitViewer: React.FC = () => {
             </div>
 
             {/* Road Condition */}
-            <div>
+            <div className="avoid-break">
                 <div className="flex">
                     <table className="w-full border mt-8">
                         <thead>
@@ -305,7 +317,7 @@ const AdminVisitViewer: React.FC = () => {
             </table>
 
             {/* Customer Voice */}
-            <div>
+            <div className="avoid-break">
                 <div className="flex">
                     <table className="w-full border mt-8">
                         <thead>
@@ -316,31 +328,31 @@ const AdminVisitViewer: React.FC = () => {
                         <tbody>
                             <tr className="text-left w-full">
                                 <td className="border- border-br w-3/12 p-2">Expected Usage Years</td>
-                                <td className="w-9/12 p-2">: {dataVisit?.yearsOfUse} years</td>
+                                <td className="w-9/12 p-2"> {dataVisit?.yearsOfUse} years</td>
                             </tr>
                             <tr className="text-left w-full">
                                 <td className="border- border-br w-3/12 p-2">Reason of Purchase</td>
-                                <td className="w-9/12 p-2">: {renderTextBlocks(dataVisit?.reasonOfPurchase)}</td>
+                                <td className="w-9/12 p-2"> {renderTextBlocks(dataVisit?.reasonOfPurchase)}</td>
                             </tr>
                             <tr className="text-left w-full">
                                 <td className="border- border-br w-3/12 p-2">Customer Info</td>
-                                <td className="w-9/12 p-2">: {renderTextBlocks(dataVisit?.customerInfo)}</td>
+                                <td className="w-9/12 p-2"> {renderTextBlocks(dataVisit?.customerInfo)}</td>
                             </tr>
                             <tr className="text-left w-full">
                                 <td className="border- border-br w-3/12 p-2">Service Info</td>
-                                <td className="w-9/12 p-2">: {renderTextBlocks(dataVisit?.serviceInfo)}</td>
+                                <td className="w-9/12 p-2"> {renderTextBlocks(dataVisit?.serviceInfo)}</td>
                             </tr>
                             <tr className="text-left w-full">
                                 <td className="border- border-br w-3/12 p-2">Spare Parts Info</td>
-                                <td className="w-9/12 p-2">: {renderTextBlocks(dataVisit?.sparepartInfo)}</td>
+                                <td className="w-9/12 p-2"> {renderTextBlocks(dataVisit?.sparepartInfo)}</td>
                             </tr>
                             <tr className="text-left w-full">
                                 <td className="border- border-br w-3/12 p-2">Technical Info</td>
-                                <td className="w-9/12 p-2">: {renderTextBlocks(dataVisit?.technicalInfo)}</td>
+                                <td className="w-9/12 p-2"> {renderTextBlocks(dataVisit?.technicalInfo)}</td>
                             </tr>
                             <tr className="text-left w-full">
                                 <td className="border- border-br w-3/12 p-2">Competitor Info</td>
-                                <td className="w-9/12 p-2">: {renderTextBlocks(dataVisit?.competitorInfo)}</td>
+                                <td className="w-9/12 p-2"> {renderTextBlocks(dataVisit?.competitorInfo)}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -355,7 +367,7 @@ const AdminVisitViewer: React.FC = () => {
                     {dataVisit?.attachments?.map((row, index) => (
                         <div
                             key={index}
-                            className="border border-gray-300 flex flex-col items-center cursor-pointer"
+                            className="avoid-break border border-gray-300 flex flex-col items-center cursor-pointer"
                             onClick={() => window.open(row.imageAttached, "_blank")}
                         >
                             <img
@@ -363,7 +375,7 @@ const AdminVisitViewer: React.FC = () => {
                                 alt="Unit Involve"
                                 className="w-full h-60 object-cover"
                             />
-                            <div className="bg-gray-300 text-center font-bold p-2 w-full">
+                            <div className="bg-gray-300 border-t text-center font-bold p-2 w-full">
                                 {row.imageDescription}
                             </div>
                         </div>

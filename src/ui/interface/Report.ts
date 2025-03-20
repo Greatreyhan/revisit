@@ -53,7 +53,7 @@ export interface ReportData {
     karoseri: string;
     segment: string;
     application: string;
-    loading: string;
+    loadingUnit: string;
     problemDate: string;
     visitDate: string;
     status: string;

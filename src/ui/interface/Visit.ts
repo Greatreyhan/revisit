@@ -28,6 +28,7 @@ export interface UnitInvolve {
 }
 
 export interface VisitData {
+    visitId?: string
     reportId?: string;
     userId?: string;
 

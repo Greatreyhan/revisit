@@ -18,13 +18,6 @@ const containerStyle = {
   height: '400px',
 };
 
-// const getCenter = (markers: LatLng[]): LatLng => {
-//   if (markers.length < 2) return markers[0] || center;
-//   return {
-//     lat: (markers[0].lat + markers[1].lat) / 2,
-//     lng: (markers[0].lng + markers[1].lng) / 2,
-//   };
-// };
 
 const MapViewer: React.FC<MapViewerProps> = ({ mapMarkers, mapDistance }) => {
   const { isLoaded } = useLoadScript({

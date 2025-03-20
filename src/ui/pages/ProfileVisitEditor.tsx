@@ -15,7 +15,7 @@ import MapDistance from "../organisms/MapDistance";
 
 
 const ProfileVisitEditor: React.FC = () => {
-    const { saveToDatabase, getFromDatabase, loading, user } = useFirebase()
+    const { saveToDatabase, getFromDatabase, user } = useFirebase()
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
 
@@ -248,7 +248,7 @@ const ProfileVisitEditor: React.FC = () => {
             }
         };
 
-        const handleBackButton = (event: PopStateEvent) => {
+        const handleBackButton = () => {
             if (isDataChanged) {
                 const confirmLeave = window.confirm("Anda memiliki perubahan yang belum disimpan. Apakah Anda yakin ingin meninggalkan halaman ini?");
                 if (!confirmLeave) {

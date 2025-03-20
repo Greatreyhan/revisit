@@ -4,32 +4,49 @@ import { MdDelete, MdDangerous, MdGppGood, MdMap } from "react-icons/md";
 import { useFirebase } from "../../utils/FirebaseContext";
 import { ScheduleData } from "../interface/Schedule";
 
-const AdminSchedule = () => {
-  const { getFromDatabase, deleteFromDatabase } = useFirebase();
+const DealerSchedule = () => {
+  const { getFromDatabase, deleteFromDatabase, user } = useFirebase();
   const [allSchedules, setAllSchedules] = useState<ScheduleData[]>([]);
 
 
   useEffect(() => {
-      getFromDatabase("schedule/").then((data) => {
-        if (data) {
-          console.log("Raw Data:", data);
+    const fetchData = async () => {
+      if (!user?.uid) return;
   
-          const scheduleArray: ScheduleData[] = [];
+      try {
+        // Ambil daftar cabang yang terkait dengan user
+        const cabangData = await getFromDatabase(`cabang/${user.uid}`);
+        const keys = cabangData ? Object.keys(cabangData) : [];
+    
+        // Ambil semua data schedule
+        const scheduleData = await getFromDatabase("schedule/");
+        if (!scheduleData) return;
+    
+        const scheduleArray: ScheduleData[] = [];
   
-          Object.entries(data).forEach(([userId, schedules]) => {
-            Object.entries(schedules as Record<string, any>).forEach(([scheduleId, scheduleData]) => {
-              scheduleArray.push({ userId, scheduleId, ...(scheduleData as ScheduleData) });
+        Object.entries(scheduleData).forEach(([userId, schedules]) => {
+          // Hanya proses jika userId ada di keys
+          if (keys.includes(userId)) {
+            Object.entries(schedules as Record<string, any>).forEach(([scheduleId, scheduleDetail]) => {
+              scheduleArray.push({ userId, scheduleId, ...(scheduleDetail as ScheduleData) });
             });
-          });
-          setAllSchedules(scheduleArray);
-        }
-      });
-    }, []);
+          }
+        });
+  
+        setAllSchedules(scheduleArray);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+  
+    fetchData();
+  }, [user?.uid]);
+  
 
-  const formatDate = (date:string) => {
+  const formatDate = (date: string) => {
     const formDate = new Date(date);
     const datePart = `${formDate.getDate()} ${formDate.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}`;
-  
+
     return `${datePart}`;
   };
 
@@ -40,7 +57,7 @@ const AdminSchedule = () => {
         <p>Total Schedule: {allSchedules.length}</p>
         <Link
           className="inline-flex items-center px-6 py-1.5 bg-primary rounded-full text-white"
-          to={"/admin/schedule/map"}
+          to={"/dealer/schedule/map"}
         >
           <span className="text-2xl mr-2"><MdMap /></span>View Map
         </Link>
@@ -66,16 +83,10 @@ const AdminSchedule = () => {
                 <td className="border p-4 dark:border-dark-5">{data?.address}</td>
                 <td className="border p-4 dark:border-dark-5">{data?.status == 'pending' ? <MdDangerous className="w-full text-xl text-rose-700" /> : <MdGppGood className="w-full text-xl text-emerald-700" />}</td>
                 <td className="border-t p-4 gap-x-3 flex justify-around items-center">
-                  {/* <Link
-                    className="p-2 text-sky-800 rounded-full bg-sky-100"
-                    to={"/admin/schedule/editor/"+ data?.userId + "/" + data?.scheduleId}
-                  >
-                    <MdEdit />
-                  </Link> */}
                   <button
                     className="p-2 text-rose-800 rounded-full bg-rose-100"
                     type="button"
-                    onClick={() => deleteFromDatabase("schedule/"+ data?.userId + "/" + data?.scheduleId)}
+                    onClick={() => deleteFromDatabase("schedule/" + data?.userId + "/" + data?.scheduleId)}
                   >
                     <MdDelete />
                   </button>
@@ -90,4 +101,4 @@ const AdminSchedule = () => {
   );
 };
 
-export default AdminSchedule;
+export default DealerSchedule;

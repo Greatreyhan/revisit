@@ -252,7 +252,7 @@ const ProfileReportEditor: React.FC = () => {
             }
         };
 
-        const handleBackButton = (event: PopStateEvent) => {
+        const handleBackButton = () => {
             if (isDataChanged) {
                 const confirmLeave = window.confirm("Anda memiliki perubahan yang belum disimpan. Apakah Anda yakin ingin meninggalkan halaman ini?");
                 if (!confirmLeave) {

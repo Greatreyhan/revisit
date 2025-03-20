@@ -3,9 +3,10 @@ import { useNavigate, Link } from "react-router-dom";
 import { useFirebase } from "../../utils/FirebaseContext";
 import InputField from "../molecules/InputField";
 import SelectInput from "../molecules/SelectInput";
+import { DealerData } from "../../utils/masterData";
 import { BiSave } from "react-icons/bi";
 
-const ProfileSetting: React.FC = () => {
+const DealerSetting: React.FC = () => {
     const { getFromDatabase, user, setUpdatePassword } = useFirebase()
     const navigate = useNavigate();
     const [email, setEmail] = useState<string>("");
@@ -51,7 +52,7 @@ const ProfileSetting: React.FC = () => {
                         </div>
 
                         <div className="md:flex w-full gap-5">
-                            <SelectInput disabled={true} label="Dealer" name="dealer" value={dealer} onChange={(e) => setDealer(e.target.value)} options={[dealer]} />
+                            <SelectInput disabled={true} label="Dealer" name="dealer" value={dealer} onChange={(e) => setDealer(e.target.value)} options={DealerData} />
                             <InputField disabled={true} label="Location" name="location" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Location" />
                         </div>
 
@@ -82,4 +83,4 @@ const ProfileSetting: React.FC = () => {
     );
 };
 
-export default ProfileSetting;
+export default DealerSetting;

@@ -1,42 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useFirebase } from "../../utils/FirebaseContext";
 import InputField from "../molecules/InputField";
 import SelectInput from "../molecules/SelectInput";
+import { DealerData } from "../../utils/masterData";
 import { BiSave } from "react-icons/bi";
 
-const ProfileSetting: React.FC = () => {
-    const { getFromDatabase, user, setUpdatePassword } = useFirebase()
+const DealerCabangEditor
+: React.FC = () => {
+    const { signUp } = useFirebase()
     const navigate = useNavigate();
     const [email, setEmail] = useState<string>("");
     const [username, setUsername] = useState<string>("");
-    const [lastPassword, setLastPassword] = useState<string>("");
-    const [newPassword, setNewPassword] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
     const [dealer, setDealer] = useState<string>("");
     const [location, setLocation] = useState<string>("");
 
-
     const handleSendData = async (e: React.FormEvent) => {
         e.preventDefault();
+
         try {
-            await setUpdatePassword(lastPassword,newPassword);
-            navigate("/admin/user"); // Navigasi ke halaman user setelah submit
+            await signUp(email, password, dealer, username, location, "user");
+            navigate(`/dealer/cabang`); // Navigasi ke halaman user setelah submit
         } catch (error) {
             console.error("Error saving data:", error);
         }
 
     };
-
-    useEffect(() => {
-        getFromDatabase(`user/${user?.uid}`).then((data) => {
-          if (data) {
-            setEmail(data?.email || "")
-            setUsername(data?.name || "")
-            setDealer(data?.dealer || "")
-            setLocation(data?.location || "")
-          }
-        });
-      }, []);
 
     return (
         <div className="App overflow-x-hidden">
@@ -46,18 +36,14 @@ const ProfileSetting: React.FC = () => {
                     <div className="w-full py-8 px-8 rounded-lg my-4 bg-slate-100">
                         <h2 className="font-semibold">User Information</h2>
                         <div className="md:flex w-full gap-5">
-                            <InputField disabled={true} label="Username" name="username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username" />
-                            <InputField disabled={true} label="Email" name="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
+                            <InputField label="Username" name="username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username" />
+                            <InputField label="Email" name="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
+                            <InputField label="Password" name="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
                         </div>
 
                         <div className="md:flex w-full gap-5">
-                            <SelectInput disabled={true} label="Dealer" name="dealer" value={dealer} onChange={(e) => setDealer(e.target.value)} options={[dealer]} />
-                            <InputField disabled={true} label="Location" name="location" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Location" />
-                        </div>
-
-                        <div className="md:flex w-full gap-5">
-                            <InputField label="Last Password" name="LastPassword" type="password" value={lastPassword} onChange={(e) => setLastPassword(e.target.value)} placeholder="*****" />
-                            <InputField label="New Password" name="NewPassword" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="*****" />
+                            <SelectInput label="Dealer" name="dealer" value={dealer} onChange={(e) => setDealer(e.target.value)} options={DealerData} />
+                            <InputField label="Location" name="location" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Location" />
                         </div>
                     </div>
 
@@ -82,4 +68,5 @@ const ProfileSetting: React.FC = () => {
     );
 };
 
-export default ProfileSetting;
+export default DealerCabangEditor
+;

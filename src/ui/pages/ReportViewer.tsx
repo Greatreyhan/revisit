@@ -1,8 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useFirebase } from "../../utils/FirebaseContext";
 import { Logo2 } from "../../assets/images";
 import { ReportData } from "../interface/Report";
+import { useReactToPrint } from "react-to-print";
+import "../styles/PrintStyle.css"
+import { MdPrint } from "react-icons/md";
 
 const renderTextBlocks = (text?: string) => {
     if (!text) return null;
@@ -14,6 +17,10 @@ const renderTextBlocks = (text?: string) => {
 const ReportViewer: React.FC = () => {
     const { user, getFromDatabase } = useFirebase()
     const { id } = useParams<{ uid: string, id: string }>();
+
+    // Print
+    const contentRef = useRef<HTMLDivElement>(null);
+    const reactToPrintFn = useReactToPrint({ contentRef });
 
     // Context
     const [dataReport, setDataReport] = useState<ReportData>()
@@ -30,16 +37,34 @@ const ReportViewer: React.FC = () => {
 
 
     return (
-        <div className="py-8 px-16 w-full">
-
+        <div ref={contentRef} className="py-8 px-16 w-full">
+            {/* Button to print */}
+            <div onClick={() => reactToPrintFn()} className="fixed cursor-pointer button-print z-50 bottom-6 right-6 bg-red-700 text-white p-3 w-16 h-16 flex justify-center items-center rounded-full">
+                <button type="button">
+                    <MdPrint className="text-3xl" />
+                </button>
+            </div>
             <div className="flex items-center justify-between p-4">
                 <div>
                     <img src={Logo2} className="w-32" />
                 </div>
-                <div>
-                    <p className="text-sm">No. Form : 12345</p>
-                    <p className="text-sm">Div/Dept : TWF</p>
-                    <p className="text-sm">Rev. : 2</p>
+                <div className="flex justify-end ml-auto">
+                    <table className="text-sm mt-8">
+                        <tbody>
+                            <tr className="text-left">
+                                <td className="pr-4">No. Form</td>
+                                <td>: {id}</td>
+                            </tr>
+                            <tr className="text-left">
+                                <td className="pr-4">Div/Dept</td>
+                                <td>: TWF</td>
+                            </tr>
+                            <tr className="text-left">
+                                <td className="pr-4">Rev.</td>
+                                <td>: 1</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
             <hr className="border" />
@@ -65,79 +90,85 @@ const ReportViewer: React.FC = () => {
             </div>
 
             {/* Basic Information */}
-            <div>
-                <p className="font-semibold text-sm mt-4">*Basic Information</p>
+            <div className="avoid-break">
+                <p className="font-semibold text-sm">*Basic Information</p>
                 <div className="flex">
                     <div className="w-3/12 border text-center m-1">
                         <p className="text-sm border-b p-1 font-semibold">Customer Name</p>
-                        <p className="p-1">{dataReport?.customerName}</p>
+                        <p className="p-1 text-sm">{dataReport?.customerName}</p>
                     </div>
                     <div className="w-3/12 border text-center m-1">
                         <p className="text-sm border-b p-1 font-semibold">Dealer</p>
-                        <p className="p-1">{dataReport?.dealer}</p>
+                        <p className="p-1 text-sm">{dataReport?.dealer}</p>
                     </div>
                     <div className="w-2/12 border text-center m-1">
                         <p className="text-sm border-b p-1 font-semibold">Where Location</p>
-                        <p className="p-1">{dataReport?.location}</p>
+                        <p className="p-1 text-sm">{dataReport?.location}</p>
                     </div>
                     <div className="w-2/12 border text-center m-1">
                         <p className="text-sm border-b p-1 font-semibold">Unit Type</p>
-                        <p className="p-1">{dataReport?.vehicleType}</p>
+                        <p className="p-1 text-sm">{dataReport?.vehicleType}</p>
                     </div>
                     <div className="w-2/12 border text-center m-1">
                         <p className="text-sm border-b p-1 font-semibold">EG Number</p>
-                        <p className="p-1">{dataReport?.EGN}</p>
+                        <p className="p-1 text-sm">{dataReport?.EGN}</p>
                     </div>
                 </div>
                 <div className="flex">
                     <div className="w-3/12 border text-center m-1">
                         <p className="text-sm font-semibold p-1 border-b">VIN No.</p>
-                        <p className="p-1">{dataReport?.VIN}</p>
+                        <p className="p-1 text-sm">{dataReport?.VIN}</p>
                     </div>
                     <div className="w-3/12 border text-center m-1">
                         <p className="text-sm font-semibold p-1 border-b">Production Date</p>
-                        <p className="p-1">{dataReport?.productionDate}</p>
+                        <p className="p-1 text-sm">{dataReport?.productionDate}</p>
                     </div>
                     <div className="w-2/12 border text-center m-1">
                         <p className="text-sm font-semibold p-1 border-b">Mileage (KM)</p>
-                        <p className="p-1">{dataReport?.mileage}</p>
+                        <p className="p-1 text-sm">{dataReport?.mileage}</p>
                     </div>
                     <div className="w-2/12 border text-center m-1">
                         <p className="text-sm font-semibold p-1 border-b">Karoseri</p>
-                        <p className="p-1">{dataReport?.karoseri}</p>
+                        <p className="p-1 text-sm">{dataReport?.karoseri}</p>
                     </div>
                     <div className="w-2/12 border text-center m-1">
                         <p className="text-sm font-semibold p-1 border-b">Payload (KG)</p>
-                        <p className="p-1">{dataReport?.payload}</p>
+                        <p className="p-1 text-sm">{dataReport?.payload}</p>
                     </div>
                 </div>
                 <div className="flex">
                     <div className="w-3/12 border text-center m-1">
                         <p className="text-sm font-semibold p-1 border-b">Rear Body Type</p>
-                        <p className="p-1">{dataReport?.application}</p>
+                        <p className="p-1 text-sm">{dataReport?.application}</p>
                     </div>
                     <div className="w-3/12 border text-center m-1">
                         <p className="text-sm font-semibold p-1 border-b">Industrial Segment</p>
-                        <p className="p-1">{dataReport?.segment}</p>
+                        <p className="p-1 text-sm">{dataReport?.segment}</p>
                     </div>
                     <div className="w-2/12 border text-center m-1">
                         <p className="text-sm font-semibold p-1 border-b">Loading Type</p>
-                        <p className="p-1">{dataReport?.loading}</p>
+                        <p className="p-1 text-sm">{dataReport?.loadingUnit}</p>
                     </div>
-                    <div className="w-2/12 border m-1">
-                        <p className="text-sm font-semibold px-2 p-1 border-b">Problem : {dataReport?.problemDate}</p>
-                        <p className="text-sm font-semibold px-2 p-1">Visit : {dataReport?.visitDate}</p>
+                    <div className="w-2/12 m-1">
+                        <div className="w-full border text-center">
+                            <p className="text-sm font-semibold p-1 border-b">Problem</p>
+                            <p className="p-1 text-sm">{dataReport?.problemDate}</p>
+                        </div>
+                        <div className="w-full border text-center">
+                            <p className="text-sm font-semibold p-1 border-b">Visit</p>
+                            <p className="p-1 text-sm">{dataReport?.visitDate}</p>
+                        </div>
                     </div>
                     <div className="w-2/12 border text-center m-1">
                         <p className="text-sm font-semibold p-1 border-b">Status</p>
-                        <p className="p-1">{dataReport?.status}</p>
+                        <p className="p-1 text-sm">{dataReport?.status}</p>
                     </div>
                 </div>
             </div>
 
             {/* Customer Information */}
-            <div>
-                <p className="font-semibold mt-4 text-sm">*Customer Information</p>
+            <div className="avoid-break">
+                <p className="font-semibold text-sm">*Customer Information</p>
                 <div className="overflow-x-auto flex">
                     <table className="border-collapse border border-gray-400 w-9/12">
                         <thead>
@@ -204,8 +235,8 @@ const ReportViewer: React.FC = () => {
             </div>
 
             {/* Problem Background */}
-            <div>
-                <p className="font-semibold mt-4 text-sm">*Problem Background</p>
+            <div className="avoid-break">
+                <p className="font-semibold text-sm">*Problem Background</p>
                 <div className="overflow-x-auto flex text-sm">
                     <table className="w-full border border-gray-300 ">
                         <thead>
@@ -270,7 +301,7 @@ const ReportViewer: React.FC = () => {
             </div>
 
             {/* Content of Investigation */}
-            <div className="overflow-x-auto mt-4">
+            <div className="avoid-break overflow-x-auto">
                 <p className="font-semibold mt-4 text-sm">*Contents of Investigation</p>
 
                 <table className="w-full border-collapse border border-gray-400 text-sm">
@@ -305,19 +336,19 @@ const ReportViewer: React.FC = () => {
             {/* Attachment */}
             <div className="mt-8">
                 <h2 className="font-semibold text-sm">*Content Of Investigation Attachment</h2>
-                <div className="grid grid-cols-4 gap-4 mt-4">
+                <div className="flex items-start gap-5 flex-wrap mt-4">
                     {dataReport?.attachments?.map((row, index) => (
                         <div
                             key={index}
-                            className="border border-gray-300 flex flex-col items-center cursor-pointer"
+                            className="avoid-break border border-gray-300 flex flex-col items-center cursor-pointer"
                             onClick={() => window.open(row.imageAttached, "_blank")}
                         >
                             <img
                                 src={row.imageAttached}
                                 alt="Unit Involve"
-                                className="w-full h-60 object-cover"
+                                className="w-full h-60 object-cover print:max-h-48 print:object-cover"
                             />
-                            <div className="bg-gray-300 text-center font-bold p-2 w-full">
+                            <div className="bg-gray-300 border-t text-center font-bold p-2 w-full">
                                 {row.imageDescription}
                             </div>
                         </div>
@@ -326,9 +357,9 @@ const ReportViewer: React.FC = () => {
             </div>
 
             {/* Result */}
-            <div className="">
+            <div className="avoid-break">
 
-                <div className="mt-6">
+                <div className="">
                     <div className="mb-4">
                         <h3 className="font-semibold text-sm mt-4">*Investigation Result</h3>
                         <div className="border border-gray-300 p-4">{renderTextBlocks(dataReport?.investigationResult)}</div>

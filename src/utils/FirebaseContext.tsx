@@ -32,7 +32,7 @@ interface FirebaseContextType {
     loading: boolean;
     waiting: (state:boolean) => void
     signIn: (email: string, password: string) => Promise<void>;
-    signUp: (email: string, password: string, dealer: string, username: string, location: string) => Promise<void>;
+    signUp: (email: string, password: string, dealer: string, username: string, location: string, authorization: string) => Promise<void>;
     signOut: () => Promise<void>;
     message: Message;
     setMessage : (obj:Message) => void;
@@ -105,11 +105,14 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({ children }
     };
 
 
-    const signUp = async (email: string, password: string, location: string, username: string, dealer: string): Promise<void> => {
+    const signUp = async (email: string, password: string, location: string, username: string, dealer: string, authorization: string): Promise<void> => {
         try {
             setLoading(true);
             const dataUser = await createUserWithEmailAndPassword(FIREBASE_AUTH, email, password);
-            await saveToDatabase(`user/${dataUser.user.uid}`, {email: dataUser.user.email ,type:"user", name:username, dealer: dealer, location: location});
+            await saveToDatabase(`user/${dataUser.user.uid}`, {email: dataUser.user.email ,type:authorization, name:username, dealer: dealer, location: location});
+            if(authData?.type === "dealer"){
+                await saveToDatabase(`cabang/${user?.uid}/${dataUser.user.uid}`, {email: dataUser.user.email ,type:authorization, name:username, dealer: dealer, location: location});
+            }
             await signOut(FIREBASE_AUTH);
             setMessage({message:"Succesfully Sign Up",type:"info"})
             setLoading(false);

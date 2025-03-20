@@ -30,11 +30,21 @@ import AdminSchedule from "./ui/pages/AdminSchedule";
 import AdminReportViewer from "./ui/pages/AdminReportViewer";
 import AdminVisitViewer from "./ui/pages/AdminVisitViewer";
 import ProfileSetting from "./ui/pages/ProfileSetting";
+import AdminScheduleMap from "./ui/pages/AdminScheduleMap";
+import Dealer from "./ui/pages/Dealer";
+import DealerTemplate from "./ui/templates/DealerTemplate";
+import DealerCabang from "./ui/pages/DealerCabang";
+import DealerCabangEditor from "./ui/pages/DealerCabangEditor";
+import DealerSchedule from "./ui/pages/DealerSchedule";
+import DealerScheduleMap from "./ui/pages/DealerScheduleMap";
+import DealerReport from "./ui/pages/DealerReport ";
+import DealerVisitViewer from "./ui/pages/DealerVisitViewer";
+import DealerReportViewer from "./ui/pages/DealerReportViewer";
+import DealerVisit from "./ui/pages/DealerVisit";
 
 function App() {
 
   const routes = [
-
     // Landing Template Routes
     { path: "/", element: <Home />, type: "landing" },
     { path: "/blog", element: <Blog />, type: "landing" },
@@ -81,6 +91,23 @@ function App() {
     { path: "/admin/visit/:uid/:id", element: <AdminVisitViewer />, type: "viewer" },
 
     { path: "/admin/schedule", element: <AdminSchedule />, type: "admin" },
+    { path: "/admin/schedule/map", element: <AdminScheduleMap />, type: "admin" },
+
+    // Dealer Template Route
+    { path: "/dealer", element: <Dealer />, type: "dealer" },
+    { path: "/dealer/cabang", element: <DealerCabang />, type: "dealer" },
+    { path: "/dealer/cabang/add", element: <DealerCabangEditor />, type: "dealer" },
+
+    { path: "/dealer/schedule", element: <DealerSchedule />, type: "dealer" },
+    { path: "/dealer/schedule/map", element: <DealerScheduleMap />, type: "dealer" },
+
+    { path: "/dealer/report", element: <DealerReport />, type: "dealer" },
+    { path: "/dealer/report/:uid/:id", element: <DealerReportViewer />, type: "viewer" },
+
+    { path: "/dealer/visit", element: <DealerVisit />, type: "dealer" },
+    { path: "/dealer/visit/:uid/:id", element: <DealerVisitViewer />, type: "viewer" },
+
+    { path: "/dealer/setting", element: <ProfileSetting />, type: "dealer" },
 
   ];
 
@@ -103,6 +130,14 @@ function App() {
                   key={index}
                   path={path}
                   element={<AdminTemplate>{element}</AdminTemplate>}
+                />
+              );
+            } else if (type === "dealer") {
+              return (
+                <Route
+                  key={index}
+                  path={path}
+                  element={<DealerTemplate>{element}</DealerTemplate>}
                 />
               );
             } else if (type === "profile") {

@@ -7,7 +7,7 @@ const Login = () => {
   const { waiting } = useFirebase()
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { signIn, user, message } = useFirebase();
+  const { signIn, user, message, authData } = useFirebase();
 
   const handleSubmit = async (e:any) => {
     waiting(true)
@@ -16,8 +16,14 @@ const Login = () => {
     waiting(false)
   };
 
-  if (user) {
+  if (user && authData?.type === "admin") {
+    return <Navigate to="/admin" />;
+  }
+  else if (user && authData?.type === "user") {
     return <Navigate to="/profile" />;
+  }
+  else if (user && authData?.type === "dealer") {
+    return <Navigate to="/dealer" />;
   }
 
   return (

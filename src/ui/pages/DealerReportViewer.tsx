@@ -14,7 +14,7 @@ const renderTextBlocks = (text?: string) => {
     ));
 };
 
-const AdminReportViewer: React.FC = () => {
+const DealerReportViewer: React.FC = () => {
     const { getFromDatabase } = useFirebase()
     const { uid, id } = useParams<{ uid: string, id: string }>();
 
@@ -385,4 +385,4 @@ const AdminReportViewer: React.FC = () => {
     );
 };
 
-export default AdminReportViewer
+export default DealerReportViewer
