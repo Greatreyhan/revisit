@@ -62,6 +62,7 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({ children }
     const [message, setMessage]  = useState<Message>({message:"",type:""})
     const [authData, setAuthData] = useState<AuthDataProps>({email:"", type:"", dealer:"",location:"",name:""})
 
+
     useEffect(() => {
         setLoading(true);
         const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, async (authUser) => {
@@ -99,7 +100,7 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({ children }
             setMessage({message:"Succesfully Log In",type:"info"})
             setLoading(false);
         } catch (err: any) {
-            setMessage({message:"Error signing in:"+err.message,type:"error"})
+            setMessage({message:"Error signing in:" + err.message,type:"error"})
             setLoading(false);
         }
     };

@@ -21,7 +21,7 @@ const containerStyle = {
 
 const MapViewer: React.FC<MapViewerProps> = ({ mapMarkers, mapDistance }) => {
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: 'AIzaSyDy_z3fG3Rb-WyX79DazneEBw5sqjpWy-s',
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "",
   });
 
   if (!isLoaded) {

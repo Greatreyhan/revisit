@@ -7,22 +7,24 @@ const Login = () => {
   const { waiting } = useFirebase()
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isSubmited, setIsSubmited] = useState<boolean>(false)
   const { signIn, user, message, authData } = useFirebase();
 
   const handleSubmit = async (e:any) => {
     waiting(true)
     e.preventDefault();
     await signIn(email, password);
+    setIsSubmited(true)
     waiting(false)
   };
 
-  if (user && authData?.type === "admin") {
+  if (isSubmited && user && authData?.type === "Admin") {
     return <Navigate to="/admin" />;
   }
-  else if (user && authData?.type === "user") {
+  else if (isSubmited && user && authData?.type === "Field") {
     return <Navigate to="/profile" />;
   }
-  else if (user && authData?.type === "dealer") {
+  else if (isSubmited && user && authData?.type === "Dealer") {
     return <Navigate to="/dealer" />;
   }
 

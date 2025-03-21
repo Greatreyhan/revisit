@@ -71,7 +71,6 @@ const DealerSchedule = () => {
               <th className="border p-4 dark:border-dark-5 whitespace-nowrap text-gray-900">Date</th>
               <th className="border p-4 dark:border-dark-5 whitespace-nowrap text-gray-900">Address</th>
               <th className="border p-4 dark:border-dark-5 whitespace-nowrap text-gray-900">Status</th>
-              <th className="border p-4 dark:border-dark-5 whitespace-nowrap text-gray-900">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -82,16 +81,6 @@ const DealerSchedule = () => {
                 <td className="border-b p-4 dark:border-dark-5 flex flex-col h-full gap-1 items-center justify-center"><span className="bg-sky-100 px-4 py-1 rounded-lg">{formatDate(data?.dateStart)}</span><span className="bg-rose-100 px-4 py-1 rounded-lg">{formatDate(data?.dateEnd)}</span></td>
                 <td className="border p-4 dark:border-dark-5">{data?.address}</td>
                 <td className="border p-4 dark:border-dark-5">{data?.status == 'pending' ? <MdDangerous className="w-full text-xl text-rose-700" /> : <MdGppGood className="w-full text-xl text-emerald-700" />}</td>
-                <td className="border-t p-4 gap-x-3 flex justify-around items-center">
-                  <button
-                    className="p-2 text-rose-800 rounded-full bg-rose-100"
-                    type="button"
-                    onClick={() => deleteFromDatabase("schedule/" + data?.userId + "/" + data?.scheduleId)}
-                  >
-                    <MdDelete />
-                  </button>
-                </td>
-
               </tr>
             ))}
           </tbody>

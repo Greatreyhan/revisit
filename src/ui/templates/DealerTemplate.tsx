@@ -24,7 +24,7 @@ const DealerTemplate: React.FC<DealerTemplateProps> = ({ children }) => {
       </div>
     );
   }
-  if (user && authData?.type === "dealer") {
+  if (user && authData?.type === "Dealer") {
     waiting(false)
     return (
       <div className="flex w-screen">
@@ -38,11 +38,11 @@ const DealerTemplate: React.FC<DealerTemplateProps> = ({ children }) => {
       </div>
     );
   }
-  if (user && authData?.type === "user") {
+  if (user && authData?.type === "Field") {
     waiting(false)
     return <Navigate to="/profile" />
   } 
-  else if (user && authData?.type === "admin") {
+  else if (user && authData?.type === "Admin") {
     waiting(false)
     return <Navigate to="/admin" />
   }

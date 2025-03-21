@@ -42,7 +42,7 @@ const AdminUserEditor: React.FC = () => {
                         </div>
 
                         <div className="md:flex w-full gap-5">
-                            <SelectInput label="Authorization" name="authorization" value={authorization} onChange={(e) => setAuthorization(e.target.value)} options={["user","admin","dealer"]} />
+                            <SelectInput label="Authorization" name="authorization" value={authorization} onChange={(e) => setAuthorization(e.target.value)} options={["Field","Admin","Dealer"]} />
                             <SelectInput label="Dealer" name="dealer" value={dealer} onChange={(e) => setDealer(e.target.value)} options={DealerData} />
                             <InputField label="Location" name="location" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Location" />
                         </div>

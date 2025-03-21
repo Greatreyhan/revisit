@@ -22,7 +22,7 @@ const AdminTemplate: React.FC<AdminTemplateProps> = ({ children }) => {
       </div>
     );
   }
-  if (user && authData?.type === "admin") {
+  if (user && authData?.type === "Admin") {
     waiting(false)
     return (
       <div className="flex w-screen">
@@ -36,11 +36,11 @@ const AdminTemplate: React.FC<AdminTemplateProps> = ({ children }) => {
       </div>
     );
   }
-  if (user && authData?.type === "user") {
+  if (user && authData?.type === "Field") {
     waiting(false)
     return <Navigate to="/profile" />
   } 
-  else if (user && authData?.type === "dealer") {
+  else if (user && authData?.type === "Dealer") {
     waiting(false)
     return <Navigate to="/dealer" />
   }

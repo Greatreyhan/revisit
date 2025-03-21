@@ -20,7 +20,7 @@ const DealerCabangEditor
         e.preventDefault();
 
         try {
-            await signUp(email, password, dealer, username, location, "user");
+            await signUp(email, password, dealer, username, location, "Field");
             navigate(`/dealer/cabang`); // Navigasi ke halaman user setelah submit
         } catch (error) {
             console.error("Error saving data:", error);

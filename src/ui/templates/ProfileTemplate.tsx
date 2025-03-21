@@ -28,15 +28,15 @@ const ProfileTemplate: React.FC<ProfileTemplateProps> = ({ children }) => {
     waiting(false)
     return <Navigate to="/login" />
   }
-  if (user && authData.type === "admin") {
+  if (user && authData.type === "Admin") {
     waiting(false)
     return <Navigate to="/admin" />
   }
-  if (user && authData.type === "dealer") {
+  if (user && authData.type === "Dealer") {
     waiting(false)
     return <Navigate to="/dealer" />
   }
-  if (user && authData.type === "user") {
+  if (user && authData.type === "Field") {
     waiting(false)
     return (
       <div className="flex w-full">

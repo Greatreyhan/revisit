@@ -23,7 +23,7 @@ const DealerScheduleMap = () => {
   const [selectedData, setSelectedData] = useState<ScheduleData>()
   const [showStatus, setShowStatus] = useState("pending")
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: 'AIzaSyDy_z3fG3Rb-WyX79DazneEBw5sqjpWy-s',
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "",
   });
 
   useEffect(() => {

@@ -76,13 +76,6 @@ const DealerVisit = () => {
                 <td className="border p-4 dark:border-dark-5">{data?.area}</td>
                 <td className="border p-4 dark:border-dark-5 text-center">  {data?.units.reduce((total, unit) => total + parseInt(unit.qtyUnit, 10), 0)}</td>
                 <td className="border-t p-4 flex gap-x-3 justify-around items-center">
-                  <button
-                    className="p-2 text-rose-800 rounded-full bg-rose-100"
-                    type="button"
-                    onClick={() => deleteFromDatabase("visit/" + data?.userId + "/" + data?.reportId)}
-                  >
-                    <MdDelete />
-                  </button>
                   <Link
                     className="p-2 text-green-800 rounded-full bg-green-100"
                     type="button"

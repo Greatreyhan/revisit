@@ -42,23 +42,23 @@ const Profile: React.FC = () => {
       }
     });
 
-    // Fetch service
-    getFromDatabase("service/"+user?.uid).then(data => {
-      const dataConverted: Service | null = data;
-      if (dataConverted) {
-        const keys = Object.keys(dataConverted);
-        setKeyService(keys);
-      }
-    });
+    // // Fetch service
+    // getFromDatabase("service/"+user?.uid).then(data => {
+    //   const dataConverted: Service | null = data;
+    //   if (dataConverted) {
+    //     const keys = Object.keys(dataConverted);
+    //     setKeyService(keys);
+    //   }
+    // });
 
-    // Fetch client
-    getFromDatabase("client/"+user?.uid).then(data => {
-      const dataConverted: Client | null = data;
-      if (dataConverted) {
-        const keys = Object.keys(dataConverted);
-        setKeyClient(keys);
-      }
-    });
+    // // Fetch client
+    // getFromDatabase("client/"+user?.uid).then(data => {
+    //   const dataConverted: Client | null = data;
+    //   if (dataConverted) {
+    //     const keys = Object.keys(dataConverted);
+    //     setKeyClient(keys);
+    //   }
+    // });
   }, []);
 
   return (
@@ -91,22 +91,22 @@ const Profile: React.FC = () => {
       </div>
 
       {/* Display Number of Career */}
-      <div className="w-72 bg-slate-100 px-8 py-4 rounded-md">
+      {/* <div className="w-72 bg-slate-100 px-8 py-4 rounded-md">
         <h2 className="text-lg text-slate-900">Total Client</h2>
         <p className="text-4xl text-primary flex justify-end items-end mt-4 font-bold">
           {keyService.length}
           <span className="text-sm font-light ml-2">person</span>
         </p>
-      </div>
+      </div> */}
 
       {/* Display Number of Career */}
-      <div className="w-72 bg-slate-100 px-8 py-4 rounded-md">
+      {/* <div className="w-72 bg-slate-100 px-8 py-4 rounded-md">
         <h2 className="text-lg text-slate-900">Total Unit</h2>
         <p className="text-4xl text-primary flex justify-end items-end mt-4 font-bold">
           {keyClient.length}
           <span className="text-sm font-light ml-2">unit</span>
         </p>
-      </div>
+      </div> */}
     </div>
   );
 };

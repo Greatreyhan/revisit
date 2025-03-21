@@ -77,13 +77,6 @@ const DealerReport = () => {
                 <td className="border p-4 dark:border-dark-5">{data?.dealer}</td>
                 <td className="border p-4 dark:border-dark-5">{data?.status == 'Breakdown' ? <MdDangerous className="w-full text-xl text-rose-700" /> : <MdGppGood className="w-full text-xl text-emerald-700" />}</td>
                 <td className="border-t p-4 gap-x-3 flex justify-around items-center">
-                  <button
-                    className="p-2 text-rose-800 rounded-full bg-rose-100"
-                    type="button"
-                    onClick={() => deleteFromDatabase("report/" + data?.userId + "/" + data?.reportId)}
-                  >
-                    <MdDelete />
-                  </button>
                   <Link
                     className="p-2 text-green-800 rounded-full bg-green-100"
                     type="button"
