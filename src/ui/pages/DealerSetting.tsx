@@ -3,7 +3,6 @@ import { useNavigate, Link } from "react-router-dom";
 import { useFirebase } from "../../utils/FirebaseContext";
 import InputField from "../molecules/InputField";
 import SelectInput from "../molecules/SelectInput";
-import { DealerData } from "../../utils/masterData";
 import { BiSave } from "react-icons/bi";
 
 const DealerSetting: React.FC = () => {
@@ -52,7 +51,7 @@ const DealerSetting: React.FC = () => {
                         </div>
 
                         <div className="md:flex w-full gap-5">
-                            <SelectInput disabled={true} label="Dealer" name="dealer" value={dealer} onChange={(e) => setDealer(e.target.value)} options={DealerData} />
+                            <SelectInput disabled={true} label="Dealer" name="dealer" value={dealer} onChange={(e) => setDealer(e.target.value)} options={[dealer]} />
                             <InputField disabled={true} label="Location" name="location" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Location" />
                         </div>
 

@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { MdDelete, MdDangerous, MdGppGood, MdMap } from "react-icons/md";
+import { MdDangerous, MdGppGood, MdMap } from "react-icons/md";
 import { useFirebase } from "../../utils/FirebaseContext";
 import { ScheduleData } from "../interface/Schedule";
 
 const DealerSchedule = () => {
-  const { getFromDatabase, deleteFromDatabase, user } = useFirebase();
+  const { getFromDatabase, user } = useFirebase();
   const [allSchedules, setAllSchedules] = useState<ScheduleData[]>([]);
 
 

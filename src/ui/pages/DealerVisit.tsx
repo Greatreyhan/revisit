@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { MdDelete, MdPrint } from "react-icons/md";
+import { MdPrint } from "react-icons/md";
 import { useFirebase } from "../../utils/FirebaseContext";
 import { VisitData } from "../interface/Visit";
 
 const DealerVisit = () => {
-  const { getFromDatabase, deleteFromDatabase, user } = useFirebase();
+  const { getFromDatabase, user } = useFirebase();
   const [allReports, setAllReports] = useState<VisitData[]>([]);
 
     useEffect(() => {

@@ -41,6 +41,7 @@ import DealerReport from "./ui/pages/DealerReport ";
 import DealerVisitViewer from "./ui/pages/DealerVisitViewer";
 import DealerReportViewer from "./ui/pages/DealerReportViewer";
 import DealerVisit from "./ui/pages/DealerVisit";
+import AdminVisualization from "./ui/pages/AdminVisualization";
 
 function App() {
 
@@ -83,6 +84,7 @@ function App() {
     { path: "/admin/user", element: <AdminUser />, type: "admin" },
     { path: "/admin/user/add", element: <AdminUserEditor />, type: "admin" },
     { path: "/admin", element: <Admin />, type: "admin" },
+    { path: "/admin/report/visualization", element: <AdminVisualization />, type: "admin" },
 
     { path: "/admin/report", element: <AdminReport />, type: "admin" },
     { path: "/admin/report/:uid/:id", element: <AdminReportViewer />, type: "viewer" },

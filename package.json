@@ -17,6 +17,7 @@
     "@syncfusion/ej2-react-image-editor": "^28.2.3",
     "@types/react-image-crop": "^9.0.2",
     "aos": "^2.3.4",
+    "browser-image-compression": "^2.0.2",
     "fabric": "^6.6.1",
     "firebase": "^11.1.0",
     "html-react-parser": "^5.2.2",
@@ -31,7 +32,8 @@
     "react-photo-editor": "^2.1.4",
     "react-router-dom": "^7.1.1",
     "react-to-pdf": "^1.0.1",
-    "react-to-print": "^3.0.5"
+    "react-to-print": "^3.0.5",
+    "recharts": "^2.15.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",

@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Article } from "../interface/Article";
 import { Portofolio } from "../interface/Portofolio";
 import { Career } from "../interface/Career";
-import { Service } from "../interface/Service";
-import { Client } from "../interface/Client";
 import { useFirebase } from "../../utils/FirebaseContext";
 
 const Profile: React.FC = () => {
@@ -11,8 +9,6 @@ const Profile: React.FC = () => {
   const [report, setReport] = useState<string[]>([]);
   const [visit, setVisit] = useState<string[]>([]);
   const [schedule, setSchedule] = useState<string[]>([]);
-  const [keyClient, setKeyClient] = useState<string[]>([]);
-  const [keyService, setKeyService] = useState<string[]>([]);
 
   useEffect(() => {
     // Fetch articles

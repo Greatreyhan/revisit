@@ -53,15 +53,15 @@ const ReportViewer: React.FC = () => {
                         <tbody>
                             <tr className="text-left">
                                 <td className="pr-4">No. Form</td>
-                                <td>: {id}</td>
+                                <td>: FORM/Q/17/03</td>
                             </tr>
                             <tr className="text-left">
                                 <td className="pr-4">Div/Dept</td>
-                                <td>: TWF</td>
+                                <td>: UBS/T&W</td>
                             </tr>
                             <tr className="text-left">
                                 <td className="pr-4">Rev.</td>
-                                <td>: 1</td>
+                                <td>: 2</td>
                             </tr>
                         </tbody>
                     </table>
