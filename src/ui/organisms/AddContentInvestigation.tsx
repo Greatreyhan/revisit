@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import InputField from "../molecules/InputField";
 import { MdAdd, MdEdit } from "react-icons/md";
+import SelectInput from "../molecules/SelectInput";
 
 interface InvestigationItem {
     content: string;
@@ -106,8 +107,7 @@ const AddContentInvestigation: React.FC<AddContentInvestigationProps> = ({ inves
                             <InputField label="Hasil Investigasi" name="result" value={result} onChange={(e) => setResult(e.target.value)} placeholder="Masukkan hasil investigasi" />
                             <InputField label="Standar" name="standard" value={standard} onChange={(e) => setStandard(e.target.value)} placeholder="Masukkan standar" />
                         </div>
-                        <InputField label="Kesimpulan" name="judge" value={judge} onChange={(e) => setJudge(e.target.value)} placeholder="Masukkan kesimpulan" />
-
+                        <SelectInput label="Kesimpulan" name="judge" value={judge} onChange={(e) => setJudge(e.target.value)} options={["OK","NG","Not Confirmed"]} />
                         <div className="flex justify-end gap-2 mt-4">
                             <button type="button" className="text-primary px-4 py-2 rounded-md" onClick={() => setIsModalOpen(false)}>Batal</button>
                             {editIndex !== null && (

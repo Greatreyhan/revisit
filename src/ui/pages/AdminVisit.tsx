@@ -7,30 +7,50 @@ import { VisitData } from "../interface/Visit";
 const AdminVisit = () => {
   const { getFromDatabase, deleteFromDatabase } = useFirebase();
   const [allReports, setAllReports] = useState<VisitData[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   useEffect(() => {
-      getFromDatabase("visit/").then((data) => {
-        if (data) {
-          console.log("Raw Data:", data);
-  
-          const reportsArray: VisitData[] = [];
-  
-          Object.entries(data).forEach(([userId, reports]) => {
-            Object.entries(reports as Record<string, any>).forEach(([reportId, reportData]) => {
-              reportsArray.push({ userId, reportId, ...(reportData as VisitData) });
-            });
+    getFromDatabase("visit/").then((data) => {
+      if (data) {
+        console.log("Raw Data:", data);
+
+        const reportsArray: VisitData[] = [];
+
+        Object.entries(data).forEach(([userId, reports]) => {
+          Object.entries(reports as Record<string, any>).forEach(([reportId, reportData]) => {
+            reportsArray.push({ userId, reportId, ...(reportData as VisitData) });
           });
-          setAllReports(reportsArray);
-        }
-      });
-    }, []);
+        });
+        setAllReports(reportsArray);
+      }
+    });
+  }, []);
+
+  // Filter data berdasarkan pencarian pada customer, dealer, segment, dan area.
+  const filteredReports = allReports.filter((report) => {
+    const customer = report.customerName.toLowerCase();
+    const dealer = report.dealer.toLowerCase();
+    const segment = report.segment?.toLowerCase() || "";
+    const area = report.area?.toLowerCase() || "";
+    const query = searchQuery.toLowerCase();
+
+    return customer.includes(query) || dealer.includes(query) || segment.includes(query) || area.includes(query);
+  });
 
   return (
     <div className="w-10/12 mx-auto pt-8">
-      
-
       <div className="flex items-center justify-between py-8">
-        <p>Total Visit: {allReports.length}</p>
+        <p>Total Visit: {filteredReports.length}</p>
+        {/* Input pencarian */}
+        <div className="w-5/12">
+          <input
+            type="text"
+            placeholder="Cari berdasarkan customer, dealer, segment, atau area..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full p-2 border rounded-lg"
+          />
+        </div>
         <Link
           className="inline-flex items-center px-6 py-1.5 bg-primary rounded-full text-white"
           to={"/visit/editor"}
@@ -52,21 +72,17 @@ const AdminVisit = () => {
             </tr>
           </thead>
           <tbody>
-            {allReports.map((data, i) => (
+            {filteredReports.map((data, i) => (
               <tr key={data?.reportId} className="text-gray-700 md:text-md text-sm">
                 <td className="border p-4 dark:border-dark-5">{i + 1}</td>
                 <td className="border p-4 dark:border-dark-5">{data?.customerName}</td>
                 <td className="border p-4 dark:border-dark-5">{data?.dealer}</td>
                 <td className="border p-4 dark:border-dark-5 md:table-cell hidden">{data?.segment}</td>
                 <td className="border p-4 dark:border-dark-5">{data?.area}</td>
-                <td className="border p-4 dark:border-dark-5 text-center">  {data?.units.reduce((total, unit) => total + parseInt(unit.qtyUnit, 10), 0)}</td>
+                <td className="border p-4 dark:border-dark-5 text-center">
+                  {data?.units.reduce((total, unit) => total + parseInt(unit.qtyUnit, 10), 0)}
+                </td>
                 <td className="border-t p-4 flex gap-x-3 justify-around items-center">
-                  {/* <Link
-                    className="p-2 text-sky-800 rounded-full bg-sky-100"
-                    to={"/admin/visit/editor/"+ data?.userId + "/" + data?.reportId}
-                  >
-                    <MdEdit />
-                  </Link> */}
                   <button
                     className="p-2 text-rose-800 rounded-full bg-rose-100"
                     type="button"
@@ -76,8 +92,7 @@ const AdminVisit = () => {
                   </button>
                   <Link
                     className="p-2 text-green-800 rounded-full bg-green-100"
-                    type="button"
-                    to={"/admin/visit/"+ data?.userId + "/" + data?.reportId}
+                    to={"/admin/visit/" + data?.userId + "/" + data?.reportId}
                   >
                     <MdPrint />
                   </Link>

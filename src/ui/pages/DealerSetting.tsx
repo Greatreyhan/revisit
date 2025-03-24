@@ -4,6 +4,7 @@ import { useFirebase } from "../../utils/FirebaseContext";
 import InputField from "../molecules/InputField";
 import SelectInput from "../molecules/SelectInput";
 import { BiSave } from "react-icons/bi";
+import { IoIosEyeOff, IoMdEye } from "react-icons/io";
 
 const DealerSetting: React.FC = () => {
     const { getFromDatabase, user, setUpdatePassword } = useFirebase()
@@ -15,11 +16,14 @@ const DealerSetting: React.FC = () => {
     const [dealer, setDealer] = useState<string>("");
     const [location, setLocation] = useState<string>("");
 
+    // State untuk toggle visibilitas password
+    const [showLastPassword, setShowLastPassword] = useState<boolean>(false);
+    const [showNewPassword, setShowNewPassword] = useState<boolean>(false);
 
     const handleSendData = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await setUpdatePassword(lastPassword,newPassword);
+            await setUpdatePassword(lastPassword, newPassword);
             navigate("/admin/user"); // Navigasi ke halaman user setelah submit
         } catch (error) {
             console.error("Error saving data:", error);
@@ -29,14 +33,14 @@ const DealerSetting: React.FC = () => {
 
     useEffect(() => {
         getFromDatabase(`user/${user?.uid}`).then((data) => {
-          if (data) {
-            setEmail(data?.email || "")
-            setUsername(data?.name || "")
-            setDealer(data?.dealer || "")
-            setLocation(data?.location || "")
-          }
+            if (data) {
+                setEmail(data?.email || "")
+                setUsername(data?.name || "")
+                setDealer(data?.dealer || "")
+                setLocation(data?.location || "")
+            }
         });
-      }, []);
+    }, []);
 
     return (
         <div className="App overflow-x-hidden">
@@ -56,9 +60,52 @@ const DealerSetting: React.FC = () => {
                         </div>
 
                         <div className="md:flex w-full gap-5">
-                            <InputField label="Last Password" name="LastPassword" type="password" value={lastPassword} onChange={(e) => setLastPassword(e.target.value)} placeholder="*****" />
-                            <InputField label="New Password" name="NewPassword" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="*****" />
-                        </div>
+                            <div className="relative flex-1">
+                                <InputField
+                                    label="Last Password"
+                                    name="LastPassword"
+                                    type={showLastPassword ? "text" : "password"}
+                                    value={lastPassword}
+                                    onChange={(e) => setLastPassword(e.target.value)}
+                                    placeholder="*****"
+                                >
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowLastPassword(!showLastPassword)}
+                                        className="text-gray-500 focus:outline-none"
+                                        aria-label={showLastPassword ? "Hide password" : "Show password"}
+                                    >
+                                        {showLastPassword ? (
+                                            <IoMdEye />
+                                        ) : (
+                                            <IoIosEyeOff />
+                                        )}
+                                    </button>
+                                </InputField>
+                            </div>
+                            <div className="flex items-center justify-between flex-1">
+                                <InputField
+                                    label="New Password"
+                                    name="NewPassword"
+                                    type={showNewPassword ? "text" : "password"}
+                                    value={newPassword}
+                                    onChange={(e) => setNewPassword(e.target.value)}
+                                    placeholder="*****"
+                                >
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowNewPassword(!showNewPassword)}
+                                        className=" text-gray-500 focus:outline-none"
+                                        aria-label={showNewPassword ? "Hide password" : "Show password"}
+                                    >
+                                        {showNewPassword ? (
+                                            <IoMdEye />
+                                        ) : (
+                                            <IoIosEyeOff />
+                                        )}
+                                    </button>
+                                </InputField>
+                            </div>                        </div>
                     </div>
 
                     <div className="flex w-full justify-end items-center gap-x-5">

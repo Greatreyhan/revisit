@@ -2,15 +2,17 @@ import { useState } from "react";
 import { useFirebase } from "../../utils/FirebaseContext";
 import { Navigate } from "react-router-dom";
 import { Heroimage } from "../../assets/images";
+import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 
 const Login = () => {
   const { waiting } = useFirebase()
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [isSubmited, setIsSubmited] = useState<boolean>(false)
   const { signIn, user, message, authData } = useFirebase();
 
-  const handleSubmit = async (e:any) => {
+  const handleSubmit = async (e: any) => {
     waiting(true)
     e.preventDefault();
     await signIn(email, password);
@@ -20,11 +22,9 @@ const Login = () => {
 
   if (isSubmited && user && authData?.type === "Admin") {
     return <Navigate to="/admin" />;
-  }
-  else if (isSubmited && user && authData?.type === "Field") {
+  } else if (isSubmited && user && authData?.type === "Field") {
     return <Navigate to="/profile" />;
-  }
-  else if (isSubmited && user && authData?.type === "Dealer") {
+  } else if (isSubmited && user && authData?.type === "Dealer") {
     return <Navigate to="/dealer" />;
   }
 
@@ -32,17 +32,13 @@ const Login = () => {
     <div className="fixed overflow-x-hidden w-full h-screen bg-white flex justify-center items-center z-50">
       <div className="flex flex-wrap w-full">
         <div className="flex flex-col w-full md:w-1/2">
-
           <div className="flex flex-col justify-center px-8 pt-8 my-auto md:justify-start md:pt-0 md:px-24 lg:px-32">
             <p className="text-3xl text-center">Welcome.</p>
             <p className="text-xs text-center text-red-500">{message.message}</p>
-            <form
-              onSubmit={handleSubmit}
-              className="flex flex-col pt-3 md:pt-8"
-            >
+            <form onSubmit={handleSubmit} className="flex flex-col pt-3 md:pt-8">
               <div className="flex flex-col pt-4">
-                <div className="flex relative ">
-                  <span className=" inline-flex  items-center px-3 border-t bg-white border-l border-b  border-gray-300 text-gray-500 shadow-sm text-sm">
+                <div className="flex relative">
+                  <span className="inline-flex items-center px-3 border-t bg-white border-l border-b border-gray-300 text-gray-500 shadow-sm text-sm">
                     <svg
                       width="15"
                       height="15"
@@ -55,18 +51,18 @@ const Login = () => {
                   </span>
                   <input
                     id="design-login-email"
-                    className=" flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                    className="flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                     type="email"
                     placeholder="Email"
                     value={email}
-                    required={true}
+                    required
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
               </div>
               <div className="flex flex-col pt-4 mb-12">
-                <div className="flex relative ">
-                  <span className=" inline-flex  items-center px-3 border-t bg-white border-l border-b  border-gray-300 text-gray-500 shadow-sm text-sm">
+                <div className="flex relative">
+                  <span className="inline-flex items-center px-3 border-t bg-white border-l border-b border-gray-300 text-gray-500 shadow-sm text-sm">
                     <svg
                       width="15"
                       height="15"
@@ -79,13 +75,25 @@ const Login = () => {
                   </span>
                   <input
                     id="design-login-password"
-                    className=" flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-                    type="password"
+                    className="flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                    type={showPassword ? "text" : "password"}
                     placeholder="Password"
                     value={password}
-                    required={true}
+                    required
                     onChange={(e) => setPassword(e.target.value)}
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? (
+                      <IoMdEye />
+                    ) : (
+                      <IoMdEyeOff/>
+                    )}
+                  </button>
                 </div>
               </div>
               <button
@@ -101,6 +109,7 @@ const Login = () => {
           <img
             className="hidden object-cover w-full h-screen md:block"
             src={Heroimage}
+            alt="Hero"
           />
         </div>
       </div>

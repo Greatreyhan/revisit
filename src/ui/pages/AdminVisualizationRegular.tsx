@@ -14,7 +14,7 @@ import TimeSeriesCasesChart from "../organisms/TimeSeriesCasesChart";
 import PieClassification from "../organisms/PieClassification";
 
 
-const AdminVisualization: React.FC = () => {
+const AdminVisuzalizationRegular: React.FC = () => {
   const { getFromDatabase } = useFirebase();
   const [investigationReport, setInvestigationReport] = useState<ReportData[]>([]);
   const [filteredReports, setFilteredReports] = useState<ReportData[]>([]);
@@ -201,4 +201,4 @@ const AdminVisualization: React.FC = () => {
   );
 };
 
-export default AdminVisualization;
+export default AdminVisuzalizationRegular;

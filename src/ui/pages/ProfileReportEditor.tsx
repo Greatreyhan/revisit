@@ -158,7 +158,6 @@ const ProfileReportEditor: React.FC = () => {
         };
 
         try {
-            console.log(newData)
             await saveToDatabase(`report/${user?.uid}/${id || Date.now()}`, newData);
             waiting(false)
             setIsDataChanged(false)

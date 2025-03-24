@@ -41,7 +41,8 @@ import DealerReport from "./ui/pages/DealerReport ";
 import DealerVisitViewer from "./ui/pages/DealerVisitViewer";
 import DealerReportViewer from "./ui/pages/DealerReportViewer";
 import DealerVisit from "./ui/pages/DealerVisit";
-import AdminVisualization from "./ui/pages/AdminVisualization";
+import AdminVisualizationInvestigation from "./ui/pages/AdminVisualizationInvestigation";
+import AdminVisuzalizationRegular from "./ui/pages/AdminVisualizationRegular";
 
 function App() {
 
@@ -84,13 +85,14 @@ function App() {
     { path: "/admin/user", element: <AdminUser />, type: "admin" },
     { path: "/admin/user/add", element: <AdminUserEditor />, type: "admin" },
     { path: "/admin", element: <Admin />, type: "admin" },
-    { path: "/admin/report/visualization", element: <AdminVisualization />, type: "admin" },
+    { path: "/admin/report/visualization", element: <AdminVisualizationInvestigation />, type: "admin" },
 
     { path: "/admin/report", element: <AdminReport />, type: "admin" },
     { path: "/admin/report/:uid/:id", element: <AdminReportViewer />, type: "viewer" },
 
     { path: "/admin/visit", element: <AdminVisit />, type: "admin" },
     { path: "/admin/visit/:uid/:id", element: <AdminVisitViewer />, type: "viewer" },
+    { path: "/admin/visit/visualization", element: <AdminVisuzalizationRegular />, type: "admin" },
 
     { path: "/admin/schedule", element: <AdminSchedule />, type: "admin" },
     { path: "/admin/schedule/map", element: <AdminScheduleMap />, type: "admin" },

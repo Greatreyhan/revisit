@@ -8,7 +8,6 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-// Sesuaikan tipe data report sesuai data yang difilter
 interface ReportData {
   problemDate: string; // Contoh: "2025-03-22"
   unitInvolves?: {
@@ -22,54 +21,30 @@ interface TimeSeriesCasesLineChartProps {
 }
 
 const TimeSeriesCasesLineChart: React.FC<TimeSeriesCasesLineChartProps> = ({ reports }) => {
-  // Agregasi data: Kelompokkan laporan berdasarkan tanggal dan hitung jumlah kasus per kategori unit (berdasarkan VIN)
+  // Agregasi data: Kelompokkan laporan berdasarkan tanggal dan hitung total kasus
   const data = useMemo(() => {
-    const grouped: Record<string, Record<string, number>> = {};
+    const grouped: Record<string, number> = {};
     reports.forEach((report) => {
       const date = report.problemDate;
       if (!date) return;
-
-      if (!grouped[date]) {
-        grouped[date] = {};
-      }
-
-      // Jika terdapat data unitInvolves, hitung per kategori unit
-      if (report.unitInvolves && Array.isArray(report.unitInvolves) && report.unitInvolves.length > 0) {
-        report.unitInvolves.forEach((unit) => {
-          const unitKey = unit.VIN || "Unknown";
-          grouped[date][unitKey] = (grouped[date][unitKey] || 0) + 1;
-        });
-      } else {
-        // Jika tidak ada unit, tambahkan kategori "No Unit"
-        grouped[date]["No Unit"] = (grouped[date]["No Unit"] || 0) + 1;
-      }
+      
+      // Jika terdapat data unitInvolves, hitung jumlah unit, jika tidak ada, hitung 1
+      const count = report.unitInvolves && Array.isArray(report.unitInvolves) && report.unitInvolves.length > 0
+        ? report.unitInvolves.length
+        : 1;
+      
+      grouped[date] = (grouped[date] || 0) + count;
     });
 
-    // Ubah objek grouped menjadi array yang dapat diproses oleh Recharts
-    const result = Object.entries(grouped).map(([date, unitCounts]) => ({
+    // Ubah objek grouped menjadi array untuk Recharts
+    const result = Object.entries(grouped).map(([date, total]) => ({
       date,
-      ...unitCounts,
+      total,
     }));
 
     // Urutkan data berdasarkan tanggal ascending
     result.sort((a, b) => a.date.localeCompare(b.date));
     return result;
-  }, [reports]);
-
-  // Ambil daftar kategori unit (berdasarkan VIN) secara unik
-  const unitNames = useMemo(() => {
-    const unitsSet = new Set<string>();
-    reports.forEach((report) => {
-      if (report.unitInvolves && Array.isArray(report.unitInvolves) && report.unitInvolves.length > 0) {
-        report.unitInvolves.forEach((unit) => {
-          const unitKey = unit.VIN || "Unknown";
-          unitsSet.add(unitKey);
-        });
-      } else {
-        unitsSet.add("No Unit");
-      }
-    });
-    return Array.from(unitsSet);
   }, [reports]);
 
   return (
@@ -88,16 +63,13 @@ const TimeSeriesCasesLineChart: React.FC<TimeSeriesCasesLineChartProps> = ({ rep
           />
           <YAxis allowDecimals={false} />
           <Tooltip />
-          {unitNames.map((unit) => (
-            <Area
-              key={unit}
-              type="monotone"
-              dataKey={unit}
-              stroke="#CE1212"
-              fill="#CE1212"
-              activeDot={{ r: 8 }}
-            />
-          ))}
+          <Area
+            type="monotone"
+            dataKey="total"
+            stroke="#CE1212"
+            fill="#CE1212"
+            activeDot={{ r: 8 }}
+          />
         </AreaChart>
       </ResponsiveContainer>
     </div>

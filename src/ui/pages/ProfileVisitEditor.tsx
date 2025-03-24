@@ -78,6 +78,8 @@ const ProfileVisitEditor: React.FC = () => {
     const [unitInvolves, setUnitInvolves] = useState<UnitInvolve[]>([])
     const [mapMarkers, setMapMarkers] = useState<MapMarkerData[]>([])
     const [mapDistance, setMapDistance] = useState<number | null>(0)
+    const [locationMap, setLocationMap] = useState<MapMarkerData>({lat: 0,lng: 0})
+
 
     // UI
     const [showMap, setShowMap] = useState<boolean>(false)
@@ -121,6 +123,7 @@ const ProfileVisitEditor: React.FC = () => {
             mapAttached,
             mapMarkers,
             mapDistance,
+            locationMap,
 
             // Customer Information
             customerName,
@@ -130,8 +133,6 @@ const ProfileVisitEditor: React.FC = () => {
             location,
             city,
             segment,
-            // application,
-            // loadingUnit,
 
             // General Information
             dayPerWeek,
@@ -214,6 +215,7 @@ const ProfileVisitEditor: React.FC = () => {
                     setMapAttached(data.mapAttached || "")
                     setMapMarkers(data.mapMarkers || [])
                     setMapDistance(data.mapDistance || 0)
+                    setLocationMap(data.locationMap || {lat: 0,lng: 0})
 
                     // Road Condition
                     setHighway(data.highway || "");
@@ -342,7 +344,7 @@ const ProfileVisitEditor: React.FC = () => {
                         <div className="relative w-full flex justify-center -mb-12 z-10">
                             <button className={`mt-4 px-6 py-2 justify-center items-center bg-primary rounded-full text-white font-semibold ${showMap ? "hidden" : "inline-flex"}`} onClick={() => setShowMap(true)} type="button">Tambah Titik</button>
                         </div>
-                        <MapDistance setMarkers={setMapMarkers} markers={mapMarkers} setDistance={setMapDistance} distance={mapDistance ?? 0} setShow={setShowMap} show={showMap} />
+                        <MapDistance setLocationMap={setLocationMap} locationMap={locationMap || {lat: 0,lng: 0}} setMarkers={setMapMarkers} markers={mapMarkers} setDistance={setMapDistance} distance={mapDistance ?? 0} setShow={setShowMap} show={showMap} />
                     </div>
 
                     <div className="w-full py-8 px-8 rounded-lg my-4 bg-slate-100">
@@ -435,9 +437,6 @@ const ProfileVisitEditor: React.FC = () => {
                         </button>
                     </div>
 
-                    {/* <div className="mt-8 w-full">
-                        <Editor HTML={HTML} setDataEdit={setDataEdit} />
-                    </div> */}
                     <div className="flex w-full justify-end items-center gap-x-5">
                         <Link
                             className="mt-4 px-6 py-2 inline-flex justify-center items-center bg-white text-primary border border-primary rounded-full font-semibold"
@@ -452,13 +451,7 @@ const ProfileVisitEditor: React.FC = () => {
                             <BiSave className="mr-2" />
                             Save
                         </button>
-                        {/* <button
-                            type="button"
-                            className="mt-4 px-6 py-2 inline-flex justify-center items-center bg-primary rounded-full text-white font-semibold"
-                        >
-                            <BiSave className="mr-2" />
-                            Export
-                        </button> */}
+ 
                     </div>
                 </form>
             </div>

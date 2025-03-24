@@ -81,6 +81,25 @@ export const areaMap: Record<string, string[]> = {
 };
 
 export const DealerData = [
+    "DEALER ASCO ISUZU",
+    "DEALER ASTRIDO ISUZU",
+    "DEALER ASTRA ISUZU",
+    "DEALER AUTOTARA ISUZU",
+    "DEALER KARABHA ISUZU",
+    "DEALER PERROS ISUZU",
+    "DEALER PRIMA ISUZU",
+    "DEALER TUNAS ISUZU",
+    "DEALER ZIRANG ISUZU",
+    "DEALER BAHANA ISUZU",
+    "DEALER ARMADA ISUZU",
+    "DEALER DWIJAYA ISUZU ",
+    "DEALER JOLO ISUZU",
+    "DEALER SASAMI ISUZU",
+    "DEALER JUJUR ISUZU",
+    "DEALER BORNEO ISUZU",
+    "DEALER CAPELLA ISUZU",
+    "DEALER SIPIN ISUZU",
+    "DEALER MOBILINDO ISUZU",
     "ASCO ISUZU BEKASI",
     "ASTRIDO ISUZU DELTAMAS",
     "ASTRIDO ISUZU SERPONG",
@@ -187,7 +206,11 @@ export const DealerData = [
     "BORNEO ISUZU BENGKULU",
     "AUTOTARA ISUZU PALEMBANG",
     "AUTOTARA ISUZU LAMPUNG",
-    "SIPIN ISUZU JAMBI"
+    "SIPIN ISUZU JAMBI",
+    "ISUZU ASTRA MOTOR INDONESIA",
+    "ISUZU MOBILINDO PLAZA",
+    "KARABHA ISUZU PULOGADUNG",
+    "Lainnya"
 ];
 
 export const karoseriCustomersData = [
@@ -239,7 +262,8 @@ export const karoseriCustomersData = [
     "PT Topre Refrigerator Indonesia",
     "PT Tubagus Top Central Mandiri",
     "PT Tunas Bahana Sparta",
-    "PT United Tractors Pandu Engineering"
+    "PT United Tractors Pandu Engineering",
+    "Lainnya"
 ];
 
 export const segmentData = [

@@ -3,7 +3,7 @@ import { FIREBASE_STORE } from "../config/firebaseinit";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 export const handleUpload = async (
-    e: React.ChangeEvent<HTMLInputElement>, 
+    e: React.ChangeEvent<HTMLInputElement>,
     setImage: (value: string) => void
 ) => {
     const file = e.target.files?.[0];
@@ -24,7 +24,7 @@ export const handleUpload = async (
         console.log("Compressed File Size:", (compressedFile.size / 1024).toFixed(2) + " KB");
 
         // Upload ke Firebase Storage
-        const storageRef = ref(FIREBASE_STORE, `images/${compressedFile.name}`);
+        const storageRef = ref(FIREBASE_STORE, `images/${Date.now()}/${compressedFile.name}`);
         const uploadTask = uploadBytesResumable(storageRef, compressedFile);
 
         uploadTask.on(
