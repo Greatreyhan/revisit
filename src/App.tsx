@@ -43,6 +43,8 @@ import DealerReportViewer from "./ui/pages/DealerReportViewer";
 import DealerVisit from "./ui/pages/DealerVisit";
 import AdminVisualizationInvestigation from "./ui/pages/AdminVisualizationInvestigation";
 import AdminVisuzalizationRegular from "./ui/pages/AdminVisualizationRegular";
+import DealerVisualizationInvestigation from "./ui/pages/DealerVisualizationInvestigation";
+import DealerVisuzalizationRegular from "./ui/pages/DealerVisualizationRegular";
 
 function App() {
 
@@ -107,9 +109,11 @@ function App() {
 
     { path: "/dealer/report", element: <DealerReport />, type: "dealer" },
     { path: "/dealer/report/:uid/:id", element: <DealerReportViewer />, type: "viewer" },
+    { path: "/dealer/report/visualization", element: <DealerVisualizationInvestigation />, type: "dealer" },
 
     { path: "/dealer/visit", element: <DealerVisit />, type: "dealer" },
     { path: "/dealer/visit/:uid/:id", element: <DealerVisitViewer />, type: "viewer" },
+    { path: "/dealer/visit/visualization", element: <DealerVisuzalizationRegular />, type: "dealer" },
 
     { path: "/dealer/setting", element: <ProfileSetting />, type: "dealer" },
 

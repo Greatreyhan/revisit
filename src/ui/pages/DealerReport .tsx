@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { MdPrint, MdDangerous, MdGppGood } from "react-icons/md";
+import { MdPrint, MdDangerous, MdGppGood, MdArchitecture } from "react-icons/md";
 import { useFirebase } from "../../utils/FirebaseContext";
 import { ReportData } from "../interface/Report";
 
@@ -47,12 +47,14 @@ const DealerReport = () => {
 
       <div className="flex items-center justify-between py-8">
         <p>Total Report: {allReports.length}</p>
-        <Link
-          className="inline-flex items-center px-6 py-1.5 bg-primary rounded-full text-white"
-          to={"/report/editor"}
-        >
-          <span className="text-2xl mr-2">+</span>Create Report
-        </Link>
+        <div>
+          <Link
+            className="inline-flex items-center px-6 py-1.5 bg-primary rounded-full text-white"
+            to={"/dealer/report/visualization"}
+          >
+            <span className="text-2xl mr-2"><MdArchitecture /></span>Visualize Report
+          </Link>
+        </div>
       </div>
       <div className="flex justify-center items-center">
         <table className="table p-4 bg-white rounded-lg shadow">
