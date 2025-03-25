@@ -63,6 +63,7 @@ export interface VisitData {
     mapAttached: string;
     mapMarkers: MapMarkerData[];
     mapDistance: number;
+    locationMap: MapMarkerData;
     
     // Road Condition
     highway: string;

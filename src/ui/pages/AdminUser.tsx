@@ -16,6 +16,7 @@ const AdminUser = () => {
   const [database, setDatabase] = useState<{ [key: string]: UserData }>({});
   const [keyDatabase, setKeyDatabase] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [typeFilter, setTypeFilter] = useState<string>("All"); // Filter untuk tipe: All, Field, Dealer, Admin
 
   useEffect(() => {
     getFromDatabase(`user`).then((data) => {
@@ -27,24 +28,28 @@ const AdminUser = () => {
     });
   }, []);
 
-  // Filter data berdasarkan pencarian (misal: nama dan email)
+  // Filter data berdasarkan pencarian (misal: nama dan email) dan tipe
   const filteredKeys = keyDatabase.filter((key) => {
     const user = database[key];
-    return (
+    const queryMatch =
       user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+      user.email.toLowerCase().includes(searchQuery.toLowerCase());
+    const typeMatch =
+      typeFilter === "All"
+        ? true
+        : user.type.toLowerCase() === typeFilter.toLowerCase();
+    return queryMatch && typeMatch;
   });
 
   return (
     <div className="w-10/12 mx-auto pt-8">
-      <div className="flex items-center justify-between py-8">
+      <div className="flex flex-col sm:flex-row items-center justify-between py-8 gap-4">
         <div>
-          <p className="">Total Users: {filteredKeys.length}</p>
+          <p>Total Users: {filteredKeys.length}</p>
         </div>
 
         {/* Input pencarian */}
-        <div className="w-5/12">
+        <div className="w-full sm:w-5/12">
           <input
             type="text"
             placeholder="Cari berdasarkan nama atau email..."
@@ -53,6 +58,21 @@ const AdminUser = () => {
             className="w-full p-2 border rounded-lg"
           />
         </div>
+
+        {/* Dropdown filter untuk tipe */}
+        <div>
+          <select
+            value={typeFilter}
+            onChange={(e) => setTypeFilter(e.target.value)}
+            className="p-2 border rounded-lg"
+          >
+            <option value="All">Semua</option>
+            <option value="Field">Field</option>
+            <option value="Dealer">Dealer</option>
+            <option value="Admin">Admin</option>
+          </select>
+        </div>
+
         <div>
           <Link
             className="inline-flex items-center px-6 py-1.5 bg-primary rounded-full text-white"
@@ -60,7 +80,6 @@ const AdminUser = () => {
           >
             <span className="text-2xl mr-2">+</span>Add
           </Link>
-
         </div>
       </div>
 

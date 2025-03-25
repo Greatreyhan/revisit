@@ -195,7 +195,7 @@ const MapDistance: React.FC<MapDistanceProps> = ({
         zoom={8}
         center={center}
         onClick={onMapClick}
-        onLoad={(map) => (mapRef.current = map)}
+        // onLoad={(map) => (mapRef.current = map)}
       >
         {markers.map((marker, index) => (
           <Marker key={index} position={marker} />

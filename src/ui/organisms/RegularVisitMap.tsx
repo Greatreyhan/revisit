@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
-import { useFirebase } from "../../utils/FirebaseContext";
-import { ScheduleData } from "../interface/Schedule";
-import { GoogleMap, Marker, useLoadScript } from '@react-google-maps/api';
+import { 
+  GoogleMap, 
+  Marker, 
+  DirectionsRenderer, 
+  useLoadScript 
+} from '@react-google-maps/api';
 import Loading from "../molecules/Loading";
 import { Link } from "react-router-dom";
 import { IoMdReturnLeft } from "react-icons/io";
+import { VisitData } from "../interface/Visit";
 
 const center = {
   lat: -6.200000,
@@ -16,122 +20,256 @@ const containerStyle = {
   height: '100%',
 };
 
+interface RegularVisitMapProps {
+  visitReports: VisitData[];
+  setVisitReports: (visitData: VisitData[]) => void;
+}
 
-const AdminScheduleMap = () => {
-  const { getFromDatabase } = useFirebase();
-  const [allSchedules, setAllSchedules] = useState<ScheduleData[]>([]);
-  const [selectedData, setSelectedData] = useState<ScheduleData>()
-  const [showStatus, setShowStatus] = useState("pending")
+const RegularVisitMap: React.FC<RegularVisitMapProps> = ({ visitReports }) => {
+  const [selectedData, setSelectedData] = useState<VisitData>();
+  const [filterType, setFilterType] = useState("all");
+  const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
+  const [maxSlope, setMaxSlope] = useState<number | null>(null);
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "",
+    libraries: ['geometry'],
   });
 
   useEffect(() => {
-    getFromDatabase("schedule/").then((data) => {
-      if (data) {
-        const scheduleArray: ScheduleData[] = [];
-
-        Object.entries(data).forEach(([userId, schedules]) => {
-          Object.entries(schedules as Record<string, any>).forEach(([scheduleId, scheduleData]) => {
-            scheduleArray.push({ userId, scheduleId, ...(scheduleData as ScheduleData) });
-          });
-        });
-        setAllSchedules(scheduleArray);
-        scheduleArray?.map((data) => console.log(data?.mapMarkers[0]))
-      }
-    });
-  }, []);
+    console.log(visitReports);
+  }, [visitReports]);
 
   if (!isLoaded) {
     return <Loading />;
   }
 
-  const handleSelect = (status: string) => {
-    setShowStatus(status);
+  const handleSelect = (type: string) => {
+    setFilterType(type);
   };
+
+  // Fungsi untuk menghitung maximum slope menggunakan Elevation API
+  const computeMaxSlope = (directionsResult: google.maps.DirectionsResult) => {
+    const route = directionsResult.routes[0];
+    if (!route.overview_path) return;
+    const path = route.overview_path;
+    const elevator = new google.maps.ElevationService();
+    elevator.getElevationAlongPath(
+      {
+        path: path,
+        samples: 256, // jumlah sampel, bisa disesuaikan
+      },
+      (results, status) => {
+        if (status === google.maps.ElevationStatus.OK && results) {
+          let currentMaxSlope = 0;
+          for (let i = 1; i < results.length; i++) {
+            const prevLocation = results[i - 1].location;
+            const currLocation = results[i].location;
+            // Pastikan kedua lokasi tidak null
+            if (!prevLocation || !currLocation) continue;
+
+            const elevationDiff = results[i].elevation - results[i - 1].elevation;
+            const distance = google.maps.geometry.spherical.computeDistanceBetween(
+              currLocation,
+              prevLocation
+            );
+            if (distance > 0) {
+              const slopePercent = (elevationDiff / distance) * 100;
+              if (Math.abs(slopePercent) > currentMaxSlope) {
+                currentMaxSlope = Math.abs(slopePercent);
+              }
+            }
+          }
+          setMaxSlope(currentMaxSlope);
+        } else {
+          console.error("Elevation API error", status);
+        }
+      }
+    );
+  };
+
+  // Saat marker diklik, ambil data, tampilkan rute dan hitung maximum slope
+  const handleMarkerClick = (data: VisitData) => {
+    setSelectedData(data);
+    setDirections(null);
+    setMaxSlope(null);
+    if (data.mapMarkers && data.mapMarkers.length >= 2) {
+      const origin = data.mapMarkers[0];
+      const destination = data.mapMarkers[data.mapMarkers.length - 1];
+      const waypoints =
+        data.mapMarkers.length > 2
+          ? data.mapMarkers.slice(1, data.mapMarkers.length - 1).map(marker => ({
+              location: marker,
+              stopover: true,
+            }))
+          : [];
+      const directionsService = new google.maps.DirectionsService();
+      directionsService.route(
+        {
+          origin,
+          destination,
+          waypoints,
+          travelMode: google.maps.TravelMode.DRIVING,
+        },
+        (result, status) => {
+          if (status === google.maps.DirectionsStatus.OK && result) {
+            setDirections(result);
+            computeMaxSlope(result);
+          } else {
+            console.error("Error fetching directions", result);
+          }
+        }
+      );
+    }
+  };
+
+  const totalIsuzu =
+    selectedData && selectedData.units
+      ? selectedData.units
+          .filter(unit => unit.trademark.toUpperCase() === "ISUZU")
+          .reduce((acc, curr) => acc + parseInt(curr.qtyUnit), 0)
+      : 0;
+
+  const totalNonIsuzu =
+    selectedData && selectedData.units
+      ? selectedData.units
+          .filter(unit => unit.trademark.toUpperCase() !== "ISUZU")
+          .reduce((acc, curr) => acc + parseInt(curr.qtyUnit), 0)
+      : 0;
 
   return (
     <div className="flex fixed left-0 top-0 w-screen h-screen">
       <div className="flex fixed z-50 top-3 w-full justify-center ">
         <Link
-          to="/admin/schedule"
-          className={`px-6 py-2 flex justify-center items-center mx-4 rounded-full border-r bg-white backdrop-blur-lg text-black}`}
+          to="/admin/visit"
+          className="px-6 py-2 flex justify-center items-center mx-4 rounded-full border-r bg-white backdrop-blur-lg text-black"
         >
           <IoMdReturnLeft />
         </Link>
+        {/* Tombol filter */}
         <button
-          className={`px-6 py-2 rounded-l-full border-r ${showStatus === "done" ? "bg-slate-200 backdrop-blur-lg bg-opacity-50 text-black" : "bg-white text-black"
-            }`}
-          onClick={() => handleSelect("done")}
+          className={`px-6 py-2 rounded-l-full border-r ${
+            filterType === "isuzu"
+              ? "bg-slate-200 backdrop-blur-lg bg-opacity-50 text-black"
+              : "bg-white text-black"
+          }`}
+          onClick={() => handleSelect("isuzu")}
         >
-          Done
+          ISUZU
         </button>
         <button
-          className={`px-6 py-2 border-r  ${showStatus === "pending" ? "bg-slate-200 backdrop-blur-lg bg-opacity-50 text-black" : "bg-white text-black"
-            }`}
-          onClick={() => handleSelect("pending")}
+          className={`px-6 py-2 border-r ${
+            filterType === "non-isuzu"
+              ? "bg-slate-200 backdrop-blur-lg bg-opacity-50 text-black"
+              : "bg-white text-black"
+          }`}
+          onClick={() => handleSelect("non-isuzu")}
         >
-          Pending
+          NON-ISUZU
         </button>
         <button
-          className={`px-6 py-2 rounded-r-full ${showStatus === "all" ? "bg-slate-200 backdrop-blur-lg bg-opacity-50 text-black" : "bg-white text-black"
-            }`}
+          className={`px-6 py-2 rounded-r-full ${
+            filterType === "all"
+              ? "bg-slate-200 backdrop-blur-lg bg-opacity-50 text-black"
+              : "bg-white text-black"
+          }`}
           onClick={() => handleSelect("all")}
         >
-          All
+          ALL
         </button>
       </div>
-      <div className={`${selectedData ? "block" : "hidden"} fixed bottom-0 left-0 z-10 bg-white px-8 py-6 rounded-tr`}>
-        <table className={`text-sm mt-2`}>
+      <div
+        className={`${
+          selectedData ? "block" : "hidden"
+        } fixed bottom-2 left-2 shadow-xl z-10 bg-white px-8 py-6 rounded-tr`}
+      >
+        <table className="text-sm mt-2">
           <tbody className="w-full">
-          <tr className="text-left w-full">
+            <tr className="text-left w-full">
               <td className="font-semibold">Dealer</td>
               <td className="pl-8">{selectedData?.dealer}</td>
             </tr>
             <tr className="text-left w-full">
               <td className="font-semibold">Customer</td>
-              <td className="pl-8">{selectedData?.customer}</td>
+              <td className="pl-8">{selectedData?.customerName}</td>
             </tr>
             <tr className="text-left w-full">
-              <td className="font-semibold">Visit on</td>
-              <td className="pl-8">{selectedData?.dateEnd}</td>
+              <td className="font-semibold">Segment</td>
+              <td className="pl-8">{selectedData?.segment}</td>
             </tr>
             <tr className="text-left w-full">
-              <td className="font-semibold">Type</td>
-              <td className="pl-8">{selectedData?.type}</td>
+              <td className="font-semibold">Operation</td>
+              <td className="pl-8">{selectedData?.dateOperation}</td>
             </tr>
             <tr className="text-left w-full">
-              <td className="font-semibold">Address</td>
-              <td className="pl-8">{selectedData?.address}</td>
+              <td className="font-semibold">Distance</td>
+              <td className="pl-8">
+                {((selectedData?.mapDistance || 0) / 1000).toFixed(2)} Km
+              </td>
             </tr>
             <tr className="text-left w-full">
-              <td className="font-semibold">Status</td>
-              <td className="pl-8">{selectedData?.status}</td>
+              <td className="font-semibold">Last Visit</td>
+              <td className="pl-8">{selectedData?.visitDate}</td>
             </tr>
+            {selectedData && selectedData.units && (
+              <>
+                <tr className="text-left w-full">
+                  <td className="font-semibold">Unit ISUZU</td>
+                  <td className="pl-8">{totalIsuzu}</td>
+                </tr>
+                <tr className="text-left w-full">
+                  <td className="font-semibold">Unit Non-Isuzu</td>
+                  <td className="pl-8">{totalNonIsuzu}</td>
+                </tr>
+              </>
+            )}
+            {maxSlope !== null && (
+              <tr className="text-left w-full">
+                <td className="font-semibold">Max Slope</td>
+                <td className="pl-8">{maxSlope.toFixed(2)}%</td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
-      <div className={`w-full h-full items-center`}>
-        <GoogleMap
-          mapContainerStyle={containerStyle}
-          zoom={8}
-          center={center}
-        >
-          {allSchedules?.map((data, index) => (
-            data?.mapMarkers && data?.status !== showStatus ?
+      <div className="w-full h-full items-center">
+        <GoogleMap mapContainerStyle={containerStyle} zoom={8} center={center}>
+          {visitReports.map((data, index) => {
+            let totalUnits = 0;
+            if (data.units) {
+              if (filterType === "isuzu") {
+                totalUnits = data.units
+                  .filter(unit => unit.trademark.toUpperCase() === "ISUZU")
+                  .reduce((acc, curr) => acc + parseInt(curr.qtyUnit), 0);
+              } else if (filterType === "non-isuzu") {
+                totalUnits = data.units
+                  .filter(unit => unit.trademark.toUpperCase() !== "ISUZU")
+                  .reduce((acc, curr) => acc + parseInt(curr.qtyUnit), 0);
+              } else {
+                totalUnits = data.units.reduce(
+                  (acc, curr) => acc + parseInt(curr.qtyUnit),
+                  0
+                );
+              }
+            }
+            return (
               <Marker
                 key={index}
-                position={data?.mapMarkers[0]}
-                icon={data.type === "reguler" ? { url: "data:image/svg+xml;charset=UTF-8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='40' height='40'><path fill='%23007bff' d='M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zM12 12c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z'/></svg>" } : { url: "data:image/svg+xml;charset=UTF-8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='40' height='40'><path fill='%23ff0000' d='M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zM12 12c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z'/></svg>" }}
-                onClick={() => setSelectedData(data)}
+                position={data.locationMap}
+                label={{
+                  text: `${totalUnits}`,
+                  color: "black",
+                  fontSize: "16px",
+                  fontWeight: "bold",
+                }}
+                onClick={() => handleMarkerClick(data)}
               />
-              :
-              <div></div>
-          ))}
+            );
+          })}
+          {directions && <DirectionsRenderer directions={directions} />}
         </GoogleMap>
       </div>
     </div>
   );
 };
 
-export default AdminScheduleMap;
+export default RegularVisitMap;

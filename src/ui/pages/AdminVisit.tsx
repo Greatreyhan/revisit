@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { MdDelete, MdPrint } from "react-icons/md";
+import { MdArchitecture, MdDelete, MdPrint } from "react-icons/md";
 import { useFirebase } from "../../utils/FirebaseContext";
 import { VisitData } from "../interface/Visit";
 
@@ -53,9 +53,9 @@ const AdminVisit = () => {
         </div>
         <Link
           className="inline-flex items-center px-6 py-1.5 bg-primary rounded-full text-white"
-          to={"/visit/editor"}
+          to={"/admin/visit/visualization"}
         >
-          <span className="text-2xl mr-2">+</span>Create Report
+          <span className="text-2xl mr-2"><MdArchitecture /></span>Visualize Visit
         </Link>
       </div>
       <div className="flex justify-center items-center">
