@@ -124,7 +124,7 @@ const AdminVisualizationInvestigation: React.FC = () => {
   };
 
   return (
-    <div className="w-10/12 mx-auto flex flex-wrap justify-start pt-16 gap-10 bg-white">
+    <div className="md:w-10/12 w-11/12 mx-auto flex flex-wrap justify-start pt-16 gap-10 bg-white">
       <div className="w-full flex justify-end mt-4">
         <button
           type="button"
@@ -135,63 +135,201 @@ const AdminVisualizationInvestigation: React.FC = () => {
         </button>
       </div>
 
-      <div className={`fixed ${isShow ? "flex" : "hidden"} z-30 justify-center items-center bg-black bg-opacity-80 w-screen h-screen top-0 left-0 overflow-y-auto`}>
-        <form className="w-10/12 mt-32 relative">
-          <button type="button" onClick={() => setIsShow(false)} className="absolute top-4 right-0 bg-red-700 p-3 rounded-tr-lg"><MdOutlineClose className="text-3xl font-semibold text-white" /></button>
-          <div className="w-full py-8 px-8 rounded-lg my-4 bg-slate-100">
-            <h2 className="font-semibold">Filter</h2>
-            <div className="md:flex w-full gap-5">
-              <SelectInput required={true} label="Large Classification" name="Large Classification" value={largeClassification} onChange={(e) => { setLargeClassification(e.target.value); setDataMiddleClassification(classificationMap[e.target.value] || []); }} options={problemCategoriesData} />
-              <SelectInput required={true} label="Middle Classification" name="Middle Classification" value={middleClassification} onChange={handleChange(setMiddleClassification)} options={dataMiddleClassification} />
+      <div
+        className={`fixed ${isShow ? "flex" : "hidden"} z-30 justify-center items-center bg-black bg-opacity-80 w-screen top-0 left-0`}
+      >
+        <form className="relative md:w-10/12 w-11/12 h-screen overflow-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 bg-white rounded-lg p-6">
+          <button
+            type="button"
+            onClick={() => setIsShow(false)}
+            className="absolute top-4 right-4 bg-red-700 hover:bg-red-800 transition-colors p-2 rounded-full"
+          >
+            <MdOutlineClose className="text-xl text-white" />
+          </button>
+          <h2 className="text-2xl font-semibold mb-6">Filter</h2>
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <SelectInput
+                required
+                label="Large Classification"
+                name="Large Classification"
+                value={largeClassification}
+                onChange={(e) => {
+                  setLargeClassification(e.target.value);
+                  setDataMiddleClassification(classificationMap[e.target.value] || []);
+                }}
+                options={problemCategoriesData}
+              />
+              <SelectInput
+                required
+                label="Middle Classification"
+                name="Middle Classification"
+                value={middleClassification}
+                onChange={handleChange(setMiddleClassification)}
+                options={dataMiddleClassification}
+              />
             </div>
-            <div className="md:flex w-full gap-5">
-              <SelectInput required={true} label="Dealer" name="dealer" value={dealer} onChange={handleChange(setDealer)} options={DealerData} />
-              <SelectInput required={true} label="Area" name="area" value={area} onChange={(e) => { setArea(e.target.value); setDataLocation(areaMap[e.target.value] || []); }} options={areaData} />
-              <SelectInput required={true} label="Lokasi" name="location" value={location} onChange={handleChange(setLocation)} options={dataLocation} />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <SelectInput
+                required
+                label="Dealer"
+                name="dealer"
+                value={dealer}
+                onChange={handleChange(setDealer)}
+                options={DealerData}
+              />
+              <SelectInput
+                required
+                label="Area"
+                name="area"
+                value={area}
+                onChange={(e) => {
+                  setArea(e.target.value);
+                  setDataLocation(areaMap[e.target.value] || []);
+                }}
+                options={areaData}
+              />
+              <SelectInput
+                required
+                label="Lokasi"
+                name="location"
+                value={location}
+                onChange={handleChange(setLocation)}
+                options={dataLocation}
+              />
             </div>
-            <div className="md:flex w-full gap-5">
-              <SelectInput required={true} label="Seri Kendaraan" name="series" value={series} onChange={handleChange(setSeries)} options={seriesData} />
-              <SelectInput required={true} label="Tipe Kendaraan" name="vehicleType" value={vehicleType} onChange={handleChange(setVehicleType)} options={vehicleTypesData} />
-              <SelectInput required={true} label="Model Fokus" name="focusModel" value={focusModel} onChange={handleChange(setFocusModel)} options={focusModelsData} />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <SelectInput
+                required
+                label="Seri Kendaraan"
+                name="series"
+                value={series}
+                onChange={handleChange(setSeries)}
+                options={seriesData}
+              />
+              <SelectInput
+                required
+                label="Tipe Kendaraan"
+                name="vehicleType"
+                value={vehicleType}
+                onChange={handleChange(setVehicleType)}
+                options={vehicleTypesData}
+              />
+              <SelectInput
+                required
+                label="Model Fokus"
+                name="focusModel"
+                value={focusModel}
+                onChange={handleChange(setFocusModel)}
+                options={focusModelsData}
+              />
             </div>
-            <div className="md:flex w-full gap-5">
-              <SelectInput label="Segmen" name="segment" value={segment} onChange={handleChange(setSegment)} options={segmentData} />
-              <SelectInput label="Aplikasi" name="application" value={application} onChange={handleChange(setApplication)} options={cargoTypesData} />
-              <SelectInput label="Karoseri" name="karoseri" value={karoseri} onChange={handleChange(setKaroseri)} options={karoseriCustomersData} />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <SelectInput
+                label="Segmen"
+                name="segment"
+                value={segment}
+                onChange={handleChange(setSegment)}
+                options={segmentData}
+              />
+              <SelectInput
+                label="Aplikasi"
+                name="application"
+                value={application}
+                onChange={handleChange(setApplication)}
+                options={cargoTypesData}
+              />
+              <SelectInput
+                label="Karoseri"
+                name="karoseri"
+                value={karoseri}
+                onChange={handleChange(setKaroseri)}
+                options={karoseriCustomersData}
+              />
             </div>
-            <div className="md:flex w-full gap-5">
-              <SelectInput required={true} label="Tipe Euro" name="euroType" value={euroType} onChange={handleChange(setEuroType)} options={euroTypeData} />
-              <InputField required={true} label="VIN" name="VIN" value={VIN} onChange={handleChange(setVIN)} placeholder="Masukkan VIN" />
-              <SelectInput required={true} label="Status" name="status" value={status} onChange={handleChange(setStatus)} options={["Breakdown", "Operational"]} />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <SelectInput
+                required
+                label="Tipe Euro"
+                name="euroType"
+                value={euroType}
+                onChange={handleChange(setEuroType)}
+                options={euroTypeData}
+              />
+              <InputField
+                required
+                label="VIN"
+                name="VIN"
+                value={VIN}
+                onChange={handleChange(setVIN)}
+                placeholder="Masukkan VIN"
+              />
+              <SelectInput
+                required
+                label="Status"
+                name="status"
+                value={status}
+                onChange={handleChange(setStatus)}
+                options={["Breakdown", "Operational"]}
+              />
             </div>
-            <div className="md:flex w-full gap-5">
-              <InputField label="Tanggal Masalah" name="problemDateStart" type="date" value={problemDateStart} onChange={handleChange(setProblemDateStart)} />
-              <InputField label="Tanggal Masalah" name="problemDateEnd" type="date" value={problemDateEnd} onChange={handleChange(setProblemDateEnd)} />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <InputField
+                label="Tanggal Masalah"
+                name="problemDateStart"
+                type="date"
+                value={problemDateStart}
+                onChange={handleChange(setProblemDateStart)}
+              />
+              <InputField
+                label="Tanggal Masalah"
+                name="problemDateEnd"
+                type="date"
+                value={problemDateEnd}
+                onChange={handleChange(setProblemDateEnd)}
+              />
             </div>
-            <div className="md:flex w-full gap-5">
-              <InputField label="Tanggal Kunjungan" name="visitDateStart" type="date" value={visitDateStart} onChange={handleChange(setVisitDateStart)} />
-              <InputField label="Tanggal Kunjungan" name="visitDateEnd" type="date" value={visitDateEnd} onChange={handleChange(setVisitDateEnd)} />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <InputField
+                label="Tanggal Kunjungan"
+                name="visitDateStart"
+                type="date"
+                value={visitDateStart}
+                onChange={handleChange(setVisitDateStart)}
+              />
+              <InputField
+                label="Tanggal Kunjungan"
+                name="visitDateEnd"
+                type="date"
+                value={visitDateEnd}
+                onChange={handleChange(setVisitDateEnd)}
+              />
             </div>
-            <div className="flex justify-end mt-4">
-              <button
-                type="button"
-                onClick={() => { setIsDataChanged(true); setIsShow(false) }}
-                className="mt-4 px-6 py-3 inline-flex justify-center items-center bg-primary rounded-full text-white"
-              >
-                <span className="mr-1">Filter</span> <BiSave className="text-2xl" />
-              </button>
-            </div>
+          </div>
+          <div className="flex justify-end mt-8">
+            <button
+              type="button"
+              onClick={() => {
+                setIsDataChanged(true);
+                setIsShow(false);
+              }}
+              className="px-6 py-3 bg-primary hover:bg-primary-dark transition-colors rounded-full text-white flex items-center"
+            >
+              <span className="mr-2">Filter</span>
+              <BiSave className="text-xl" />
+            </button>
           </div>
         </form>
       </div>
 
+
       {/* Menampilkan Grafik Balok berdasarkan Large Classification */}
       <TimeSeriesCasesChart reports={filteredReports} />
-      <div className="flex w-full gap-x-5 justify-between">
+      <div className="flex flex-wrap w-full gap-x-5 justify-between">
         <PieClassification reports={filteredReports} />
         <AreaChartReport reports={filteredReports} />
       </div>
-      <div className="flex gap-x-5 w-full justify-around">
+      <div className="flex flex-wrap gap-x-5 w-full justify-around">
         <SeriesChart reports={filteredReports} />
         <SegmentChart reports={filteredReports} />
       </div>

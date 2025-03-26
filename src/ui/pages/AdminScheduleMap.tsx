@@ -55,26 +55,26 @@ const AdminScheduleMap = () => {
       <div className="flex fixed z-50 top-3 w-full justify-center ">
         <Link
           to="/admin/schedule"
-          className={`px-6 py-2 flex justify-center items-center mx-4 rounded-full border-r bg-white backdrop-blur-lg text-black}`}
+          className={`md:px-6 px-3 py-2 flex ml-28 md:ml-0 justify-center items-center md:mx-4 rounded-full border-r bg-white backdrop-blur-lg text-black}`}
         >
           <IoMdReturnLeft />
         </Link>
         <button
-          className={`px-6 py-2 rounded-l-full border-r ${showStatus === "done" ? "bg-slate-200 backdrop-blur-lg bg-opacity-50 text-black" : "bg-white text-black"
+          className={`md:px-6 px-3 py-2 rounded-l-full border-r ${showStatus === "done" ? "bg-slate-200 backdrop-blur-lg bg-opacity-50 text-black" : "bg-white text-black"
             }`}
           onClick={() => handleSelect("done")}
         >
           Done
         </button>
         <button
-          className={`px-6 py-2 border-r  ${showStatus === "pending" ? "bg-slate-200 backdrop-blur-lg bg-opacity-50 text-black" : "bg-white text-black"
+          className={`md:px-6 px-3 py-2 border-r  ${showStatus === "pending" ? "bg-slate-200 backdrop-blur-lg bg-opacity-50 text-black" : "bg-white text-black"
             }`}
           onClick={() => handleSelect("pending")}
         >
           Pending
         </button>
         <button
-          className={`px-6 py-2 rounded-r-full ${showStatus === "all" ? "bg-slate-200 backdrop-blur-lg bg-opacity-50 text-black" : "bg-white text-black"
+          className={`md:px-6 px-3 py-2 rounded-r-full ${showStatus === "all" ? "bg-slate-200 backdrop-blur-lg bg-opacity-50 text-black" : "bg-white text-black"
             }`}
           onClick={() => handleSelect("all")}
         >

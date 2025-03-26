@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { MdDangerous, MdGppGood, MdMap } from "react-icons/md";
+import { MdClose, MdDangerous, MdGppGood, MdMap } from "react-icons/md";
 import { useFirebase } from "../../utils/FirebaseContext";
 import { ScheduleData } from "../interface/Schedule";
+import { IoMdSettings } from "react-icons/io";
 
 const DealerSchedule = () => {
   const { getFromDatabase, user } = useFirebase();
   const [allSchedules, setAllSchedules] = useState<ScheduleData[]>([]);
-
+  const [keyData, setKeyData] = useState<number>(-1)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,8 +52,41 @@ const DealerSchedule = () => {
   };
 
   return (
-    <div className="w-10/12 mx-auto pt-8">
+    <div className="md:w-10/12 w-11/12 mx-auto pt-8">
+      <div onClick={() => setKeyData(-1)} className={`fixed w-screen h-screen bg-black top-0 left-0 bg-opacity-40 ${keyData == -1 ? "hidden" : "flex"} justify-center items-center`}>
+        <div className={`pb-6 bg-slate-50 w-11/12 rounded-lg flex flex-col`}>
+          <div className="relative">
+            <button onClick={() => setKeyData(-1)} className="absolute right-0 top-0" type="button"><MdClose className="text-5xl bg-red-700 text-white p-3 rounded-tr-lg" /></button>
+            <table className="w-full">
+              <thead>
+                <tr className="">
+                  <td className="font-semibold py-3 px-6 rounded-t-lg bg-slate-100" colSpan={2}>Schedule Information</td>
+                </tr>
+              </thead>
+              <tbody className="">
+                <tr className="text-left w-full">
+                  <td className="px-6 w-4/12 p-2">Customer</td>
+                  <td className=" w-10/12 p-2">: {allSchedules[keyData]?.customer}</td>
+                </tr>
+                <tr className="text-left w-full">
+                  <td className="px-6 w-4/12 p-2">Date Start</td>
+                  <td className=" w-10/12 p-2">: {formatDate(allSchedules[keyData]?.dateStart)}</td>
+                </tr>
+                <tr className="text-left w-full">
+                  <td className="px-6 w-4/12 p-2">Date End</td>
+                  <td className=" w-10/12 p-2">: {formatDate(allSchedules[keyData]?.dateEnd)}</td>
+                </tr>
+                <tr className="text-left w-full">
+                  <td className="px-6 w-4/12 p-2">Address</td>
+                  <td className=" w-10/12 p-2">: {allSchedules[keyData]?.address}</td>
+                </tr>
+              </tbody>
+            </table>
+            <hr className="mt-8" />
 
+          </div>
+        </div>
+      </div>
       <div className="flex items-center justify-between py-8">
         <p>Total Schedule: {allSchedules.length}</p>
         <Link
@@ -69,8 +103,9 @@ const DealerSchedule = () => {
               <th className="border p-4 dark:border-dark-5 whitespace-nowrap text-gray-900">#</th>
               <th className="border p-4 dark:border-dark-5 whitespace-nowrap text-gray-900">Customer</th>
               <th className="border p-4 dark:border-dark-5 whitespace-nowrap text-gray-900">Date</th>
-              <th className="border p-4 dark:border-dark-5 whitespace-nowrap text-gray-900">Address</th>
+              <th className="border p-4 dark:border-dark-5 whitespace-nowrap text-gray-900 hidden md:table-cell">Address</th>
               <th className="border p-4 dark:border-dark-5 whitespace-nowrap text-gray-900">Status</th>
+              <th className="border p-4 dark:border-dark-5 whitespace-nowrap text-gray-900 hidden md:table-cell">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -79,8 +114,19 @@ const DealerSchedule = () => {
                 <td className="border p-4 dark:border-dark-5">{i + 1}</td>
                 <td className="border p-4 dark:border-dark-5">{data?.customer}</td>
                 <td className="border-b p-4 dark:border-dark-5 flex flex-col h-full gap-1 items-center justify-center"><span className="bg-sky-100 px-4 py-1 rounded-lg">{formatDate(data?.dateStart)}</span><span className="bg-rose-100 px-4 py-1 rounded-lg">{formatDate(data?.dateEnd)}</span></td>
-                <td className="border p-4 dark:border-dark-5">{data?.address}</td>
+                <td className="border p-4 dark:border-dark-5 hidden md:table-cell">{data?.address}</td>
                 <td className="border p-4 dark:border-dark-5">{data?.status == 'pending' ? <MdDangerous className="w-full text-xl text-rose-700" /> : <MdGppGood className="w-full text-xl text-emerald-700" />}</td>
+                <td className="border-t p-4 flex gap-x-3 justify-around items-center md:hidden">
+                  <button
+                    className="p-2 text-sky-800 rounded-full bg-sky-100"
+                    type="button"
+                    onClick={() => console.log("show")}
+                  >
+                    <IoMdSettings onClick={() => setKeyData(i)} />
+                  </button>
+
+                </td>
+
               </tr>
             ))}
           </tbody>

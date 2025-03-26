@@ -85,7 +85,7 @@ const SelectInput: React.FC<SelectInputProps> = ({
         className="rounded-lg border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-primary-light focus:rounded-lg"
       />
       {isOpen && filteredOptions.length > 0 && (
-        <ul className="absolute z-50 w-full bg-white border border-gray-300 top-full mt-1 rounded-lg max-h-60 overflow-auto">
+        <ul className="absolute z-10 w-full bg-white border border-gray-300 top-full mt-1 rounded-lg max-h-60 overflow-auto">
           {filteredOptions.map((option) => (
             <li
               key={option}

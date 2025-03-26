@@ -41,7 +41,7 @@ const ProfileTemplate: React.FC<ProfileTemplateProps> = ({ children }) => {
     waiting(false)
     return (
       <div className="flex relative w-full">
-        <div className='absolute top-2 right-2'>
+        <div className='md:block hidden absolute top-2 right-2 md:mt-0 mt-14'>
           <div className="rounded-xl bg-slate-100 px-6 py-2">
             <div className="flex-row gap-4 flex justify-center items-center">
               <div className="flex-shrink-0">
@@ -59,10 +59,10 @@ const ProfileTemplate: React.FC<ProfileTemplateProps> = ({ children }) => {
           </div>
         </div>
         <Notification />
-        <div className="md:w-2/12">
+        <div className="md:w-2/12 z-50">
           <ProfileNavigation />
         </div>
-        <div className="md:w-10/12 w-full pt-10">
+        <div className="md:w-10/12 w-full md:pt-10">
           {children}
         </div>
       </div>

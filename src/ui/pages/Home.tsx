@@ -78,7 +78,7 @@ const Home: React.FC = () => {
           One Platform <br />All Solution
         </h2>
         <p className="md:w-6/12 w-9/12 mx-auto mt-2 text-base-light">
-        Revisit is designed for field professionals like you, enabling seamless customer interactions to deliver better service and greater value.        </p>
+        <strong>This platform</strong> is designed for field professionals like you, enabling seamless customer interactions to deliver better service and greater value.        </p>
 
         <div className="mt-6">
           <Link

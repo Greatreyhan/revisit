@@ -42,7 +42,7 @@ const AdminArticle = () => {
               <th className="border p-4 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">#</th>
               <th className="border p-4 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Title</th>
               <th className="border p-4 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Tag</th>
-              <th className="border p-4 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Desc</th>
+              {/* <th className="border p-4 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900 ">Desc</th> */}
               <th className="border p-4 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Action</th>
             </tr>
           </thead>
@@ -50,9 +50,9 @@ const AdminArticle = () => {
             {keyArticle.map((key, i) => (
               <tr key={key} className="text-gray-700">
                 <td className="border p-4 dark:border-dark-5">{i + 1}</td>
-                <td className="border p-4 dark:border-dark-5">{dataArticle[key]?.title}</td>
-                <td className="border p-4 dark:border-dark-5">{dataArticle[key]?.tag}</td>
-                <td className="border p-4 dark:border-dark-5">{dataArticle[key]?.desc}</td>
+                <td className="border p-4 md:text-base text-sm dark:border-dark-5">{dataArticle[key]?.title}</td>
+                <td className="border p-4 md:text-base text-sm dark:border-dark-5">{dataArticle[key]?.tag}</td>
+                {/* <td className="border p-4 dark:border-dark-5">{dataArticle[key]?.desc}</td> */}
                 <td className="border-t p-4 flex gap-x-3 justify-around items-center">
                   <Link
                     className="p-2 text-sky-800 rounded-full bg-sky-100"

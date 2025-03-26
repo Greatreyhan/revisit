@@ -37,7 +37,7 @@ const AreaChartReport: React.FC<AreaChartReportProps> = ({ reports }) => {
   }, [reports]);
 
   return (
-    <div className="rounded-lg w-5/12 bg-slate-100">
+    <div className="rounded-lg md:w-5/12 w-full md:mt-0 mt-8 bg-slate-100">
       <h3 className="text-xl font-semibold text-left p-5">Area Problem</h3>
       <ResponsiveContainer width="100%" height={300}>
         <RadarChart data={data}>

@@ -29,7 +29,7 @@ const SeriesChart: React.FC<Props> = ({ reports }) => {
   }));
   
   return (
-    <div className="rounded-lg flex-1 bg-slate-100">
+    <div className="rounded-lg md:flex-1 w-full bg-slate-100">
       <h3 className="text-xl font-semibold text-left p-5">Series Problem</h3>
       <ResponsiveContainer className={"p-4 pr-8 pl-0"} width={"100%"} height={300}>
         <BarChart data={chartData}>

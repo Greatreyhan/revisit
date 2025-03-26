@@ -84,8 +84,6 @@ const AdminVisuzalizationRegular: React.FC = () => {
       <div>
         <RegularVisitMap setVisitReports={setVisitReports} visitReports={visitReports} />
       </div>
-
-
     </div>
   );
 };

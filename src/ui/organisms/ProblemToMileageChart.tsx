@@ -42,7 +42,7 @@ const VehicleAgeMileageScatterChart: React.FC<Props> = ({ reports }) => {
   return (
     <div className="rounded-lg flex-1 bg-slate-100">
       <h3 className="text-xl font-semibold text-left p-5">Problem Segment</h3>
-      <ResponsiveContainer className={"px-8 py-4 "} width="100%" height={400}>
+      <ResponsiveContainer className={"md:px-8 py-4"} width="100%" height={400}>
 
         <ScatterChart
           width={800}

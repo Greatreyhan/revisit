@@ -33,7 +33,7 @@ const SegmentChart: React.FC<Props> = ({ reports }) => {
     .filter((item) => item.count >= 1);
 
   return (
-    <div className="rounded-lg flex-1 bg-slate-100">
+    <div className="rounded-lg md:flex-1 w-full md:mt-0 mt-8 bg-slate-100 md:px-0 px-4">
       <h3 className="text-xl font-semibold text-left p-5">Problem Segment</h3>
       <ResponsiveContainer className={"pr-8 "} width="100%" height={300}>
         <BarChart

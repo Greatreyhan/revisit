@@ -128,7 +128,7 @@ const PieClassification: React.FC<Props> = ({ reports }) => {
     }, [outerData, parentColorMap]);
 
     return (
-        <div className={"px-8 py-4 rounded-lg w-7/12 bg-slate-100"}>
+        <div className={"md:px-8 py-4 rounded-lg md:w-7/12 w-full bg-slate-100"}>
             <h3 className="text-xl font-semibold text-left px-8 py-6">Problem Classification</h3>
             <ResponsiveContainer width="100%" height={250}>
                 <PieChart>

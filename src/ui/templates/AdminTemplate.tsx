@@ -27,7 +27,7 @@ const AdminTemplate: React.FC<AdminTemplateProps> = ({ children }) => {
     waiting(false)
     return (
       <div className="flex relative w-full">
-        <div className='absolute top-2 right-2'>
+        <div className='absolute top-2 right-2 hidden md:block'>
           <div className="rounded-xl bg-slate-100 px-6 py-2">
             <div className="flex-row gap-4 flex justify-center items-center">
               <div className="flex-shrink-0">
@@ -41,17 +41,14 @@ const AdminTemplate: React.FC<AdminTemplateProps> = ({ children }) => {
                   {authData?.type}
                 </span>
               </div>
-              {/* <button type="button" className="py-2 px-4  bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500 focus:ring-offset-indigo-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg ">
-                            Add
-                        </button> */}
             </div>
           </div>
         </div>
         <Notification />
-        <div className="md:w-2/12">
+        <div className="md:w-2/12 z-50">
           <AdminNavigation />
         </div>
-        <div className="md:w-10/12 w-full pt-10">
+        <div className="md:w-10/12 w-full md:pt-10">
           {children}
         </div>
       </div>

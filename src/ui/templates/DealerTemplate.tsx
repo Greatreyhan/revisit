@@ -29,7 +29,7 @@ const DealerTemplate: React.FC<DealerTemplateProps> = ({ children }) => {
     waiting(false)
     return (
       <div className="flex relative w-full">
-        <div className='absolute top-2 right-2'>
+        <div className='absolute top-2 right-2 hidden md:block'>
           <div className="rounded-xl bg-slate-100 px-6 py-2">
             <div className="flex-row gap-4 flex justify-center items-center">
               <div className="flex-shrink-0">
@@ -47,10 +47,10 @@ const DealerTemplate: React.FC<DealerTemplateProps> = ({ children }) => {
           </div>
         </div>
         <Notification />
-        <div className="md:w-2/12">
+        <div className="md:w-2/12 z-50">
           <DealerNavigation />
         </div>
-        <div className="md:w-10/12 w-full pt-4">
+        <div className="md:w-10/12 w-full md:pt-10">
           {children}
         </div>
       </div>
