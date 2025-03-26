@@ -37,7 +37,7 @@ const MiniBlog: React.FC = () => {
     <div className="w-full mx-auto overflow-x-hidden">
 
       {/* Articles */}
-      <div className="w-11/12 mx-auto py-8 flex flex-wrap md:justify-between justify-center gap-8">
+      <div className="w-11/12 mx-auto py-8 flex flex-wrap md:justify-between justify-center gap-5">
         {topArticles.map((key) => (
           <BlogCard
             key={key}

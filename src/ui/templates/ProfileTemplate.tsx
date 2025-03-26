@@ -4,6 +4,7 @@ import { useFirebase } from "../../utils/FirebaseContext";
 import Notification from '../../utils/Notification';
 import ProfileNavigation from '../organisms/ProfileNavigation';
 import Loading from '../molecules/Loading';
+import { FaClipboardUser } from 'react-icons/fa6';
 interface ProfileTemplateProps {
   children: ReactNode;
 }
@@ -39,12 +40,29 @@ const ProfileTemplate: React.FC<ProfileTemplateProps> = ({ children }) => {
   if (user && authData.type === "Field") {
     waiting(false)
     return (
-      <div className="flex w-full">
+      <div className="flex relative w-full">
+        <div className='absolute top-2 right-2'>
+          <div className="rounded-xl bg-slate-100 px-6 py-2">
+            <div className="flex-row gap-4 flex justify-center items-center">
+              <div className="flex-shrink-0">
+                <FaClipboardUser className='text-4xl bg-red-700 text-white p-1.5 rounded-full' />
+              </div>
+              <div className=" flex flex-col">
+                <span className="text-lg font-medium text-gray-600">
+                  {authData?.name}
+                </span>
+                <span className="text-xs text-gray-400">
+                  {authData?.type}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
         <Notification />
         <div className="md:w-2/12">
           <ProfileNavigation />
         </div>
-        <div className="md:w-10/12 w-full">
+        <div className="md:w-10/12 w-full pt-10">
           {children}
         </div>
       </div>

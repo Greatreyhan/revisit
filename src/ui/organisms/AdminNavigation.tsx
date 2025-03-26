@@ -24,6 +24,7 @@ const AdminNavigation: React.FC = () => {
 
     return (
         <div className='md:w-2/12 md:h-screen bg-slate-100 flex flex-col justify-between py-8 fixed left-0 top-0'>
+
             {/* Logo */}
             <div className='flex justify-center'>
                 <Link to={'/'}><img className="w-32" src={Logo} alt="Logo" /></Link>

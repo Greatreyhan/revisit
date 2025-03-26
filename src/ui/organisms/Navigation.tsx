@@ -1,4 +1,4 @@
-import React, {  useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Logo } from '../../assets/icons';
 import { MdMenu } from 'react-icons/md';
@@ -78,8 +78,8 @@ const Navigation: React.FC = () => {
                 key={item.to}
                 onClick={handleNav}
                 className={`py-3 block font-normal text-base hover:text-primary hover:underline ${location.pathname === item.to
-                    ? 'font-extrabold text-slate-900'
-                    : ''
+                  ? 'font-extrabold text-slate-900'
+                  : ''
                   }`}
                 to={item.to}
               >

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Logo } from "../../assets/icons";
-import { BsInstagram, BsWhatsapp } from "react-icons/bs";
+import { BsInstagram } from "react-icons/bs";
 import { BiLogoGmail, BiLogoLinkedin } from "react-icons/bi";
 
 const Footer = () => {
@@ -14,8 +14,6 @@ const Footer = () => {
             <p className="font-semibold ">Bekasi</p>
             Jl. Pejuang, RT.007/RW.016, Harapan Jaya, Kecamatan Medan Satria, Kota Bks, Jawa Barat 17124
           </address>
-
-
         </div>
         <div className="flex flex-col flex-1 mx-8">
           <div className="flex justify-end gap-3 mt-6">
@@ -33,13 +31,13 @@ const Footer = () => {
             >
               <BiLogoGmail className="w-full h-full" />
             </a>
-            <a
+            {/* <a
               className="mt-3 text-primary w-10 h-10 p-2.5 bg-base-white rounded-full inline-block hover:text-white"
               target="_blank"
               href="https://wa.me/6289503953090"
             >
               <BsWhatsapp className="w-full h-full" />
-            </a>
+            </a> */}
             <a
               className="mt-3 text-primary w-10 h-10 p-2.5 bg-base-white rounded-full inline-block hover:text-white"
               target="_blank"
@@ -58,22 +56,22 @@ const Footer = () => {
               </Link>
               <Link
                 className="mt-3 text-gray-300 hover:text-white"
-                to="/service"
+                to="/login"
               >
                 Dashboard
               </Link>
               <Link
                 className="mt-3 text-gray-300 hover:text-white"
-                to="/portofolio"
+                to="/"
               >
                 Literature
               </Link>
-              <Link className="mt-3 text-gray-300 hover:text-white" to="/about">
+              <Link className="mt-3 text-gray-300 hover:text-white" to="/">
                 Assistant
               </Link>
               <Link
                 className="mt-3 text-gray-300 hover:text-white"
-                to="/blog"
+                to="/"
               >
                 Report
               </Link>
@@ -85,28 +83,28 @@ const Footer = () => {
               <a
                 className="mt-3 text-gray-300 hover:text-white"
                 target="_blank"
-                href="https://wa.me/6282210100098/?text=Halo%2C%20saya%20ingin%20bertanya%20terkait%20layanan%20di%20bidang%20Litigasi%20dari%20Abdurrahman%20%26%20Co."
+                href="https://drive.google.com/drive/folders/1a4L5uFV7OlCR-TCHdJ7OIk6u5hPYqEbb"
               >
                 BBG
               </a>
               <a
                 className="mt-3 text-gray-300 hover:text-white"
                 target="_blank"
-                href="https://wa.me/6282210100098/?text=Halo%2C%20saya%20ingin%20bertanya%20terkait%20layanan%20di%20bidang%20Non%20Litigasi%20dari%20Abdurrahman%20%26%20Co."
+                href="https://drive.google.com/drive/folders/1a4L5uFV7OlCR-TCHdJ7OIk6u5hPYqEbb"
               >
                 Workshop Manual
               </a>
               <a
                 className="mt-3 text-gray-300 hover:text-white"
                 target="_blank"
-                href="https://wa.me/6282210100098/?text=Halo%2C%20saya%20ingin%20bertanya%20terkait%20layanan%20di%20bidang%20Retainer%20dari%20Abdurrahman%20%26%20Co."
+                href="https://i-partscenter.com/aftersalesbulletin/index.php"
               >
-                Visit Report
+                Bulletin
               </a>
               <a
                 className="mt-3 text-gray-300 hover:text-white"
                 target="_blank"
-                href="https://wa.me/6282210100098/?text=Halo%2C%20saya%20ingin%20bertanya%20terkait%20layanan%20di%20bidang%20Retainer%20dari%20Abdurrahman%20%26%20Co."
+                href="https://i-partscenter.com/aftersalesbulletin/index.php"
               >
                 Parts Library
               </a>
@@ -118,38 +116,38 @@ const Footer = () => {
               <a
                 className="mt-3 text-gray-300 hover:text-white"
                 target="_blank"
-                href="https://www.instagram.com/abdurrahman.lawfirm/"
+                href="https://service.isuzu-astra.com/logbook/"
               >
-                Report Creator
+                Logbook
               </a>
               <a
                 className="mt-3 text-gray-300 hover:text-white"
                 target="_blank"
-                href="mailto:abdurrahman.and.co@gmail.com"
+                href="https://service.isuzu-astra.com/warranty/login.php"
               >
-                Problem Consultation
+                IWC
               </a>
               <a
                 className="mt-3 text-gray-300 hover:text-white"
                 target="_blank"
-                href="https://wa.me/6282210100098"
+                href="https://drive.google.com/drive/folders/1jO5sqvHVLwP5z5ZrDGW6aFUGr6Fr1rFn?usp=sharing"
               >
-                Schedule to Visit
+                Tutorial
               </a>
-              <a
+              {/* <a
                 className="mt-3 text-gray-300 hover:text-white"
                 target="_blank"
                 href="https://www.linkedin.com/company/abdurrahman-co/"
               >
                 Product Knowledge
-              </a>
+              </a> */}
             </div>
           </div>
         </div>
 
       </div>
       <p className="text-center mt-8 text-white text-sm">
-        © Revisit
+        © Isuzu Astra Motor Indonesia 2025
       </p>
     </div>
   );

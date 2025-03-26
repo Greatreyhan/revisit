@@ -164,7 +164,7 @@ const ArticleEditor: React.FC = () => {
                         </Link>
                         <button
                             type="submit"
-                            className="mt-4 px-6 py-2 inline-flex justify-center items-center bg-primatext-primary rounded-full text-white font-semibold"
+                            className="mt-4 cursor-pointer px-6 py-2 inline-flex justify-center items-center bg-primary rounded-full text-white font-semibold"
                         >
                             <BiSave className="mr-2" />
                             Save

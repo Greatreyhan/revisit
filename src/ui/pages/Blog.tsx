@@ -73,7 +73,7 @@ const Blog: React.FC = () => {
       </div>
 
       {/* Search and Tag Filters */}
-      <div className="w-10/12 mx-auto flex-col items-center mt-8 justify-center">
+      <div className="w-11/12 mx-auto flex-col items-center mt-8 justify-center">
         <div className="w-full flex justify-center">
           <form className="md:w-6/12 w-10/12">
             <input
