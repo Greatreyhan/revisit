@@ -9,7 +9,10 @@ const ProfileReport = () => {
   const { getFromDatabase, deleteFromDatabase, user } = useFirebase();
   const [dataArticle, setDataArticle] = useState<{ [key: string]: ReportData }>({});
   const [keyArticle, setKeyArticle] = useState<string[]>([]);
-  const [keyData, setKeyData] = useState<string>("")
+  const [keyData, setKeyData] = useState<string>("");
+
+  // State untuk modal konfirmasi hapus data
+  const [confirmDeleteKey, setConfirmDeleteKey] = useState<string>("");
 
   useEffect(() => {
     getFromDatabase(`report/${user?.uid}`).then((data) => {
@@ -19,28 +22,49 @@ const ProfileReport = () => {
         setDataArticle(data);
       }
     });
-  }, []);
+  }, [getFromDatabase, user?.uid]);
+
+  // Fungsi untuk mengonfirmasi penghapusan data
+  const handleConfirmDelete = () => {
+    deleteFromDatabase("report/" + user?.uid + "/" + confirmDeleteKey);
+    setConfirmDeleteKey(""); // tutup modal konfirmasi
+    setKeyData(""); // jika modal detail terbuka, tutup juga
+  };
 
   return (
     <div className="w-10/12 mx-auto pt-8">
-      <div onClick={() => setKeyData("")} className={`fixed w-screen h-screen bg-black top-0 left-0 bg-opacity-40 ${keyData == "" ? "hidden" : "flex"} justify-center items-center`}>
+      {/* Modal Detail Data */}
+      <div
+        onClick={() => setKeyData("")}
+        className={`fixed w-screen h-screen bg-black top-0 left-0 bg-opacity-40 ${
+          keyData == "" ? "hidden" : "flex"
+        } justify-center items-center`}
+      >
         <div className={`pb-6 bg-slate-50 rounded-lg flex flex-col`}>
           <div className="relative">
-            <button onClick={() => setKeyData("")} className="absolute right-0 top-0" type="button"><MdClose className="text-5xl bg-red-700 text-white p-3 rounded-tr-lg" /></button>
+            <button onClick={() => setKeyData("")} className="absolute right-0 top-0" type="button">
+              <MdClose className="text-5xl bg-red-700 text-white p-3 rounded-tr-lg" />
+            </button>
             <table className="w-full">
               <thead>
                 <tr className="">
-                  <td className="font-semibold py-3 px-6 rounded-t-lg bg-slate-100" colSpan={2}>Report Information</td>
+                  <td className="font-semibold py-3 px-6 rounded-t-lg bg-slate-100" colSpan={2}>
+                    Report Information
+                  </td>
                 </tr>
               </thead>
               <tbody className="">
                 <tr className="text-left w-full">
                   <td className="px-6 w-3/12 p-2">Title</td>
-                  <td className=" w-10/12 p-2">: {dataArticle[keyData]?.largeClassification + " " + dataArticle[keyData]?.middleClassification + " " + dataArticle[keyData]?.partProblem}</td>
+                  <td className=" w-10/12 p-2">
+                    : {dataArticle[keyData]?.largeClassification + " " + dataArticle[keyData]?.middleClassification + " " + dataArticle[keyData]?.partProblem}
+                  </td>
                 </tr>
                 <tr className="text-left w-full">
                   <td className="px-6 w-3/12 p-2">Unit</td>
-                  <td className=" w-10/12 p-2">: {dataArticle[keyData]?.focusModel + " " + dataArticle[keyData]?.euroType}</td>
+                  <td className=" w-10/12 p-2">
+                    : {dataArticle[keyData]?.focusModel + " " + dataArticle[keyData]?.euroType}
+                  </td>
                 </tr>
                 <tr className="text-left w-full">
                   <td className="px-6 w-3/12 p-2">Customer</td>
@@ -65,7 +89,8 @@ const ProfileReport = () => {
               <button
                 className="text-rose-800 px-4 py-2 rounded-lg bg-rose-100 flex items-center"
                 type="button"
-                onClick={() => deleteFromDatabase("report/" + user?.uid + "/" + keyData)}
+                // Menggunakan modal konfirmasi hapus
+                onClick={() => setConfirmDeleteKey(keyData)}
               >
                 <MdDelete className="text-md mr-1" />
                 <p className="text-sm">Delete Data</p>
@@ -80,10 +105,36 @@ const ProfileReport = () => {
               </Link>
             </div>
           </div>
-
-
         </div>
       </div>
+
+      {/* Modal Konfirmasi Hapus Data */}
+      <div
+        onClick={() => setConfirmDeleteKey("")}
+        className={`fixed w-screen h-screen bg-black top-0 left-0 bg-opacity-40 ${
+          confirmDeleteKey === "" ? "hidden" : "flex"
+        } justify-center items-center`}
+      >
+        <div className="bg-white p-6 rounded-lg shadow-md" onClick={(e) => e.stopPropagation()}>
+          <h2 className="text-xl font-semibold mb-4">Konfirmasi Hapus Data</h2>
+          <p className="mb-6">Apakah Anda yakin ingin menghapus data ini?</p>
+          <div className="flex justify-end gap-4">
+            <button
+              onClick={() => setConfirmDeleteKey("")}
+              className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+            >
+              Batal
+            </button>
+            <button
+              onClick={handleConfirmDelete}
+              className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+            >
+              Hapus
+            </button>
+          </div>
+        </div>
+      </div>
+
       <div className="flex items-center justify-between py-8">
         <p>Total Report: {keyArticle.length}</p>
         <Link
@@ -109,10 +160,20 @@ const ProfileReport = () => {
             {keyArticle.map((key, i) => (
               <tr key={key} className="text-gray-700 md:text-md text-sm">
                 <td className="border p-4 dark:border-dark-5">{i + 1}</td>
-                <td className="border p-4 dark:border-dark-5">{dataArticle[key]?.largeClassification + " " + dataArticle[key]?.middleClassification + " " + dataArticle[key]?.partProblem}</td>
-                <td className="border p-4 dark:border-dark-5 md:table-cell hidden">{dataArticle[key]?.focusModel + " " + dataArticle[key]?.euroType}</td>
+                <td className="border p-4 dark:border-dark-5">
+                  {dataArticle[key]?.largeClassification + " " + dataArticle[key]?.middleClassification + " " + dataArticle[key]?.partProblem}
+                </td>
+                <td className="border p-4 dark:border-dark-5 md:table-cell hidden">
+                  {dataArticle[key]?.focusModel + " " + dataArticle[key]?.euroType}
+                </td>
                 <td className="border p-4 dark:border-dark-5">{dataArticle[key]?.customerName}</td>
-                <td className="border p-4 dark:border-dark-5">{dataArticle[key]?.status == 'Breakdown' ? <MdDangerous className="w-full text-xl text-rose-700" /> : <MdGppGood className="w-full text-xl text-emerald-700" />}</td>
+                <td className="border p-4 dark:border-dark-5">
+                  {dataArticle[key]?.status === "Breakdown" ? (
+                    <MdDangerous className="w-full text-xl text-rose-700" />
+                  ) : (
+                    <MdGppGood className="w-full text-xl text-emerald-700" />
+                  )}
+                </td>
                 <td className="border-t p-4 md:flex gap-x-3 justify-around items-center hidden">
                   <Link
                     className="p-2 text-sky-800 rounded-full bg-sky-100"
@@ -123,7 +184,8 @@ const ProfileReport = () => {
                   <button
                     className="p-2 text-rose-800 rounded-full bg-rose-100"
                     type="button"
-                    onClick={() => deleteFromDatabase("report/" + user?.uid + "/" + key)}
+                    // Menggunakan modal konfirmasi hapus
+                    onClick={() => setConfirmDeleteKey(key)}
                   >
                     <MdDelete />
                   </button>
@@ -136,15 +198,13 @@ const ProfileReport = () => {
                   </Link>
                 </td>
                 <td className="border-t p-4 flex gap-x-3 justify-around items-center md:hidden">
-
                   <button
                     className="p-2 text-sky-800 rounded-full bg-sky-100"
                     type="button"
-                    onClick={() => console.log("show")}
+                    onClick={() => setKeyData(key)}
                   >
-                    <IoMdSettings onClick={() => setKeyData(key)} />
+                    <IoMdSettings />
                   </button>
-
                 </td>
               </tr>
             ))}

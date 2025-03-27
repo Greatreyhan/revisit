@@ -1,7 +1,9 @@
+// AddAttachment.tsx
 import React, { useState, useEffect } from "react";
 import InputField from "../molecules/InputField";
 import { MdAdd, MdClose, MdDelete } from "react-icons/md";
 import { useFirebase } from "../../utils/FirebaseContext";
+import ImageEditorModal from "./ImageEditorModal"; // Pastikan path ini sesuai
 
 interface AttachmentItem {
   imageAttached: string;
@@ -21,7 +23,7 @@ const extractFilename = (url: string): string => {
 };
 
 const AddAttachment: React.FC<AddAttachmentProps> = ({ attachments, setAttachments }) => {
-  const { uploadImageWithPath, deleteImageWithPath, user } = useFirebase();
+  const { uploadEditedImageWithPath, deleteImageWithPath, user } = useFirebase();
   const [imageAttached, setImageAttached] = useState<string>("");
   const [imageDescription, setImageDescription] = useState<string>("");
   const [imageId, setImageId] = useState<number>(0);
@@ -29,9 +31,11 @@ const AddAttachment: React.FC<AddAttachmentProps> = ({ attachments, setAttachmen
   const [selectIndex, setSelectIndex] = useState<number>(-1);
   const [editDescription, setEditDescription] = useState<string>("");
 
-  // Saat modal preview terbuka, set editDescription dengan nilai deskripsi attachment yang dipilih
+  // State untuk Image Editor Modal
+  const [showEditorModal, setShowEditorModal] = useState<boolean>(false);
+  const [editorImage, setEditorImage] = useState<string>("");
+
   useEffect(() => {
-    console.log(attachments)
     if (selectIndex !== -1 && attachments[selectIndex]) {
       setEditDescription(attachments[selectIndex].imageDescription);
     }
@@ -43,7 +47,7 @@ const AddAttachment: React.FC<AddAttachmentProps> = ({ attachments, setAttachmen
       setAttachments([...attachments, newAttachment]);
       setImageAttached("");
       setImageDescription("");
-      setImageId(0)
+      setImageId(0);
       setIsModalOpen(false);
     }
   };
@@ -53,7 +57,7 @@ const AddAttachment: React.FC<AddAttachmentProps> = ({ attachments, setAttachmen
       const attachmentToDelete = attachments[selectIndex];
       const filename = extractFilename(attachmentToDelete.imageAttached);
       if (filename && deleteImageWithPath) {
-        await deleteImageWithPath(filename,attachmentToDelete?.imageId?.toString() ?? "");
+        await deleteImageWithPath(filename, attachmentToDelete?.imageId?.toString() ?? "");
       }
       const updatedAttachments = attachments.filter((_, index) => index !== selectIndex);
       setAttachments(updatedAttachments);
@@ -71,13 +75,62 @@ const AddAttachment: React.FC<AddAttachmentProps> = ({ attachments, setAttachmen
     }
   };
 
+  // Handler untuk file input: membaca file dan membuka image editor
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files && e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const result = event.target?.result as string;
+        // Buka modal image editor dengan gambar yang dipilih
+        setEditorImage(result);
+        setShowEditorModal(true);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const dataURLtoFile = (dataurl: string, filename: string): File => {
+    const arr = dataurl.split(',');
+    const mimeMatch = arr[0].match(/:(.*?);/);
+    if (!mimeMatch) {
+      throw new Error('Invalid dataURL');
+    }
+    const mime = mimeMatch[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, { type: mime });
+  };
+
+  // Callback dari ImageEditorModal ketika pengguna menyimpan hasil edit
+  const handleEditorSave = async (editedImage: string) => {
+    setShowEditorModal(false);
+
+    // Konversi Data URL ke File
+    const editedFile = dataURLtoFile(editedImage, "edited-image.png");
+
+    // Panggil fungsi upload dengan file hasil edit
+    // Pastikan fungsi uploadEditedImageWithPath telah disesuaikan untuk menerima File
+    await uploadEditedImageWithPath(editedFile, (downloadURL: string) => {
+      // Setelah upload berhasil, update state imageAttached dan imageId
+      setImageAttached(downloadURL);
+    }, (newImageId: number) => {
+      setImageId(newImageId);
+    }, user?.uid ?? "");
+
+    // Jika upload berhasil, kamu bisa langsung menambahkan attachment
+  };
+
   return (
     <div>
-      {/* Modal Preview, Edit, Delete, dan Update */}
+      {/* Modal Preview untuk Edit, Delete, dan Update Lampiran */}
       <div
-        className={`fixed w-screen h-screen bg-black top-0 left-0 bg-opacity-40 z-50 ${
-          selectIndex === -1 ? "hidden" : "flex"
-        } justify-center items-center`}
+        className={`fixed w-screen h-screen bg-black top-0 left-0 bg-opacity-40 z-50 ${selectIndex === -1 ? "hidden" : "flex"
+          } justify-center items-center`}
       >
         {selectIndex !== -1 && attachments[selectIndex] && (
           <div
@@ -85,7 +138,6 @@ const AddAttachment: React.FC<AddAttachmentProps> = ({ attachments, setAttachmen
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-center bg-slate-100 rounded-t-xl">
-              {/* Field edit untuk deskripsi */}
               <input
                 type="text"
                 value={editDescription}
@@ -130,7 +182,7 @@ const AddAttachment: React.FC<AddAttachmentProps> = ({ attachments, setAttachmen
         )}
       </div>
 
-      {/* List Attachments */}
+      {/* List Lampiran */}
       <div className="flex flex-wrap gap-5 mt-4">
         {attachments?.map((attachment, index) => (
           <button
@@ -178,7 +230,7 @@ const AddAttachment: React.FC<AddAttachmentProps> = ({ attachments, setAttachmen
                 )}
                 <input
                   required
-                  onChange={(e) => uploadImageWithPath(e, setImageAttached, setImageId,user?.uid ?? "")}
+                  onChange={handleFileChange}
                   name="image"
                   id="image"
                   type="file"
@@ -202,12 +254,21 @@ const AddAttachment: React.FC<AddAttachmentProps> = ({ attachments, setAttachmen
                 className={`text-white px-4 py-2 rounded-md ${imageAttached === "" ? "bg-slate-600" : "bg-primary"}`}
                 disabled={imageDescription === ""}
                 onClick={handleAddAttachment}
+                type="button"
               >
                 Simpan
               </button>
             </div>
           </div>
         </div>
+      )}
+
+      {showEditorModal && (
+        <ImageEditorModal
+          imageData={editorImage}
+          onSave={handleEditorSave}
+          onCancel={() => setShowEditorModal(false)}
+        />
       )}
     </div>
   );

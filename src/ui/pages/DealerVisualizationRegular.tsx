@@ -67,7 +67,7 @@ const DealerVisuzalizationRegular: React.FC = () => {
   // };
 
   return (
-    <div className="w-10/12 mx-auto flex flex-wrap justify-start pt-16 gap-10 bg-white">
+    <div className="w-10/12 mx-auto flex flex-wrap justify-start pt-16 gap-10 bg-white z-40">
       <div className="w-full flex justify-end mt-4">
         <button
           type="button"

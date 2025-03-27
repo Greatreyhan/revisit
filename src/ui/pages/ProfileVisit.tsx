@@ -9,7 +9,8 @@ const ProfileVisit = () => {
   const { getFromDatabase, deleteFromDatabase, user } = useFirebase();
   const [dataArticle, setDataArticle] = useState<{ [key: string]: VisitData }>({});
   const [keyArticle, setKeyArticle] = useState<string[]>([]);
-  const [keyData, setKeyData] = useState<string>("")
+  const [keyData, setKeyData] = useState<string>("");
+  const [deleteKey, setDeleteKey] = useState<string>("");
 
   useEffect(() => {
     getFromDatabase(`visit/${user?.uid}`).then((data) => {
@@ -24,32 +25,39 @@ const ProfileVisit = () => {
   return (
     <div className="w-10/12 mx-auto pt-8">
       
-      <div onClick={() => setKeyData("")} className={`fixed w-screen h-screen bg-black top-0 left-0 bg-opacity-40 ${keyData == "" ? "hidden" : "flex"} justify-center items-center`}>
+      {/* Modal Report Info */}
+      <div onClick={() => setKeyData("")} className={`fixed w-screen h-screen bg-black top-0 left-0 bg-opacity-40 ${keyData === "" ? "hidden" : "flex"} justify-center items-center`}>
         <div className={`pb-6 bg-slate-50 rounded-lg flex flex-col`}>
           <div className="relative">
-            <button onClick={() => setKeyData("")} className="absolute right-0 top-0" type="button"><MdClose className="text-5xl bg-red-700 text-white p-3 rounded-tr-lg" /></button>
+            <button onClick={() => setKeyData("")} className="absolute right-0 top-0" type="button">
+              <MdClose className="text-5xl bg-red-700 text-white p-3 rounded-tr-lg" />
+            </button>
             <table className="w-full">
               <thead>
-                <tr className="">
-                  <td className="font-semibold py-3 px-6 rounded-t-lg bg-slate-100" colSpan={2}>Report Information</td>
+                <tr>
+                  <td className="font-semibold py-3 px-6 rounded-t-lg bg-slate-100" colSpan={2}>
+                    Report Information
+                  </td>
                 </tr>
               </thead>
-              <tbody className="">
-                <tr className="text-left w-full">
+              <tbody>
+                <tr className="text-left">
                   <td className="px-6 w-3/12 p-2">Customer</td>
-                  <td className=" w-10/12 p-2">: {dataArticle[keyData]?.customerName}</td>
+                  <td className="w-10/12 p-2">: {dataArticle[keyData]?.customerName}</td>
                 </tr>
-                <tr className="text-left w-full">
+                <tr className="text-left">
                   <td className="px-6 w-3/12 p-2">Area</td>
-                  <td className=" w-10/12 p-2">: {dataArticle[keyData]?.area}</td>
+                  <td className="w-10/12 p-2">: {dataArticle[keyData]?.area}</td>
                 </tr>
-                <tr className="text-left w-full">
+                <tr className="text-left">
                   <td className="px-6 w-3/12 p-2">Units</td>
-                  <td className=" w-10/12 p-2">: {dataArticle[keyData]?.units?.reduce((sum, unit) => sum + (Number(unit.qtyUnit) || 0),0)}</td>
+                  <td className="w-10/12 p-2">
+                    : {dataArticle[keyData]?.units?.reduce((sum, unit) => sum + (Number(unit.qtyUnit) || 0), 0)}
+                  </td>
                 </tr>
-                <tr className="text-left w-full">
+                <tr className="text-left">
                   <td className="px-6 w-3/12 p-2">Segment</td>
-                  <td className=" w-10/12 p-2">: {dataArticle[keyData]?.segment}</td>
+                  <td className="w-10/12 p-2">: {dataArticle[keyData]?.segment}</td>
                 </tr>
               </tbody>
             </table>
@@ -63,10 +71,14 @@ const ProfileVisit = () => {
                 <p className="text-sm">Edit Data</p>
               </Link>
 
+              {/* Tombol delete pada modal info: buka modal konfirmasi delete */}
               <button
                 className="text-rose-800 px-4 py-2 rounded-lg bg-rose-100 flex items-center"
                 type="button"
-                onClick={() => deleteFromDatabase("visit/" + keyData)}
+                onClick={() => {
+                  setDeleteKey(keyData);
+                  setKeyData("");
+                }}
               >
                 <MdDelete className="text-md mr-1" />
                 <p className="text-sm">Delete Data</p>
@@ -83,6 +95,43 @@ const ProfileVisit = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal Konfirmasi Hapus */}
+      {deleteKey !== "" && (
+        <div
+          onClick={() => setDeleteKey("")}
+          className="fixed w-screen h-screen bg-black top-0 left-0 bg-opacity-40 flex justify-center items-center"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="bg-slate-50 rounded-lg p-6 w-11/12 max-w-md"
+          >
+            <h3 className="text-xl font-bold mb-4">Konfirmasi Hapus Data</h3>
+            <p>
+              Apakah anda yakin akan menghapus data{" "}
+              <strong>{dataArticle[deleteKey]?.customerName}</strong>?
+            </p>
+            <div className="flex justify-end mt-4 gap-2">
+              <button
+                className="px-4 py-2 bg-gray-300 rounded"
+                onClick={() => setDeleteKey("")}
+              >
+                Batal
+              </button>
+              <button
+                className="px-4 py-2 bg-red-600 text-white rounded"
+                onClick={() => {
+                  deleteFromDatabase("visit/" + user?.uid + "/" + deleteKey);
+                  setDeleteKey("");
+                }}
+              >
+                Hapus
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex items-center justify-between py-8">
         <p>Total Visit: {keyArticle.length}</p>
         <Link
@@ -96,22 +145,29 @@ const ProfileVisit = () => {
         <table className="table p-4 bg-white rounded-lg shadow">
           <thead>
             <tr className="md:text-md text-sm bg-slate-50 font-bold">
-              <th className="border p-4 dark:border-dark-5 whitespace-nowrap text-gray-900">#</th>
-              <th className="border p-4 dark:border-dark-5 whitespace-nowrap text-gray-900">Customer</th>
-              <th className="border p-4 dark:border-dark-5 whitespace-nowrap text-gray-900 md:table-cell hidden">Segment</th>
-              <th className="border p-4 dark:border-dark-5 whitespace-nowrap text-gray-900">Area</th>
-              <th className="border p-4 dark:border-dark-5 whitespace-nowrap text-gray-900">Unit</th>
-              <th className="border p-4 dark:border-dark-5 whitespace-nowrap text-gray-900">Action</th>
+              <th className="border p-4 whitespace-nowrap text-gray-900">#</th>
+              <th className="border p-4 whitespace-nowrap text-gray-900">Customer</th>
+              <th className="border p-4 whitespace-nowrap text-gray-900 md:table-cell hidden">Segment</th>
+              <th className="border p-4 whitespace-nowrap text-gray-900">Area</th>
+              <th className="border p-4 whitespace-nowrap text-gray-900">Unit</th>
+              <th className="border p-4 whitespace-nowrap text-gray-900">Action</th>
             </tr>
           </thead>
           <tbody>
             {keyArticle.map((key, i) => (
               <tr key={key} className="text-gray-700 md:text-md text-sm">
-                <td className="border p-4 dark:border-dark-5">{i + 1}</td>
-                <td className="border p-4 dark:border-dark-5">{dataArticle[key]?.customerName}</td>
-                <td className="border p-4 dark:border-dark-5 md:table-cell hidden">{dataArticle[key]?.segment}</td>
-                <td className="border p-4 dark:border-dark-5">{dataArticle[key]?.area}</td>
-                <td className="border p-4 dark:border-dark-5 text-center">  {dataArticle[key]?.units?.reduce((total, unit) => total + parseInt(unit.qtyUnit, 10), 0) || 0}</td>
+                <td className="border p-4">{i + 1}</td>
+                <td className="border p-4">{dataArticle[key]?.customerName}</td>
+                <td className="border p-4 md:table-cell hidden">
+                  {dataArticle[key]?.segment}
+                </td>
+                <td className="border p-4">{dataArticle[key]?.area}</td>
+                <td className="border p-4 text-center">
+                  {dataArticle[key]?.units?.reduce(
+                    (total, unit) => total + parseInt(unit.qtyUnit, 10),
+                    0
+                  ) || 0}
+                </td>
                 <td className="border-t p-4 md:flex gap-x-3 justify-around items-center hidden">
                   <Link
                     className="p-2 text-sky-800 rounded-full bg-sky-100"
@@ -119,31 +175,29 @@ const ProfileVisit = () => {
                   >
                     <MdEdit />
                   </Link>
+                  {/* Tombol delete: buka modal konfirmasi delete */}
                   <button
                     className="p-2 text-rose-800 rounded-full bg-rose-100"
                     type="button"
-                    onClick={() => deleteFromDatabase("visit/" + key)}
+                    onClick={() => setDeleteKey(key)}
                   >
                     <MdDelete />
                   </button>
                   <Link
                     className="p-2 text-green-800 rounded-full bg-green-100"
-                    type="button"
                     to={"/visit/view/" + key}
                   >
                     <MdPrint />
                   </Link>
                 </td>
                 <td className="border-t p-4 flex gap-x-3 justify-around items-center md:hidden">
-
                   <button
                     className="p-2 text-sky-800 rounded-full bg-sky-100"
                     type="button"
-                    onClick={() => console.log("show")}
+                    onClick={() => setKeyData(key)}
                   >
-                    <IoMdSettings onClick={() => setKeyData(key)} />
+                    <IoMdSettings />
                   </button>
-
                 </td>
               </tr>
             ))}

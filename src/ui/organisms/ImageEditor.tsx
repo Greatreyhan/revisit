@@ -1,53 +1,50 @@
-import { useState } from 'react'
-import { ReactPhotoEditor } from 'react-photo-editor'
-import 'react-photo-editor/dist/style.css'
+import React, { useEffect, useRef } from 'react';
+import ImageEditor from 'tui-image-editor';
+import 'tui-image-editor/dist/tui-image-editor.css';
 
-function ImageEditor() {
- const [file, setFile] = useState<File | undefined>()
- const [showModal, setShowModal] = useState(false)
+const ImageEditorComponent: React.FC = () => {
+  const editorRef = useRef<HTMLDivElement | null>(null);
 
-   // Show modal if file is selected
-  const showModalHandler = () => {
-    if (file) {
-      setShowModal(true)
-    }
-  }
+  useEffect(() => {
+    if (!editorRef.current) return;
 
-  // Hide modal
-  const hideModal = () => {
-    setShowModal(false)
-  }
+    const editorInstance = new ImageEditor(editorRef.current, {
+      includeUI: {
+        loadImage: {
+          path: 'https://via.placeholder.com/500', // Ganti dengan path gambar Anda
+          name: 'SampleImage'
+        },
+        theme: {},
+        initMenu: 'filter',
+        menuBarPosition: 'bottom'
+      },
+      // Menggunakan ukuran fullscreen berdasarkan window dimensions
+      cssMaxWidth: window.innerWidth,
+      cssMaxHeight: window.innerHeight,
+      selectionStyle: {
+        cornerSize: 10,
+        rotatingPointOffset: 30
+      },
+      usageStatistics: false // Nonaktifkan statistik penggunaan (opsional)
+    });
 
-  // Save edited image
-  const handleSaveImage = (editedFile: File) => {
-    setFile(editedFile);
-  };
-
-  const setFileData = (e: React.ChangeEvent<HTMLInputElement> | null) => {
-    if (e?.target?.files && e.target.files.length > 0) {
-      setFile(e.target.files[0])
-    }
-  }
+    return () => {
+      editorInstance.destroy();
+    };
+  }, []);
 
   return (
-    <>
-      <input 
-          type="file" 
-          onChange={(e) => setFileData(e)} 
-          multiple={false} 
-       />
+    // Container luar mengisi viewport penuh
+    <div className='w-screen h-screen fixed top-0 left-0'>
+      {/* Inline style untuk menyembunyikan logo */}
+      <style>{`
+        .tui-image-editor-header-logo {
+          display: none;
+        }
+      `}</style>
+      <div ref={editorRef} style={{ width: '100%', height: '100%' }}></div>
+    </div>
+  );
+};
 
-      <button onClick={showModalHandler}>Edit</button>
-
-      <ReactPhotoEditor
-        open={showModal}
-        onClose={hideModal}
-        file={file}
-        onSaveImage={handleSaveImage}
-      />
-
-    </>
-  )
-}
-
-export default ImageEditor
+export default ImageEditorComponent;

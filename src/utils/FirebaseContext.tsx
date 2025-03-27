@@ -44,6 +44,7 @@ interface FirebaseContextType {
     setUpdatePassword: (lastPassword: string, newPassword: string) => Promise<void>
     uploadImage: (e: React.ChangeEvent<HTMLInputElement>, setImage: (value: string) => void) => void;  // New method signature
     uploadImageWithPath: (e: React.ChangeEvent<HTMLInputElement>, setImage: (value: string) => void, setId: (date: number) => void, pathReq: string) => void;  // New method signature
+    uploadEditedImageWithPath: (file: File, setImage: (value: string) => void, setId: (date: number) => void, pathReq: string) => void;  // New method signature
     deleteImage: (filename: string) => Promise<void>
     deleteImageWithPath: (filename: string, id: string) => Promise<void>
     updateImage: (id: string, status: string) => Promise<void>
@@ -283,6 +284,59 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({ children }
 
     };
 
+    const uploadEditedImageWithPath = async (file: File, setImage: (value: string) => void, setId: (date: number) => void, pathReq: string): Promise<void> => {
+        setLoading(true);
+        if (!file) return;
+
+        try {
+            // Konfigurasi kompresi
+            const options = {
+                maxSizeMB: 2, // Maksimum ukuran 2MB
+                maxWidthOrHeight: 1024, // Resolusi maksimum
+                useWebWorker: true, // Gunakan WebWorker untuk performa
+            };
+
+            // Kompres gambar
+            const compressedFile = await imageCompression(file, options);
+
+            console.log("Original File Size:", (file.size / 1024).toFixed(2) + " KB");
+            console.log("Compressed File Size:", (compressedFile.size / 1024).toFixed(2) + " KB");
+
+            // Buat nama file baru dengan Date.now() dan pertahankan ekstensi file
+            const fileExtension = file.name.split('.').pop();
+            const dateTime = Date.now()
+            const newFileName = `${dateTime}.${fileExtension}`;
+
+            // Upload ke Firebase Storage menggunakan nama file baru
+            const storageRef = ref(FIREBASE_STORE, `images/${newFileName}`);
+            const uploadTask = uploadBytesResumable(storageRef, compressedFile);
+
+            uploadTask.on(
+                "state_changed",
+                (snapshot) => {
+                    const progress = Math.round(
+                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+                    );
+                    console.log("Upload is " + progress + "% done");
+                },
+                (error) => console.error(error),
+                () => {
+                    getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+                        const dbRef = rtdbRef(FIREBASE_DB, `images/${pathReq}/${dateTime}`);
+                        await set(dbRef, { url: downloadURL, status: "pending" });
+                        setImage(downloadURL);
+                        setId(dateTime)
+                    });
+                }
+            );
+            setLoading(false);
+        } catch (error) {
+            console.error("Image compression error:", error);
+            setLoading(false);
+        }
+
+    };
+
     const updateImage = async (id: string, status: string) => {
         try {
             const dbRef = rtdbRef(FIREBASE_DB, `images/${user?.uid}/${id}/status`);
@@ -380,6 +434,7 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({ children }
         deleteFromDatabase,
         uploadImage,
         uploadImageWithPath,
+        uploadEditedImageWithPath,
         deleteImage,
         deleteImageWithPath,
         updateImage

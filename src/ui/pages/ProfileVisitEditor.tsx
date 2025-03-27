@@ -15,7 +15,7 @@ import MapDistance from "../organisms/MapDistance";
 
 
 const ProfileVisitEditor: React.FC = () => {
-    const { saveToDatabase, getFromDatabase, user } = useFirebase()
+    const { saveToDatabase, getFromDatabase, user, updateImage } = useFirebase()
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
 
@@ -163,7 +163,9 @@ const ProfileVisitEditor: React.FC = () => {
         };
 
         try {
-            console.log(newData)
+            attachments?.map(data=>{
+                updateImage(data?.imageId?.toString() ?? "", "uploaded")
+            })
             await saveToDatabase(`visit/${user?.uid}/${id || Date.now()}`, newData);
             setIsDataChanged(false); // Set bahwa data sudah tersimpan
             navigate("/visit"); // Navigasi ke halaman setelah submit

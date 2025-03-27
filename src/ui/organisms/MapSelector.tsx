@@ -60,7 +60,7 @@ const MapSelector: React.FC<MapSelectorProps> = ({ setMarkers, markers, setShow,
   if (!isLoaded) return <div>Loading Maps...</div>;
 
   return (
-    <div className={`${show ? "flex flex-col fixed" : "h-60"} top-0 left-0 items-center w-full h-screen`}>
+    <div className={`${show ? "flex flex-col fixed" : "h-60"} top-0 left-0 items-center w-full h-screen z-40`}>
       <div className="fixed px-4 z-50 flex items-center justify-around space-x-4 py-2 md:w-5/12 w-full bg-white bg-opacity-50 backdrop-blur-lg rounded-b-lg">
 
         <Autocomplete onLoad={(auto) => (autocompleteRef.current = auto)} onPlaceChanged={onPlaceSelected}>

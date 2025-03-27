@@ -94,7 +94,7 @@ const ProfileReportEditor: React.FC = () => {
     const handleSendData = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // waiting(true)
+        waiting(true)
         const newData = {
             attachments,
             investigations,
@@ -282,7 +282,6 @@ const ProfileReportEditor: React.FC = () => {
         <div className="App overflow-x-hidden">
             <div className="pt-16">
                 <form className="md:w-10/12 w-11/12 flex flex-col mx-auto my-4 justify-around items-center" onSubmit={handleSendData}>
-
                     <TextField
                         label="Context"
                         name="context"

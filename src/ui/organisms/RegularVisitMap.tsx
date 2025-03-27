@@ -137,7 +137,7 @@ const RegularVisitMap: React.FC<RegularVisitMapProps> = ({ visitReports }) => {
       : 0;
 
   return (
-    <div className="flex fixed left-0 top-0 w-screen h-screen">
+    <div className="flex fixed left-0 top-0 w-screen h-screen z-40">
       <div className="flex fixed z-50 top-3 w-full justify-center ">
         <Link
           to="/admin/visit"

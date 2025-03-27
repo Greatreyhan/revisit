@@ -45,6 +45,7 @@ import AdminVisualizationInvestigation from "./ui/pages/AdminVisualizationInvest
 import AdminVisuzalizationRegular from "./ui/pages/AdminVisualizationRegular";
 import DealerVisualizationInvestigation from "./ui/pages/DealerVisualizationInvestigation";
 import DealerVisuzalizationRegular from "./ui/pages/DealerVisualizationRegular";
+import ImageEditor from "./ui/organisms/ImageEditor";
 
 function App() {
 
@@ -53,6 +54,7 @@ function App() {
     { path: "/", element: <Home />, type: "landing" },
     { path: "/blog", element: <Blog />, type: "landing" },
     { path: "/article/:id", element: <Article />, type: "landing" },
+    { path: "/test", element: <ImageEditor />, type: "view" },
 
 
     // Login Route

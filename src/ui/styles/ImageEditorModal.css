@@ -1,0 +1,16 @@
+/* Sembunyikan tombol download */
+.tui-image-editor-download-btn {
+  display: none !important;
+}
+
+/* Sembunyikan tombol load dengan berbagai selector */
+.tui-image-editor-load-btn,
+.tui-image-editor-load-btn-wrap,
+.tui-image-editor-load {
+  display: none !important;
+}
+
+/* Jika tombol load berada di header, sembunyikan seluruh header jika tidak diperlukan */
+.tui-image-editor-header {
+  display: none !important;
+}
