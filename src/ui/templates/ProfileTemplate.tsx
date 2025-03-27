@@ -59,7 +59,7 @@ const ProfileTemplate: React.FC<ProfileTemplateProps> = ({ children }) => {
           </div>
         </div>
         <Notification />
-        <div className="md:w-2/12 z-50">
+        <div className="md:w-2/12 z-40">
           <ProfileNavigation />
         </div>
         <div className="md:w-10/12 w-full md:pt-10">

@@ -12,6 +12,7 @@ import {
     updatePassword,
 } from 'firebase/auth';
 import { ref as rtdbRef, set, get, remove } from 'firebase/database';
+import { AttachmentItem } from "../ui/interface/Report";
 
 interface Message {
     message: string
@@ -42,9 +43,10 @@ interface FirebaseContextType {
     deleteFromDatabase: (path: string) => Promise<void>;
     setUpdatePassword: (lastPassword: string, newPassword: string) => Promise<void>
     uploadImage: (e: React.ChangeEvent<HTMLInputElement>, setImage: (value: string) => void) => void;  // New method signature
-    uploadImageWithPath: (e: React.ChangeEvent<HTMLInputElement>, setImage: (value: string) => void, pathReq: string) => void;  // New method signature
+    uploadImageWithPath: (e: React.ChangeEvent<HTMLInputElement>, setImage: (value: string) => void, setId: (date: number) => void, pathReq: string) => void;  // New method signature
     deleteImage: (filename: string) => Promise<void>
-    deleteImageWithPath: (filename: string, pathReq: string) => Promise<void>
+    deleteImageWithPath: (filename: string, id: string) => Promise<void>
+    updateImage: (id: string, status: string) => Promise<void>
 }
 
 // Initialize the context
@@ -113,7 +115,7 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({ children }
     const signUp = async (email: string, password: string, location: string, username: string, dealer: string, authorization: string): Promise<void> => {
         try {
             setLoading(true);
-            console.log({email, password, location, username, dealer, authorization})
+            console.log({ email, password, location, username, dealer, authorization })
             const dataUser = await createUserWithEmailAndPassword(FIREBASE_AUTH, email, password);
             await saveToDatabase(`user/${dataUser.user.uid}`, { email: dataUser.user.email, type: authorization, name: username, dealer: dealer, location: location });
             if (authData?.type === "Dealer") {
@@ -156,6 +158,12 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({ children }
         try {
             setLoading(true);
             const recordRef = rtdbRef(FIREBASE_DB, path);
+            const data = await getFromDatabase(path)
+            data?.attachments?.map( async (e:AttachmentItem)=>{
+                if(e?.imageId){
+                    await remove(rtdbRef(FIREBASE_DB, `images/${user?.uid}/${e.imageId.toString()}`));
+                }
+            })
             await remove(recordRef);
             setMessage({ message: "Succesfully Delete Data", type: "info" })
             setLoading(false);
@@ -220,7 +228,7 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({ children }
 
     };
 
-    const uploadImageWithPath = async (e: React.ChangeEvent<HTMLInputElement>, setImage: (value: string) => void, pathReq: string): Promise<void> => {
+    const uploadImageWithPath = async (e: React.ChangeEvent<HTMLInputElement>, setImage: (value: string) => void, setId: (date: number) => void, pathReq: string): Promise<void> => {
         const file = e.target.files?.[0];
         setLoading(true);
 
@@ -261,8 +269,9 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({ children }
                 () => {
                     getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
                         const dbRef = rtdbRef(FIREBASE_DB, `images/${pathReq}/${dateTime}`);
-                        await set(dbRef, {url: downloadURL, status:"pending"});
+                        await set(dbRef, { url: downloadURL, status: "pending" });
                         setImage(downloadURL);
+                        setId(dateTime)
                     });
                 }
             );
@@ -274,6 +283,17 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({ children }
 
     };
 
+    const updateImage = async (id: string, status: string) => {
+        try {
+            const dbRef = rtdbRef(FIREBASE_DB, `images/${user?.uid}/${id}/status`);
+            await set(dbRef, status);
+        } catch (error: any) {
+            setMessage({ message: "Error update image status: " + error.message, type: "error" });
+        } finally {
+            setLoading(false);
+        }
+    }
+
     const deleteImage = async (filename: string): Promise<void> => {
         try {
             setLoading(true);
@@ -282,15 +302,15 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({ children }
             // Buat database path: filename tanpa ekstensi
             // const filenameWithoutExt = filename.split('.').slice(0, -1).join('.');
             // const databasePath = `images/${filenameWithoutExt}`;
-    
+
             // Hapus file dari Firebase Storage
             const imageRef = ref(FIREBASE_STORE, storagePath);
             await deleteObject(imageRef);
-    
+
             // Hapus data referensi di Realtime Database
             // const dbRef = rtdbRef(FIREBASE_DB, databasePath);
             // await remove(dbRef);
-    
+
             setMessage({ message: "Successfully deleted image", type: "info" });
         } catch (error: any) {
             setMessage({ message: "Error deleting image: " + error.message, type: "error" });
@@ -299,22 +319,22 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({ children }
         }
     };
 
-    const deleteImageWithPath = async (filename: string, pathReq: string): Promise<void> => {
+    const deleteImageWithPath = async (filename: string, id: string): Promise<void> => {
         try {
             setLoading(true);
             // Buat storage path: menggunakan filename (termasuk ekstensi)
             const storagePath = `images/${filename}`;
             // Buat database path: filename tanpa ekstensi
             // const filenameWithoutExt = filename.split('.').slice(0, -1).join('.');
-    
+
             // Hapus file dari Firebase Storage
             const imageRef = ref(FIREBASE_STORE, storagePath);
             await deleteObject(imageRef);
-    
+
             // Hapus data referensi di Realtime Database
-            const dbRef = rtdbRef(FIREBASE_DB, pathReq);
+            const dbRef = rtdbRef(FIREBASE_DB, `images/${user?.uid}/${id}`);
             await remove(dbRef);
-    
+
             setMessage({ message: "Successfully deleted image", type: "info" });
         } catch (error: any) {
             setMessage({ message: "Error deleting image: " + error.message, type: "error" });
@@ -361,7 +381,8 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({ children }
         uploadImage,
         uploadImageWithPath,
         deleteImage,
-        deleteImageWithPath
+        deleteImageWithPath,
+        updateImage
     };
 
     return (

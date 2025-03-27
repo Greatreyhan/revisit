@@ -14,7 +14,7 @@ import { AttachmentItem, InvestigationItem, Unit, UnitInvolve } from "../interfa
 
 
 const ProfileReportEditor: React.FC = () => {
-    const { saveToDatabase, getFromDatabase, user, waiting } = useFirebase()
+    const { saveToDatabase, getFromDatabase, user, waiting, updateImage } = useFirebase()
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
 
@@ -93,7 +93,8 @@ const ProfileReportEditor: React.FC = () => {
     };
     const handleSendData = async (e: React.FormEvent) => {
         e.preventDefault();
-        waiting(true)
+
+        // waiting(true)
         const newData = {
             attachments,
             investigations,
@@ -158,6 +159,9 @@ const ProfileReportEditor: React.FC = () => {
         };
 
         try {
+            attachments?.map(data=>{
+                updateImage(data?.imageId?.toString() ?? "", "uploaded")
+            })
             await saveToDatabase(`report/${user?.uid}/${id || Date.now()}`, newData);
             waiting(false)
             setIsDataChanged(false)
@@ -478,9 +482,6 @@ const ProfileReportEditor: React.FC = () => {
                         </button>
                     </div>
 
-                    {/* <div className="mt-8 w-full">
-                        <Editor HTML={HTML} setDataEdit={setDataEdit} />
-                    </div> */}
                     <div className="flex w-full justify-end items-center gap-x-5">
                         <Link
                             className="mt-4 px-6 py-2 inline-flex justify-center items-center bg-white text-primary border border-primary rounded-full font-semibold"
@@ -495,13 +496,7 @@ const ProfileReportEditor: React.FC = () => {
                             <BiSave className="mr-2" />
                             Save
                         </button>
-                        {/* <button
-                            type="button"
-                            className="mt-4 px-6 py-2 inline-flex justify-center items-center bg-primary rounded-full text-white font-semibold"
-                        >
-                            <BiSave className="mr-2" />
-                            Export
-                        </button> */}
+
                     </div>
                 </form>
             </div>

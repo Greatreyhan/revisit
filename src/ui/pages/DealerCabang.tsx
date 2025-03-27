@@ -133,7 +133,7 @@ const DealerCabang = () => {
         </div>
       </div>
 
-      <div className="flex w-full pb-2 justify-between">
+      <div className="flex w-full pb-2 justify-between md:hidden">
         {/* Input pencarian */}
         <div className="w-8/12">
           <input

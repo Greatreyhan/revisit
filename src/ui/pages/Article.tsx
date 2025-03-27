@@ -3,11 +3,9 @@ import { Heroimage } from "../../assets/images";
 import { useParams } from "react-router-dom";
 import { onValue, ref as rtdbref } from "firebase/database";
 import { FIREBASE_DB } from "../../config/firebaseinit";
-
 import parse from "html-react-parser";
 import "../styles/PortoStyle.css";
 
-// Define a type for the data
 interface DataArt {
   image?: string;
   title?: string;
@@ -19,10 +17,10 @@ const Article: React.FC = () => {
   const [dataArt, setDataArt] = useState<Partial<DataArt>>({});
   const [articleTag, setArticleTag] = useState<string>("");
   const [dateString, setDateString] = useState<string>("");
-  const { id } = useParams<{ id: string }>(); // Ensure `id` is a string
+  const { id } = useParams<{ id: string }>();
 
   useEffect(() => {
-    if (!id) return; // Prevent running if `id` is undefined
+    if (!id) return;
 
     // Fetch data from Firebase
     const dbRef = rtdbref(FIREBASE_DB, "article/" + id);
@@ -30,7 +28,7 @@ const Article: React.FC = () => {
       const data = snapshot.val();
       if (data) {
         setDataArt(data);
-        setArticleTag(data.article || ""); // Fallback if `article` is undefined
+        setArticleTag(data.article || "");
       }
     });
 
@@ -51,32 +49,34 @@ const Article: React.FC = () => {
   }, [id]);
 
   return (
-    <div className="w-full overflow-x-hidden">
-      {Object.keys(dataArt).length > 0 ? (
-        <>
-          <div className="w-full">
-            <div className="w-full h-96">
-              <img
-                className="w-full h-full object-cover"
-                src={dataArt.image || Heroimage} // Fallback to `Heroimage` if `dataArt.image` is undefined
-                alt={dataArt.title || "Article Image"}
-              />
+    <div className="article-page">
+      <div className="w-full overflow-x-hidden">
+        {Object.keys(dataArt).length > 0 && (
+          <>
+            <div className="w-full">
+              <div className="w-full h-96">
+                <img
+                  className="w-full h-full object-cover"
+                  src={dataArt.image || Heroimage}
+                  alt={dataArt.title || "Article Image"}
+                />
+              </div>
+              <div className="-mt-48 w-10/12 mx-auto">
+                <h2 className="text-white font-bold text-5xl w-8/12">
+                  {dataArt.title}
+                </h2>
+                <p className="text-md text-white">{dateString}</p>
+              </div>
             </div>
-            <div className="-mt-48 w-10/12 mx-auto">
-              <h2 className="text-white font-bold text-5xl w-8/12">
-                {dataArt.title}
-              </h2>
-              <p className="text-md text-white">{dateString}</p>
+            <div className="md:w-7/12 w-11/12 mx-auto mt-28">
+              <h2 className="font-bold text-4xl mt-40">{dataArt.subtitle}</h2>
+              <div className="mt-8 componentArt">
+                {articleTag ? parse(articleTag) : null}
+              </div>
             </div>
-          </div>
-          <div className="md:w-7/12 w-11/12 mx-auto mt-28">
-            <h2 className="font-bold text-4xl mt-40">{dataArt.subtitle}</h2>
-            <div className="mt-8 componentArt">
-              {articleTag ? parse(articleTag) : null}
-            </div>
-          </div>
-        </>
-      ) : null}
+          </>
+        )}
+      </div>
     </div>
   );
 };

@@ -184,9 +184,9 @@ const DealerReport = () => {
             <tr className="md:text-md text-sm bg-slate-50 font-bold">
               <th className="border p-4 whitespace-nowrap text-gray-900">#</th>
               <th className="border p-4 whitespace-nowrap text-gray-900">Title</th>
-              <th className="border p-4 dark:border-dark-5 whitespace-nowrap text-gray-900 md:block hidden">Unit</th>
+              <th className="border p-4 dark:border-dark-5 whitespace-nowrap text-gray-900 md:table-cell hidden">Unit</th>
               <th className="border p-4 dark:border-dark-5 whitespace-nowrap text-gray-900">Customer</th>
-              <th className="border p-4 dark:border-dark-5 whitespace-nowrap text-gray-900 md:block hidden">Dealer</th>
+              <th className="border p-4 dark:border-dark-5 whitespace-nowrap text-gray-900 md:table-cell hidden">Dealer</th>
               <th className="border p-4 dark:border-dark-5 whitespace-nowrap text-gray-900">Status</th>
               <th className="border p-4 dark:border-dark-5 whitespace-nowrap text-gray-900">Action</th>
             </tr>
@@ -202,7 +202,7 @@ const DealerReport = () => {
                   {data.focusModel + " " + data.euroType}
                 </td>
                 <td className="border p-4 dark:border-dark-5">{data.customerName}</td>
-                <td className="border p-4 dark:border-dark-5 md:block hidden">{data.dealer}</td>
+                <td className="border p-4 dark:border-dark-5 md:table-cell hidden">{data.dealer}</td>
                 <td className="border p-4 dark:border-dark-5">
                   {data.status === "Breakdown" ? (
                     <MdDangerous className="w-full text-xl text-rose-700" />

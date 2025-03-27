@@ -3,33 +3,37 @@ import { useFirebase } from "../../utils/FirebaseContext";
 import { Navigate } from "react-router-dom";
 import { Heroimage } from "../../assets/images";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
+import Loading from "../molecules/Loading";
 
 const Login = () => {
-  const { waiting } = useFirebase()
+  const { waiting, loading } = useFirebase()
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [isSubmited, setIsSubmited] = useState<boolean>(false)
   const { signIn, user, message, authData } = useFirebase();
 
   const handleSubmit = async (e: any) => {
     waiting(true)
     e.preventDefault();
     await signIn(email, password);
-    setIsSubmited(true)
     waiting(false)
   };
 
-  if (isSubmited && user && authData?.type === "Admin") {
+  if (user && authData?.type === "Admin") {
     return <Navigate to="/admin" />;
-  } else if (isSubmited && user && authData?.type === "Field") {
+  } else if (user && authData?.type === "Field") {
     return <Navigate to="/profile" />;
-  } else if (isSubmited && user && authData?.type === "Dealer") {
+  } else if (user && authData?.type === "Dealer") {
     return <Navigate to="/dealer" />;
   }
 
   return (
     <div className="fixed overflow-x-hidden w-full h-screen bg-white flex justify-center items-center z-50">
+      {loading &&
+        <div className='w-screen h-screen z-50 justify-center items-center flex fixed top-0 left-0 bg-white bg-opacity-80'>
+          <Loading />
+        </div>
+      }
       <div className="flex flex-wrap w-full">
         <div className="flex flex-col w-full md:w-1/2">
           <div className="flex flex-col justify-center px-8 pt-8 my-auto md:justify-start md:pt-0 md:px-24 lg:px-32">
@@ -51,7 +55,7 @@ const Login = () => {
                   </span>
                   <input
                     id="design-login-email"
-                    className="flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                    className="flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent"
                     type="email"
                     placeholder="Email"
                     value={email}
@@ -75,7 +79,7 @@ const Login = () => {
                   </span>
                   <input
                     id="design-login-password"
-                    className="flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                    className="flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent"
                     type={showPassword ? "text" : "password"}
                     placeholder="Password"
                     value={password}
@@ -91,7 +95,7 @@ const Login = () => {
                     {showPassword ? (
                       <IoMdEye />
                     ) : (
-                      <IoMdEyeOff/>
+                      <IoMdEyeOff />
                     )}
                   </button>
                 </div>

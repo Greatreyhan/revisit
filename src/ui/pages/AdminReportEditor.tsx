@@ -158,7 +158,6 @@ const AdminReportEditor: React.FC = () => {
         };
 
         try {
-            console.log(newData)
             await saveToDatabase(`report/${user?.uid}/${id || Date.now()}`, newData);
             navigate("/report"); // Navigasi ke halaman setelah submit
         } catch (error) {

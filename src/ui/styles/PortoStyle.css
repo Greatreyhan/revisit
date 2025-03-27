@@ -1,47 +1,199 @@
-@import url('https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=PT+Serif:wght@400;700&display=swap');
 
-.componentArt{
-    font-family: 'Poppins', sans-serif;
-    font-size: 14pt;
-    opacity: 95%;
+.article-page {
+  font-family: 'PT Serif', serif;
+  background-color: #fafafa;
+  color: #333;
 }
 
-.componentArt > p{
-    font-family: 'Roboto Slab', serif;
-    font-weight: 400;
-    margin-top: 12pt;
-    margin-bottom: 12pt;
-    opacity: 78%;
-    text-align: justify;
+/* Container Artikel */
+.article-page .article-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  overflow-x: hidden;
+  padding: 0 1rem;
 }
 
-.componentArt .image img{
-    display: block;
-    margin: auto;
-    margin-top: 12pt;
-    margin-bottom: 12pt;
+.article-page .article-header {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
 }
 
-.componentArt > ul{
-    margin-top: 18pt;
-    margin-left: 30px;
-    font-weight: 600;
-    list-style-type: disc;
+.article-page .article-hero {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.componentArt > ol{
-    margin-left: 30px;
-    font-weight: 600;
-    list-style-type: decimal;
-    text-indent: 10px;
+.article-page .header-content {
+  position: absolute;
+  bottom: 20px;
+  left: 50px;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 20px;
+  border-radius: 4px;
 }
 
-.componentArt > h2{
-    font-size: xx-large;
-    font-weight: bolder;
-    margin-top: 28pt;
+.article-page .article-title {
+  color: #fff;
+  font-size: 3rem;
+  margin: 0;
 }
-.componentArt > h3{
-    font-size: xx-large;
+
+.article-page .article-date {
+  color: #ddd;
+  margin-top: 10px;
+  font-size: 1rem;
+}
+
+.article-page .article-content {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.article-page .article-subtitle {
+  font-size: 2rem;
+  margin: 2rem 0 1rem;
+  color: #333;
+  text-align: center;
+}
+
+/* Styling khusus konten artikel */
+.article-page .componentArt {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: #444;
+}
+
+.article-page .componentArt p {
+  margin: 1.5rem 0;
+  text-align: justify;
+}
+
+/* Heading styles untuk membedakan h1-h6 */
+.article-page .componentArt h1 {
+  font-size: 2.75rem;
+  margin-top: 2rem;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.article-page .componentArt h2 {
+  font-size: 2.5rem;
+  margin-top: 2rem;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.article-page .componentArt h3 {
+  font-size: 2.25rem;
+  margin-top: 2rem;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.article-page .componentArt h4 {
+  font-size: 2rem;
+  margin-top: 2rem;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.article-page .componentArt h5 {
+  font-size: 1.75rem;
+  margin-top: 2rem;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.article-page .componentArt h6 {
+  font-size: 1.5rem;
+  margin-top: 2rem;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.article-page .componentArt img {
+  display: block;
+  margin: 1.5rem auto;
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+/* Styling untuk unordered list (ul) */
+.article-page .componentArt ul {
+  margin: 1.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.article-page .componentArt ul li {
+  position: relative;
+  margin-bottom: 0.75rem;
+  padding-left: 1.2rem;
+}
+
+.article-page .componentArt ul li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #444;
+  font-weight: bold;
+}
+
+/* Styling untuk ordered list tingkat pertama (numbering) */
+.article-page .componentArt ol {
+  counter-reset: list-counter;
+  margin: 1.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.article-page .componentArt ol > li {
+  position: relative;
+  margin-bottom: 0.75rem;
+  padding-left: 1.5rem;
+  counter-increment: list-counter;
+}
+
+.article-page .componentArt ol > li::before {
+  content: counter(list-counter) ".";
+  position: absolute;
+  left: 0;
+  color: #444;
+  font-weight: bold;
+}
+
+/* Styling untuk sublist (nested list) di dalam ordered list menggunakan dot */
+.article-page .componentArt ol ol {
+  counter-reset: none; /* Menghapus counter dari parent */
+  margin: 1.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.article-page .componentArt ol ol li {
+  position: relative;
+  margin-bottom: 0.75rem;
+  padding-left: 1.2rem;
+}
+
+.article-page .componentArt ol ol li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #444;
+  font-weight: bold;
+}
+
+/* Styling untuk blockquote */
+.article-page .componentArt blockquote {
+  border-left: 4px solid #ddd;
+  margin: 1.5rem 0;
+  padding: 1rem;
+  font-style: italic;
+  color: #666;
+  background-color: #f9f9f9;
+  border-radius: 4px;
 }

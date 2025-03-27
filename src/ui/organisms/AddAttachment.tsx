@@ -6,6 +6,7 @@ import { useFirebase } from "../../utils/FirebaseContext";
 interface AttachmentItem {
   imageAttached: string;
   imageDescription: string;
+  imageId?: number;
 }
 
 interface AddAttachmentProps {
@@ -13,8 +14,6 @@ interface AddAttachmentProps {
   setAttachments: React.Dispatch<React.SetStateAction<AttachmentItem[]>>;
 }
 
-// Fungsi utilitas untuk mengekstrak nama file dari download URL Firebase Storage.
-// Pada URL biasanya terdapat bagian "images%2F<filename>" sehingga kita melakukan decoding.
 const extractFilename = (url: string): string => {
   const regex = /images%2F([^?]+)/;
   const match = url.match(regex);
@@ -22,26 +21,29 @@ const extractFilename = (url: string): string => {
 };
 
 const AddAttachment: React.FC<AddAttachmentProps> = ({ attachments, setAttachments }) => {
-  const { uploadImage, deleteImage } = useFirebase();
+  const { uploadImageWithPath, deleteImageWithPath, user } = useFirebase();
   const [imageAttached, setImageAttached] = useState<string>("");
   const [imageDescription, setImageDescription] = useState<string>("");
+  const [imageId, setImageId] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectIndex, setSelectIndex] = useState<number>(-1);
   const [editDescription, setEditDescription] = useState<string>("");
 
   // Saat modal preview terbuka, set editDescription dengan nilai deskripsi attachment yang dipilih
   useEffect(() => {
+    console.log(attachments)
     if (selectIndex !== -1 && attachments[selectIndex]) {
       setEditDescription(attachments[selectIndex].imageDescription);
     }
   }, [selectIndex, attachments]);
 
   const handleAddAttachment = () => {
-    if (imageAttached && imageDescription) {
-      const newAttachment = { imageAttached, imageDescription };
+    if (imageAttached && imageDescription && imageId) {
+      const newAttachment = { imageAttached, imageDescription, imageId };
       setAttachments([...attachments, newAttachment]);
       setImageAttached("");
       setImageDescription("");
+      setImageId(0)
       setIsModalOpen(false);
     }
   };
@@ -50,8 +52,8 @@ const AddAttachment: React.FC<AddAttachmentProps> = ({ attachments, setAttachmen
     if (selectIndex !== -1) {
       const attachmentToDelete = attachments[selectIndex];
       const filename = extractFilename(attachmentToDelete.imageAttached);
-      if (filename && deleteImage) {
-        await deleteImage(filename);
+      if (filename && deleteImageWithPath) {
+        await deleteImageWithPath(filename,attachmentToDelete?.imageId?.toString() ?? "");
       }
       const updatedAttachments = attachments.filter((_, index) => index !== selectIndex);
       setAttachments(updatedAttachments);
@@ -73,7 +75,7 @@ const AddAttachment: React.FC<AddAttachmentProps> = ({ attachments, setAttachmen
     <div>
       {/* Modal Preview, Edit, Delete, dan Update */}
       <div
-        className={`fixed w-screen h-screen bg-black top-0 left-0 bg-opacity-40 ${
+        className={`fixed w-screen h-screen bg-black top-0 left-0 bg-opacity-40 z-50 ${
           selectIndex === -1 ? "hidden" : "flex"
         } justify-center items-center`}
       >
@@ -176,7 +178,7 @@ const AddAttachment: React.FC<AddAttachmentProps> = ({ attachments, setAttachmen
                 )}
                 <input
                   required
-                  onChange={(e) => uploadImage(e, setImageAttached)}
+                  onChange={(e) => uploadImageWithPath(e, setImageAttached, setImageId,user?.uid ?? "")}
                   name="image"
                   id="image"
                   type="file"

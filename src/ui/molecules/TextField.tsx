@@ -52,7 +52,7 @@ const TextField: React.FC<TextFieldProps> = ({
       </label>
       <textarea
         ref={textareaRef}
-        className="w-full px-4 py-2 text-base text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-primary-light focus:border-transparent resize-none"
+        className="w-full px-4 py-2 text-base text-gray-700 placeholder-gray-400 bg-white border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-primary-light focus:border-transparent resize-none overflow-y-hidden"
         required={required}
         value={value}
         onChange={onChange}

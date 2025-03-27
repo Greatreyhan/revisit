@@ -1,6 +1,7 @@
 export interface AttachmentItem {
     imageAttached: string;
     imageDescription: string;
+    imageId?: number;
 }
 
 export interface InvestigationItem {
