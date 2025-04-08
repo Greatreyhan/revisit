@@ -206,8 +206,12 @@ const VisitViewer: React.FC = () => {
                         <tbody>
                             <tr>
                                 <td colSpan={2}>
-                                    <MapViewer mapMarkers={dataVisit?.mapMarkers ?? []} mapDistance={dataVisit?.mapDistance ?? 0} />
-                                    {/* <img className="w-full mb-8" src={dataVisit?.mapAttached} /> */}
+                                    <MapViewer
+                                        locationMap={dataVisit?.locationMap ?? null}
+                                        markers={ dataVisit?.mapMarkers ?? [{ lat: 0, lng: 0 },{ lat: 0, lng: 0 }]}
+                                        distance={dataVisit?.mapDistance ?? 0}
+                                        show={false}
+                                    />
                                 </td>
                             </tr>
                             <tr className="text-left w-full">

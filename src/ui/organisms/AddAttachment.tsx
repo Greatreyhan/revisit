@@ -183,7 +183,7 @@ const AddAttachment: React.FC<AddAttachmentProps> = ({ attachments, setAttachmen
       </div>
 
       {/* List Lampiran */}
-      <div className="flex flex-wrap gap-5 mt-4">
+      <div className="flex flex-wrap mt-4 w-full">
         {attachments?.map((attachment, index) => (
           <button
             onClick={() => setSelectIndex(index)}

@@ -14,7 +14,7 @@ import { MapMarkerData } from "../interface/MapSelector";
 import MapDistance from "../organisms/MapDistance";
 
 const ProfileVisitEditor: React.FC = () => {
-    const { saveToDatabase, user, updateImage } = useFirebase();
+    const { saveToDatabase, user, updateImage, getFromDatabase } = useFirebase();
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
 
@@ -143,6 +143,76 @@ const ProfileVisitEditor: React.FC = () => {
         technicalInfo,
         competitorInfo,
     });
+
+    useEffect(() => {
+        if (id) {
+            getFromDatabase(`visit/${user?.uid}/${id}`).then((data) => {
+                if (data) {
+                    // Array data
+                    setAttachments(data.attachments || []);
+                    setInvestigations(data.investigations || [])
+                    setUnits(data.units || [])
+                    setUnitInvolves(data.unitInvolves || [])
+
+                    // Context
+                    setContext(data.context || "");
+
+                    // General Information
+                    setFormNumber(data.formNumber || "");
+                    setVisitorName(data.visitorName || "")
+                    setVisitor(data.visitor || "");
+                    setReviewer(data.reviewer || "");
+                    setApproval(data.approval || "");
+
+                    // Vehicle Information
+                    setCustomerName(data.customerName || "");
+                    setArea(data.area || "");
+                    setLocation(data.location || "");
+                    setDataLocation([data.location || ""])
+                    setCity(data.city || "");
+                    setDealer(data.dealer || "");
+                    setSegment(data.segment || "");
+                    // setApplication(data.application || "");
+                    // setLoadingUnit(data.loadingUnit || "");
+                    setVisitDate(data.visitDate || "");
+                    setDateOperation(data.dateOperation || "");
+
+                    // Operational
+                    setDayPerWeek(data.dayPerWeek || "")
+                    setTripPerDay(data.tripPerDay || "")
+                    setDistancePerTrip(data.distancePerTrip || "")
+                    setRouteOfTrip(data.routeOfTrip || "")
+
+                    // Map
+                    setMapAttached(data.mapAttached || "")
+                    setMapMarkers(data.mapMarkers || [])
+                    setMapDistance(data.mapDistance || 0)
+                    setLocationMap(data.locationMap || {lat: 0,lng: 0})
+
+                    // Road Condition
+                    setHighway(data.highway || "");
+                    setCityRoad(data.cityRoad || "");
+                    setCountryRoad(data.countryRoad || "");
+                    setOnRoad(data.onRoad || "");
+                    setOffRoad(data.offRoad || "");
+                    setFlatRoad(data.flatRoad || "");
+                    setClimbRoad(data.climbRoad || "");
+                    setMaximumSlope(data.maximumSlope || "")
+                    setLoadingRatio(data.loadingsetLoadingRatio || "")
+                    setYearsOfUse(data.yearsOfUse || "")
+
+                    // Problem Background
+                    setReasonOfPurchase(data.reasonOfPurchase || "");
+                    setCustomerInfo(data.customerInfo || "");
+                    setServiceInfo(data.serviceInfo || "");
+                    setSparepartInfo(data.sparepartInfo || "");
+                    setTechnicalInfo(data.technicalInfo || "");
+                    setCompetitorInfo(data.competitorInfo || "");
+
+                }
+            });
+        }
+    }, [id]);
 
     // Auto-save ke localStorage setiap data berubah
     useEffect(() => {

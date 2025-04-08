@@ -13,7 +13,7 @@ import { areaData, areaMap, cargoTypesData, classificationMap, DealerData, euroT
 import { AttachmentItem, InvestigationItem, Unit, UnitInvolve } from "../interface/Report";
 
 const ProfileReportEditor: React.FC = () => {
-    const { saveToDatabase, user, waiting, updateImage } = useFirebase();
+    const { saveToDatabase, user, waiting, updateImage, getFromDatabase } = useFirebase();
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
 
@@ -145,6 +145,81 @@ const ProfileReportEditor: React.FC = () => {
         otherCaseTIR,
         difficultPoint,
     });
+
+    useEffect(() => {
+        if (id) {
+            waiting(true)
+            getFromDatabase(`report/${user?.uid}/${id}`).then((data) => {
+                if (data) {
+                    // Array data
+                    setAttachments(data.attachments || []);
+                    setInvestigations(data.investigations || [])
+                    setUnits(data.units || [])
+                    setUnitInvolves(data.unitInvolves || [])
+
+                    // Context
+                    setContext(data.context || "");
+
+                    // General Information
+                    setLargeClassification(data.largeClassification || "");
+                    setMiddleClassification(data.middleClassification || "");
+                    setDataMiddleClassification([data.middleClassification || ""])
+                    setPartProblem(data.partProblem || "");
+                    setVisitor(data.visitor || "");
+                    setReviewer(data.reviewer || "");
+                    setApproval(data.approval || "");
+
+                    // Vehicle Information
+                    setCustomerName(data.customerName || "");
+                    setArea(data.area || "");
+                    setLocation(data.location || "");
+                    setDataLocation([data.location || ""])
+                    setCity(data.city || "");
+                    setDealer(data.dealer || "");
+                    setSeries(data.series || "");
+                    setVehicleType(data.vehicleType || "");
+                    setFocusModel(data.focusModel || "");
+                    setEuroType(data.euroType || "");
+                    setVIN(data.VIN || "");
+                    setEGN(data.EGN || "");
+                    setProductionDate(data.productionDate || "");
+                    setPayload(data.payload || "");
+                    setMileage(data.mileage || "");
+                    setKaroseri(data.karoseri || "");
+                    setSegment(data.segment || "");
+                    setApplication(data.application || "");
+                    setLoadingUnit(data.loadingUnit || "");
+                    setProblemDate(data.problemDate || "");
+                    setVisitDate(data.visitDate || "");
+                    setStatus(data.status || "");
+
+                    // Road Condition
+                    setHighway(data.highway || "");
+                    setCityRoad(data.cityRoad || "");
+                    setCountryRoad(data.countryRoad || "");
+                    setOnRoad(data.onRoad || "");
+                    setOffRoad(data.offRoad || "");
+                    setFlatRoad(data.flatRoad || "");
+                    setClimbRoad(data.climbRoad || "");
+
+                    // Problem Background
+                    setPhenomenon(data.phenomenon || "");
+                    setHistoryMaintenance(data.historyMaintenance || "");
+                    setFATemporaryInvestigation(data.FATemporaryInvestigation || "");
+
+                    // Result
+                    setInvestigationResult(data.investigationResult || "");
+                    setCustomerVoice(data.customerVoice || "");
+                    setTemporaryAction(data.temporaryAction || "");
+                    setHomework(data.homework || "");
+                    setOtherCaseTIR(data.otherCaseTIR || "");
+                    setDifficultPoint(data.difficultPoint || "");
+                }
+            });
+            waiting(false)
+        }
+    }, [id]);
+
 
     useEffect(() => {
         if (isDataChanged) {
