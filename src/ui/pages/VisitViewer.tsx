@@ -210,7 +210,6 @@ const VisitViewer: React.FC = () => {
                                         locationMap={dataVisit?.locationMap ?? null}
                                         markers={ dataVisit?.mapMarkers ?? [{ lat: 0, lng: 0 },{ lat: 0, lng: 0 }]}
                                         distance={dataVisit?.mapDistance ?? 0}
-                                        show={false}
                                     />
                                 </td>
                             </tr>

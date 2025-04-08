@@ -18,10 +18,9 @@ interface MapViewerProps {
   locationMap: MapMarkerData | null;
   markers: MapMarkerData[];
   distance: number;
-  show: boolean;
 }
 
-const MapViewer: React.FC<MapViewerProps> = ({ locationMap, markers, distance, show }) => {
+const MapViewer: React.FC<MapViewerProps> = ({ locationMap, markers, distance }) => {
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "",
     libraries,
@@ -62,7 +61,7 @@ const MapViewer: React.FC<MapViewerProps> = ({ locationMap, markers, distance, s
   if (!isLoaded) return <div>Loading Maps...</div>;
 
   return (
-    <div className={`${show ? "flex flex-col fixed" : "h-60"} top-0 relative left-0 items-center w-full h-screen z-40`}>
+    <div className={`h-96 top-0 relative left-0 items-center w-full z-40`}>
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
         zoom={8}
