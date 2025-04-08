@@ -155,7 +155,7 @@ const AddUnit: React.FC<AddUnitProps> = ({ units, setUnits }) => {
             {/* Pop Up */}
             {isPopupOpen && (
 
-                <div className="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50">
+                <div className="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50 z-40">
                     <div className="bg-white p-6 rounded shadow-lg md:w-1/3">
                         <h2 className="text-lg font-bold mb-4">Tambah Unit Terlibat</h2>
                         <div className="flex w-full gap-5">

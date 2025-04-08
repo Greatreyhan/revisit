@@ -46,6 +46,7 @@ import AdminVisuzalizationRegular from "./ui/pages/AdminVisualizationRegular";
 import DealerVisualizationInvestigation from "./ui/pages/DealerVisualizationInvestigation";
 import DealerVisuzalizationRegular from "./ui/pages/DealerVisualizationRegular";
 import ImageEditor from "./ui/organisms/ImageEditor";
+import AdminCache from "./ui/pages/AdminCache";
 
 function App() {
 
@@ -87,6 +88,7 @@ function App() {
     { path: "/admin/edit-article/:id", element: <AdminArticleEditor />, type: "admin" },
     { path: "/admin/article", element: <AdminArticle />, type: "admin" },
     { path: "/admin/user", element: <AdminUser />, type: "admin" },
+    { path: "/admin/cache", element: <AdminCache />, type: "admin" },
     { path: "/admin/user/add", element: <AdminUserEditor />, type: "admin" },
     { path: "/admin", element: <Admin />, type: "admin" },
     { path: "/admin/report/visualization", element: <AdminVisualizationInvestigation />, type: "admin" },

@@ -3,6 +3,7 @@ import InputField from '../molecules/InputField';
 import { MdAdd, MdDelete, MdEdit } from 'react-icons/md';
 import SelectInput from '../molecules/SelectInput';
 import { UnitVisit } from '../interface/Visit';
+import { cargoTypesData } from '../../utils/masterData';
 
 
 interface AddUnitVisitProps {
@@ -170,7 +171,7 @@ const AddUnitVisit: React.FC<AddUnitVisitProps> = ({ units, setUnits }) => {
             {/* Pop Up */}
             {isPopupOpen && (
 
-                <div className="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50">
+                <div className="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50 z-40">
                     <div className="bg-white p-6 rounded shadow-lg md:w-1/3">
                         <h2 className="text-lg font-bold mb-4">Tambah Unit Customer</h2>
                         <div className="flex w-full gap-5">
@@ -179,7 +180,7 @@ const AddUnitVisit: React.FC<AddUnitVisitProps> = ({ units, setUnits }) => {
                         </div>
                         <div className="flex w-full gap-5">
                             <InputField label="Jumlah Unit" type='number' name="qtyUnit" value={qtyUnit} onChange={(e) => setQtyUnit(e.target.value)} placeholder="Masukkan jumlah unit" />
-                            <InputField label="Tipe Barang" name="rearBodyType" value={rearBodyType} onChange={(e) => setRearBodyType(e.target.value)} placeholder="Rear Body Type" />
+                            <SelectInput label="Rear Body Type" name="rearBodyType" value={rearBodyType} onChange={(e) => setRearBodyType(e.target.value)} options={cargoTypesData} />
                         </div>
                         <InputField type="number" label="Payload (KG)" name="payload" value={payload} onChange={(e) => setPayload(e.target.value)} placeholder="Payload" />
                         <InputField label="Goods" name="goods" value={goods} onChange={(e) => setGoods(e.target.value)} placeholder="Masukkan jenis Muatan" />

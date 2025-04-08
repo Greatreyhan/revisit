@@ -100,7 +100,7 @@ const AdminUser = () => {
         </div>
 
         {/* Input pencarian */}
-        <div className="w-full sm:w-5/12 md:block hidden">
+        <div className="w-full sm:w-5/12 md:flex gap-x-2 hidden">
           <input
             type="text"
             placeholder="Cari berdasarkan nama atau email..."
@@ -108,14 +108,14 @@ const AdminUser = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full p-2 border rounded-lg"
           />
-        </div>
+
 
         {/* Dropdown filter untuk tipe */}
         <div className="hidden md:block">
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="p-2 border rounded-lg"
+            className="py-2 px-4 border rounded-lg"
           >
             <option value="All">Semua</option>
             <option value="Field">Field</option>
@@ -123,6 +123,8 @@ const AdminUser = () => {
             <option value="Admin">Admin</option>
           </select>
         </div>
+        </div>
+
 
         <div>
           <Link

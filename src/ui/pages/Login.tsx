@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useFirebase } from "../../utils/FirebaseContext";
 import { Navigate } from "react-router-dom";
-import { Heroimage } from "../../assets/images";
+// import { Heroimage } from "../../assets/images";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 import Loading from "../molecules/Loading";
 
@@ -112,7 +112,7 @@ const Login = () => {
         <div className="w-1/2 shadow-2xl">
           <img
             className="hidden object-cover w-full h-screen md:block"
-            src={Heroimage}
+            src={"https://imgcdn.oto.com/large/gallery/exterior/128/3214/isuzu-giga-fvr-front-angle-low-view-702513.jpg"}
             alt="Hero"
           />
         </div>

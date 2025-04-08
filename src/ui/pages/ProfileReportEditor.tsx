@@ -12,9 +12,8 @@ import TextField from "../molecules/TextField";
 import { areaData, areaMap, cargoTypesData, classificationMap, DealerData, euroTypeData, focusModelsData, karoseriCustomersData, problemCategoriesData, segmentData, seriesData, vehicleTypesData } from "../../utils/masterData";
 import { AttachmentItem, InvestigationItem, Unit, UnitInvolve } from "../interface/Report";
 
-
 const ProfileReportEditor: React.FC = () => {
-    const { saveToDatabase, getFromDatabase, user, waiting, updateImage } = useFirebase()
+    const { saveToDatabase, user, waiting, updateImage } = useFirebase();
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
 
@@ -23,7 +22,7 @@ const ProfileReportEditor: React.FC = () => {
 
     // General Information
     const [largeClassification, setLargeClassification] = useState<string>("");
-    const [dataMiddleClassification, setDataMiddleClassification] = useState<string[]>([])
+    const [dataMiddleClassification, setDataMiddleClassification] = useState<string[]>([]);
     const [middleClassification, setMiddleClassification] = useState<string>("");
     const [partProblem, setPartProblem] = useState<string>("");
     const [visitor, setVisitor] = useState<string>("");
@@ -33,7 +32,7 @@ const ProfileReportEditor: React.FC = () => {
     // Vehicle Information
     const [customerName, setCustomerName] = useState<string>("");
     const [area, setArea] = useState<string>("");
-    const [dataLocation, setDataLocation] = useState<string[]>([])
+    const [dataLocation, setDataLocation] = useState<string[]>([]);
     const [location, setLocation] = useState<string>("");
     const [city, setCity] = useState<string>("");
     const [dealer, setDealer] = useState<string>("");
@@ -53,7 +52,6 @@ const ProfileReportEditor: React.FC = () => {
     const [problemDate, setProblemDate] = useState<string>("");
     const [visitDate, setVisitDate] = useState<string>("");
     const [status, setStatus] = useState<string>("");
-    // const [dateDifference, setDateDifference] = useState<string>("");
 
     // Road Condition
     const [highway, setHighway] = useState<string>("");
@@ -69,7 +67,6 @@ const ProfileReportEditor: React.FC = () => {
     const [historyMaintenance, setHistoryMaintenance] = useState<string>("");
     const [FATemporaryInvestigation, setFATemporaryInvestigation] = useState<string>("");
 
-
     // Result
     const [investigationResult, setInvestigationResult] = useState<string>("");
     const [customerVoice, setCustomerVoice] = useState<string>("");
@@ -81,193 +78,219 @@ const ProfileReportEditor: React.FC = () => {
     const [attachments, setAttachments] = useState<AttachmentItem[]>([]);
     const [investigations, setInvestigations] = useState<InvestigationItem[]>([]);
     const [units, setUnits] = useState<Unit[]>([]);
-    const [unitInvolves, setUnitInvolves] = useState<UnitInvolve[]>([])
+    const [unitInvolves, setUnitInvolves] = useState<UnitInvolve[]>([]);
 
-    // State untuk mengecek apakah data sudah diubah
+    // State to check if data has been changed
     const [isDataChanged, setIsDataChanged] = useState<boolean>(false);
 
-    // Fungsi untuk mendeteksi perubahan input
+    // Function to detect input changes
     const handleChange = (setter: React.Dispatch<React.SetStateAction<string>>) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         setter(e.target.value);
-        setIsDataChanged(true); // Set bahwa ada perubahan data
+        setIsDataChanged(true);
     };
-    const handleSendData = async (e: React.FormEvent) => {
-        e.preventDefault();
 
-        waiting(true)
-        const newData = {
-            attachments,
-            investigations,
-            units,
-            unitInvolves,
-
-            // Context
-            context,
-
-            // General Information
-            largeClassification,
-            middleClassification,
-            partProblem,
-            visitor,
-            reviewer,
-            approval,
-
-            // Vehicle Information
-            customerName,
-            area,
-            location,
-            city,
-            dealer,
-            series,
-            vehicleType,
-            focusModel,
-            euroType,
-            VIN,
-            EGN,
-            productionDate,
-            payload,
-            mileage,
-            karoseri,
-            segment,
-            application,
-            loadingUnit,
-            problemDate,
-            visitDate,
-            status,
-
-            // Road Condition
-            highway,
-            cityRoad,
-            countryRoad,
-            onRoad,
-            offRoad,
-            flatRoad,
-            climbRoad,
-
-            // Problem Background
-            phenomenon,
-            historyMaintenance,
-            FATemporaryInvestigation,
-
-            // Result
-            investigationResult,
-            customerVoice,
-            temporaryAction,
-            homework,
-            otherCaseTIR,
-            difficultPoint,
-        };
-
-        try {
-            attachments?.map(data=>{
-                updateImage(data?.imageId?.toString() ?? "", "uploaded")
-            })
-            await saveToDatabase(`report/${user?.uid}/${id || Date.now()}`, newData);
-            waiting(false)
-            setIsDataChanged(false)
-            navigate("/report"); // Navigasi ke halaman setelah submit
-        } catch (error) {
-            console.error("Error saving data:", error);
-            waiting(false)
-        }
-    };
+    const getFormData = () => ({
+        attachments,
+        investigations,
+        units,
+        unitInvolves,
+        // Context
+        context,
+        // General Information
+        largeClassification,
+        middleClassification,
+        partProblem,
+        visitor,
+        reviewer,
+        approval,
+        // Vehicle Information
+        customerName,
+        area,
+        location,
+        city,
+        dealer,
+        series,
+        vehicleType,
+        focusModel,
+        euroType,
+        VIN,
+        EGN,
+        productionDate,
+        payload,
+        mileage,
+        karoseri,
+        segment,
+        application,
+        loadingUnit,
+        problemDate,
+        visitDate,
+        status,
+        // Road Condition
+        highway,
+        cityRoad,
+        countryRoad,
+        onRoad,
+        offRoad,
+        flatRoad,
+        climbRoad,
+        // Problem Background
+        phenomenon,
+        historyMaintenance,
+        FATemporaryInvestigation,
+        // Result
+        investigationResult,
+        customerVoice,
+        temporaryAction,
+        homework,
+        otherCaseTIR,
+        difficultPoint,
+    });
 
     useEffect(() => {
-        if (id) {
-            waiting(true)
-            getFromDatabase(`report/${user?.uid}/${id}`).then((data) => {
-                if (data) {
-                    // Array data
-                    setAttachments(data.attachments || []);
-                    setInvestigations(data.investigations || [])
-                    setUnits(data.units || [])
-                    setUnitInvolves(data.unitInvolves || [])
-
-                    // Context
-                    setContext(data.context || "");
-
-                    // General Information
-                    setLargeClassification(data.largeClassification || "");
-                    setMiddleClassification(data.middleClassification || "");
-                    setDataMiddleClassification([data.middleClassification || ""])
-                    setPartProblem(data.partProblem || "");
-                    setVisitor(data.visitor || "");
-                    setReviewer(data.reviewer || "");
-                    setApproval(data.approval || "");
-
-                    // Vehicle Information
-                    setCustomerName(data.customerName || "");
-                    setArea(data.area || "");
-                    setLocation(data.location || "");
-                    setDataLocation([data.location || ""])
-                    setCity(data.city || "");
-                    setDealer(data.dealer || "");
-                    setSeries(data.series || "");
-                    setVehicleType(data.vehicleType || "");
-                    setFocusModel(data.focusModel || "");
-                    setEuroType(data.euroType || "");
-                    setVIN(data.VIN || "");
-                    setEGN(data.EGN || "");
-                    setProductionDate(data.productionDate || "");
-                    setPayload(data.payload || "");
-                    setMileage(data.mileage || "");
-                    setKaroseri(data.karoseri || "");
-                    setSegment(data.segment || "");
-                    setApplication(data.application || "");
-                    setLoadingUnit(data.loadingUnit || "");
-                    setProblemDate(data.problemDate || "");
-                    setVisitDate(data.visitDate || "");
-                    setStatus(data.status || "");
-
-                    // Road Condition
-                    setHighway(data.highway || "");
-                    setCityRoad(data.cityRoad || "");
-                    setCountryRoad(data.countryRoad || "");
-                    setOnRoad(data.onRoad || "");
-                    setOffRoad(data.offRoad || "");
-                    setFlatRoad(data.flatRoad || "");
-                    setClimbRoad(data.climbRoad || "");
-
-                    // Problem Background
-                    setPhenomenon(data.phenomenon || "");
-                    setHistoryMaintenance(data.historyMaintenance || "");
-                    setFATemporaryInvestigation(data.FATemporaryInvestigation || "");
-
-                    // Result
-                    setInvestigationResult(data.investigationResult || "");
-                    setCustomerVoice(data.customerVoice || "");
-                    setTemporaryAction(data.temporaryAction || "");
-                    setHomework(data.homework || "");
-                    setOtherCaseTIR(data.otherCaseTIR || "");
-                    setDifficultPoint(data.difficultPoint || "");
-                }
-            });
-            waiting(false)
+        if (isDataChanged) {
+            const formData = getFormData();
+            localStorage.setItem("profileReportDraft", JSON.stringify(formData));
         }
-    }, [id]);
+    }, [
+        context,
+        largeClassification,
+        middleClassification,
+        partProblem,
+        visitor,
+        reviewer,
+        approval,
+        customerName,
+        area,
+        location,
+        city,
+        dealer,
+        series,
+        vehicleType,
+        focusModel,
+        euroType,
+        VIN,
+        EGN,
+        productionDate,
+        payload,
+        mileage,
+        karoseri,
+        segment,
+        application,
+        loadingUnit,
+        problemDate,
+        visitDate,
+        status,
+        highway,
+        cityRoad,
+        countryRoad,
+        onRoad,
+        offRoad,
+        flatRoad,
+        climbRoad,
+        phenomenon,
+        historyMaintenance,
+        FATemporaryInvestigation,
+        investigationResult,
+        customerVoice,
+        temporaryAction,
+        homework,
+        otherCaseTIR,
+        difficultPoint,
+        attachments,
+        investigations,
+        units,
+        unitInvolves,
+        isDataChanged,
+    ]);
 
+    useEffect(() => {
+        const savedDraft = localStorage.getItem("profileReportDraft");
+        if (savedDraft) {
+            const confirmLoad = window.confirm("Terdapat data yang belum tersimpan. Apakah Anda ingin mengembalikannya?");
+            if (confirmLoad) {
+                const data = JSON.parse(savedDraft);
+                // Set semua state sesuai data draft
+                setAttachments(data.attachments || []);
+                setInvestigations(data.investigations || []);
+                setUnits(data.units || []);
+                setUnitInvolves(data.unitInvolves || []);
+
+                setContext(data.context || "");
+                setLargeClassification(data.largeClassification || "");
+                setMiddleClassification(data.middleClassification || "");
+                setPartProblem(data.partProblem || "");
+                setVisitor(data.visitor || "");
+                setReviewer(data.reviewer || "");
+                setApproval(data.approval || "");
+
+                setCustomerName(data.customerName || "");
+                setArea(data.area || "");
+                setLocation(data.location || "");
+                setCity(data.city || "");
+                setDealer(data.dealer || "");
+                setSeries(data.series || "");
+                setVehicleType(data.vehicleType || "");
+                setFocusModel(data.focusModel || "");
+                setEuroType(data.euroType || "");
+                setVIN(data.VIN || "");
+                setEGN(data.EGN || "");
+                setProductionDate(data.productionDate || "");
+                setPayload(data.payload || "");
+                setMileage(data.mileage || "");
+                setKaroseri(data.karoseri || "");
+                setSegment(data.segment || "");
+                setApplication(data.application || "");
+                setLoadingUnit(data.loadingUnit || "");
+                setProblemDate(data.problemDate || "");
+                setVisitDate(data.visitDate || "");
+                setStatus(data.status || "");
+
+                setHighway(data.highway || "");
+                setCityRoad(data.cityRoad || "");
+                setCountryRoad(data.countryRoad || "");
+                setOnRoad(data.onRoad || "");
+                setOffRoad(data.offRoad || "");
+                setFlatRoad(data.flatRoad || "");
+                setClimbRoad(data.climbRoad || "");
+
+                setPhenomenon(data.phenomenon || "");
+                setHistoryMaintenance(data.historyMaintenance || "");
+                setFATemporaryInvestigation(data.FATemporaryInvestigation || "");
+
+                setInvestigationResult(data.investigationResult || "");
+                setCustomerVoice(data.customerVoice || "");
+                setTemporaryAction(data.temporaryAction || "");
+                setHomework(data.homework || "");
+                setOtherCaseTIR(data.otherCaseTIR || "");
+                setDifficultPoint(data.difficultPoint || "");
+
+                // Setelah mengembalikan data, data draft sudah dipulihkan
+                setIsDataChanged(false);
+            } else {
+                // Jika pengguna memilih tidak mengembalikan, hapus data draft
+                localStorage.removeItem("profileReportDraft");
+            }
+        }
+    }, []);
 
     useEffect(() => {
         const handleBeforeUnload = (event: BeforeUnloadEvent) => {
             if (isDataChanged) {
                 event.preventDefault();
-                event.returnValue = "Anda memiliki perubahan yang belum disimpan. Apakah Anda yakin ingin keluar?";
+                event.returnValue = "You have unsaved changes. Are you sure you want to leave?";
             }
         };
 
         const handleBackButton = () => {
             if (isDataChanged) {
-                const confirmLeave = window.confirm("Anda memiliki perubahan yang belum disimpan. Apakah Anda yakin ingin meninggalkan halaman ini?");
+                const confirmLeave = window.confirm("You have unsaved changes. Are you sure you want to leave this page?");
                 if (!confirmLeave) {
-                    // Dorong kembali state agar tetap di halaman saat tombol Back ditekan
                     window.history.pushState(null, "", window.location.href);
                 }
             }
         };
 
-        // Tambahkan state baru ke history agar kita bisa mengendalikan navigasi
         window.history.pushState(null, "", window.location.href);
-
         window.addEventListener("beforeunload", handleBeforeUnload);
         window.addEventListener("popstate", handleBackButton);
 
@@ -278,6 +301,27 @@ const ProfileReportEditor: React.FC = () => {
     }, [isDataChanged]);
 
 
+    const handleSendData = async (e: React.FormEvent) => {
+        e.preventDefault();
+        waiting(true);
+        const newData = getFormData();
+
+        try {
+            attachments?.forEach(data => {
+                updateImage(data?.imageId?.toString() ?? "", "uploaded");
+            });
+            await saveToDatabase(`report/${user?.uid}/${id || Date.now()}`, newData);
+            waiting(false);
+            setIsDataChanged(false);
+            // Setelah data berhasil dikirim, hapus data draft dari localStorage
+            localStorage.removeItem("profileReportDraft");
+            navigate("/report");
+        } catch (error) {
+            console.error("Error saving data:", error);
+            waiting(false);
+        }
+    };
+
     return (
         <div className="App overflow-x-hidden">
             <div className="pt-16">
@@ -287,84 +331,316 @@ const ProfileReportEditor: React.FC = () => {
                         name="context"
                         value={context}
                         onChange={handleChange(setContext)}
-                        placeholder="Masukkan context"
-
+                        placeholder="Enter context"
                     />
 
                     {/* General Information */}
                     <div className="w-full py-8 px-8 rounded-lg my-4 bg-slate-100">
                         <h2 className="font-semibold">General Information</h2>
                         <div className="md:flex w-full gap-5">
-                            <SelectInput required={true} label="Large Classification" name="Large Classification" value={largeClassification} onChange={(e) => { setLargeClassification(e.target.value); setDataMiddleClassification(classificationMap[e.target.value] || []); }} options={problemCategoriesData} />
-
-                            <SelectInput required={true} label="Middle Classification" name="Middle Classification" value={middleClassification} onChange={handleChange(setMiddleClassification)} options={dataMiddleClassification} />
-
-                            <InputField required={true} label="Part Problem" name="partProblem" value={partProblem} onChange={handleChange(setPartProblem)} placeholder="Nama Part" />
+                            <SelectInput
+                                required={true}
+                                label="Large Classification"
+                                name="largeClassification"
+                                value={largeClassification}
+                                onChange={(e) => {
+                                    setLargeClassification(e.target.value);
+                                    setDataMiddleClassification(classificationMap[e.target.value] || []);
+                                }}
+                                options={problemCategoriesData}
+                            />
+                            <SelectInput
+                                required={true}
+                                label="Middle Classification"
+                                name="middleClassification"
+                                value={middleClassification}
+                                onChange={handleChange(setMiddleClassification)}
+                                options={dataMiddleClassification}
+                            />
+                            <InputField
+                                required={true}
+                                label="Part Problem"
+                                name="partProblem"
+                                value={partProblem}
+                                onChange={handleChange(setPartProblem)}
+                                placeholder="Enter part name"
+                            />
                         </div>
                         <div className="md:flex w-full gap-5">
-                            <InputField required={true} label="Visitor" name="visitor" value={visitor} onChange={handleChange(setVisitor)} placeholder="Visitor" />
-                            <InputField label="Reviewer" name="reviewer" value={reviewer} onChange={handleChange(setReviewer)} placeholder="Reviewer" />
-                            <InputField label="Approval" name="approval" value={approval} onChange={handleChange(setApproval)} placeholder="Approval" />
+                            <InputField
+                                required={true}
+                                label="Visitor"
+                                name="visitor"
+                                value={visitor}
+                                onChange={handleChange(setVisitor)}
+                                placeholder="Enter visitor"
+                            />
+                            <InputField
+                                label="Reviewer"
+                                name="reviewer"
+                                value={reviewer}
+                                onChange={handleChange(setReviewer)}
+                                placeholder="Enter reviewer"
+                            />
+                            <InputField
+                                label="Approval"
+                                name="approval"
+                                value={approval}
+                                onChange={handleChange(setApproval)}
+                                placeholder="Enter approval"
+                            />
                         </div>
                     </div>
 
+                    {/* Basic Information */}
                     <div className="w-full py-8 px-8 rounded-lg my-4 bg-slate-100">
                         <h2 className="font-semibold">Basic Information</h2>
                         <div className="md:flex w-full gap-5">
-                            <InputField required={true} label="Nama Customer" name="customerName" value={customerName} onChange={handleChange(setCustomerName)} placeholder="Masukkan Nama Customer" />
-                            <SelectInput required={true} label="Dealer" name="dealer" value={dealer} onChange={handleChange(setDealer)} options={DealerData} />
+                            <InputField
+                                required={true}
+                                label="Customer Name"
+                                name="customerName"
+                                value={customerName}
+                                onChange={handleChange(setCustomerName)}
+                                placeholder="Enter customer name"
+                            />
+                            <SelectInput
+                                required={true}
+                                label="Dealer"
+                                name="dealer"
+                                value={dealer}
+                                onChange={handleChange(setDealer)}
+                                options={DealerData}
+                            />
                         </div>
                         <div className="md:flex w-full gap-5">
-                            <SelectInput required={true} label="Area" name="area" value={area} onChange={(e)=>{ setArea(e.target.value); setDataLocation(areaMap[e.target.value] || []); }} options={areaData} />
-                            <SelectInput required={true} label="Lokasi" name="location" value={location} onChange={handleChange(setLocation)} options={dataLocation} />
-                            <InputField required={true} label="Kota" name="city" value={city} onChange={handleChange(setCity)} placeholder="Masukkan Kota" />
+                            <SelectInput
+                                required={true}
+                                label="Area"
+                                name="area"
+                                value={area}
+                                onChange={(e) => {
+                                    setArea(e.target.value);
+                                    setDataLocation(areaMap[e.target.value] || []);
+                                }}
+                                options={areaData}
+                            />
+                            <SelectInput
+                                required={true}
+                                label="Location"
+                                name="location"
+                                value={location}
+                                onChange={handleChange(setLocation)}
+                                options={dataLocation}
+                            />
+                            <InputField
+                                required={true}
+                                label="City"
+                                name="city"
+                                value={city}
+                                onChange={handleChange(setCity)}
+                                placeholder="Enter city"
+                            />
                         </div>
                         <div className="md:flex w-full gap-5">
-                            <SelectInput required={true} label="Seri Kendaraan" name="series" value={series} onChange={handleChange(setSeries)} options={seriesData} />
-                            <SelectInput required={true} label="Tipe Kendaraan" name="vehicleType" value={vehicleType} onChange={handleChange(setVehicleType)} options={vehicleTypesData} />
-                            <SelectInput required={true} label="Model Fokus" name="focusModel" value={focusModel} onChange={handleChange(setFocusModel)} options={focusModelsData} />
+                            <SelectInput
+                                required={true}
+                                label="Vehicle Series"
+                                name="series"
+                                value={series}
+                                onChange={handleChange(setSeries)}
+                                options={seriesData}
+                            />
+                            <SelectInput
+                                required={true}
+                                label="Vehicle Type"
+                                name="vehicleType"
+                                value={vehicleType}
+                                onChange={handleChange(setVehicleType)}
+                                options={vehicleTypesData}
+                            />
+                            <SelectInput
+                                required={true}
+                                label="Focus Model"
+                                name="focusModel"
+                                value={focusModel}
+                                onChange={handleChange(setFocusModel)}
+                                options={focusModelsData}
+                            />
                         </div>
                         <div className="md:flex w-full gap-5">
-                            <SelectInput required={true} label="Tipe Euro" name="euroType" value={euroType} onChange={handleChange(setEuroType)} options={euroTypeData} />
-                            <InputField required={true} label="VIN" name="VIN" value={VIN} onChange={handleChange(setVIN)} placeholder="Masukkan VIN" />
-                            <InputField required={true} label="EGN" name="EGN" value={EGN} onChange={handleChange(setEGN)} placeholder="Masukkan EGN" />
+                            <SelectInput
+                                required={true}
+                                label="Euro Type"
+                                name="euroType"
+                                value={euroType}
+                                onChange={handleChange(setEuroType)}
+                                options={euroTypeData}
+                            />
+                            <InputField
+                                required={true}
+                                label="VIN"
+                                name="VIN"
+                                value={VIN}
+                                onChange={handleChange(setVIN)}
+                                placeholder="Enter VIN"
+                            />
+                            <InputField
+                                required={true}
+                                label="EGN"
+                                name="EGN"
+                                value={EGN}
+                                onChange={handleChange(setEGN)}
+                                placeholder="Enter EGN"
+                            />
                         </div>
                         <div className="md:flex w-full gap-5">
-                            <InputField label="Payload (KG)" name="payload" type="number" value={payload} onChange={handleChange(setPayload)} placeholder="Masukkan Payload" />
-                            <InputField label="Jarak Tempuh (KM)" name="mileage" type="number" value={mileage} onChange={handleChange(setMileage)} placeholder="Masukkan Jarak Tempuh" />
-                            <SelectInput label="Karoseri" name="karoseri" value={karoseri} onChange={handleChange(setKaroseri)} options={karoseriCustomersData} />
+                            <InputField
+                                label="Payload (KG)"
+                                name="payload"
+                                type="number"
+                                value={payload}
+                                onChange={handleChange(setPayload)}
+                                placeholder="Enter payload"
+                            />
+                            <InputField
+                                label="Mileage (KM)"
+                                name="mileage"
+                                type="number"
+                                value={mileage}
+                                onChange={handleChange(setMileage)}
+                                placeholder="Enter mileage"
+                            />
+                            <SelectInput
+                                label="Karoseri"
+                                name="karoseri"
+                                value={karoseri}
+                                onChange={handleChange(setKaroseri)}
+                                options={karoseriCustomersData}
+                            />
                         </div>
                         <div className="md:flex w-full gap-5">
-                            <SelectInput label="Segmen" name="segment" value={segment} onChange={handleChange(setSegment)} options={segmentData} />
-                            <SelectInput label="Aplikasi" name="application" value={application} onChange={handleChange(setApplication)} options={cargoTypesData} />
-                            <InputField label="LoadingUnit" name="loadingUnit" value={loadingUnit} onChange={handleChange(setLoadingUnit)} placeholder="Masukkan LoadingUnit" />
+                            <SelectInput
+                                label="Segment"
+                                name="segment"
+                                value={segment}
+                                onChange={handleChange(setSegment)}
+                                options={segmentData}
+                            />
+                            <SelectInput
+                                label="Application"
+                                name="application"
+                                value={application}
+                                onChange={handleChange(setApplication)}
+                                options={cargoTypesData}
+                            />
+                            <InputField
+                                label="Loading Unit"
+                                name="loadingUnit"
+                                value={loadingUnit}
+                                onChange={handleChange(setLoadingUnit)}
+                                placeholder="Enter loading unit"
+                            />
                         </div>
                         <div className="md:flex w-full gap-5">
-                            <InputField label="Tanggal Produksi" name="productionDate" type="date" value={productionDate} onChange={handleChange(setProductionDate)} />
-                            <InputField label="Tanggal Masalah" name="problemDate" type="date" value={problemDate} onChange={handleChange(setProblemDate)} />
-                            <InputField label="Tanggal Kunjungan" name="visitDate" type="date" value={visitDate} onChange={handleChange(setVisitDate)} />
-                            {/* <InputField label="Perbedaan Tanggal" name="dateDifference" value={dateDifference} onChange={handleChange(setDateDifference)} placeholder="Masukkan Perbedaan Tanggal" /> */}
+                            <InputField
+                                label="Production Date"
+                                name="productionDate"
+                                type="date"
+                                value={productionDate}
+                                onChange={handleChange(setProductionDate)}
+                            />
+                            <InputField
+                                label="Problem Date"
+                                name="problemDate"
+                                type="date"
+                                value={problemDate}
+                                onChange={handleChange(setProblemDate)}
+                            />
+                            <InputField
+                                label="Visit Date"
+                                name="visitDate"
+                                type="date"
+                                value={visitDate}
+                                onChange={handleChange(setVisitDate)}
+                            />
                         </div>
-                        <SelectInput required={true} label="Status" name="status" value={status} onChange={handleChange(setStatus)} options={["Breakdown", "Operational"]} />
+                        <SelectInput
+                            required={true}
+                            label="Status"
+                            name="status"
+                            value={status}
+                            onChange={handleChange(setStatus)}
+                            options={["Breakdown", "Operational"]}
+                        />
                     </div>
 
+                    {/* Road Condition */}
                     <div className="w-full py-8 px-8 rounded-lg my-4 bg-slate-100">
                         <h2 className="font-semibold">Road Condition</h2>
                         <div className="md:flex w-full gap-5">
-                            <InputField label="Jalan Tol (%)" type="number" name="highway" value={highway} onChange={handleChange(setHighway)} placeholder="Masukkan kondisi jalan tol" />
-                            <InputField label="Jalan Kota (%)" type="number" name="cityRoad" value={cityRoad} onChange={handleChange(setCityRoad)} placeholder="Masukkan kondisi jalan kota" />
-                            <InputField label="Jalan Desa (%)" type="number" name="countryRoad" value={countryRoad} onChange={handleChange(setCountryRoad)} placeholder="Masukkan kondisi jalan desa" />
+                            <InputField
+                                label="Highway (%)"
+                                type="number"
+                                name="highway"
+                                value={highway}
+                                onChange={handleChange(setHighway)}
+                                placeholder="Enter highway condition (%)"
+                            />
+                            <InputField
+                                label="City Road (%)"
+                                type="number"
+                                name="cityRoad"
+                                value={cityRoad}
+                                onChange={handleChange(setCityRoad)}
+                                placeholder="Enter city road condition (%)"
+                            />
+                            <InputField
+                                label="Rural Road (%)"
+                                type="number"
+                                name="countryRoad"
+                                value={countryRoad}
+                                onChange={handleChange(setCountryRoad)}
+                                placeholder="Enter rural road condition (%)"
+                            />
                         </div>
                         <div className="md:flex w-full gap-5">
-                            <InputField label="Jalan Aspal (%)" type="number" name="onRoad" value={onRoad} onChange={handleChange(setOnRoad)} placeholder="Masukkan kondisi jalan aspal" />
-                            <InputField label="Jalan Off-Road (%)" type="number" name="offRoad" value={offRoad} onChange={handleChange(setOffRoad)} placeholder="Masukkan kondisi off-road" />
+                            <InputField
+                                label="On Road (%)"
+                                type="number"
+                                name="onRoad"
+                                value={onRoad}
+                                onChange={handleChange(setOnRoad)}
+                                placeholder="Enter on road condition (%)"
+                            />
+                            <InputField
+                                label="Off-Road (%)"
+                                type="number"
+                                name="offRoad"
+                                value={offRoad}
+                                onChange={handleChange(setOffRoad)}
+                                placeholder="Enter off-road condition (%)"
+                            />
                         </div>
                         <div className="md:flex w-full gap-5">
-                            <InputField label="Jalan Datar (%)" type="number" name="flatRoad" value={flatRoad} onChange={handleChange(setFlatRoad)} placeholder="Masukkan kondisi jalan datar" />
-                            <InputField label="Jalan Menanjak (%)" type="number" name="climbRoad" value={climbRoad} onChange={handleChange(setClimbRoad)} placeholder="Masukkan kondisi jalan menanjak" />
+                            <InputField
+                                label="Flat Road (%)"
+                                type="number"
+                                name="flatRoad"
+                                value={flatRoad}
+                                onChange={handleChange(setFlatRoad)}
+                                placeholder="Enter flat road condition (%)"
+                            />
+                            <InputField
+                                label="Uphill Road (%)"
+                                type="number"
+                                name="climbRoad"
+                                value={climbRoad}
+                                onChange={handleChange(setClimbRoad)}
+                                placeholder="Enter uphill road condition (%)"
+                            />
                         </div>
                     </div>
-
 
                     {/* Customer Unit */}
                     <div className="w-full py-8 px-8 rounded-lg my-4 bg-slate-100">
@@ -378,32 +654,29 @@ const ProfileReportEditor: React.FC = () => {
                         <AddUnitInvolve setUnitInvolves={setUnitInvolves} unitInvolves={unitInvolves} />
                     </div>
 
-                    {/* Content of Investigation */}
+                    {/* Problem Background */}
                     <div className="w-full py-8 px-8 rounded-lg my-4 bg-slate-100">
                         <h2 className="font-semibold">Problem Background</h2>
                         <TextField
-                            label="Fenomena"
+                            label="Phenomenon"
                             name="phenomenon"
                             value={phenomenon}
                             onChange={handleChange(setPhenomenon)}
-                            placeholder="Jelaskan fenomena masalah"
-
+                            placeholder="Describe the phenomenon"
                         />
                         <TextField
-                            label="Riwayat Perawatan"
+                            label="Maintenance History"
                             name="historyMaintenance"
                             value={historyMaintenance}
                             onChange={handleChange(setHistoryMaintenance)}
-                            placeholder="Masukkan riwayat perawatan"
-
+                            placeholder="Enter maintenance history"
                         />
                         <TextField
-                            label="Investigasi Sementara"
+                            label="Temporary Investigation"
                             name="FATemporaryInvestigation"
                             value={FATemporaryInvestigation}
                             onChange={handleChange(setFATemporaryInvestigation)}
-                            placeholder="Masukkan hasil investigasi sementara"
-
+                            placeholder="Enter temporary investigation results"
                         />
                     </div>
 
@@ -423,52 +696,46 @@ const ProfileReportEditor: React.FC = () => {
                     <div className="w-full py-8 px-8 rounded-lg my-4 bg-slate-100">
                         <h2 className="font-semibold">Result</h2>
                         <TextField
-                            label="Hasil Investigasi Akhir"
+                            label="Final Investigation Result"
                             name="investigationResult"
                             value={investigationResult}
                             onChange={handleChange(setInvestigationResult)}
-                            placeholder="Masukkan hasil investigasi akhir"
-
+                            placeholder="Enter final investigation result"
                         />
                         <TextField
-                            label="Pendapat Pelanggan"
+                            label="Customer Opinion"
                             name="customerVoice"
                             value={customerVoice}
                             onChange={handleChange(setCustomerVoice)}
-                            placeholder="Masukkan pendapat pelanggan"
-
+                            placeholder="Enter customer opinion"
                         />
                         <TextField
-                            label="Tindakan Sementara"
+                            label="Temporary Action"
                             name="temporaryAction"
                             value={temporaryAction}
                             onChange={handleChange(setTemporaryAction)}
-                            placeholder="Masukkan tindakan sementara"
-
+                            placeholder="Enter temporary action"
                         />
                         <TextField
-                            label="PR yang Perlu Dikerjakan"
+                            label="Homework"
                             name="homework"
                             value={homework}
                             onChange={handleChange(setHomework)}
-                            placeholder="Masukkan PR yang perlu dikerjakan"
-
+                            placeholder="Enter homework to be done"
                         />
                         <TextField
-                            label="Kasus Lain TIR"
+                            label="Other TIR Cases"
                             name="otherCaseTIR"
                             value={otherCaseTIR}
                             onChange={handleChange(setOtherCaseTIR)}
-                            placeholder="Masukkan kasus lain TIR"
-
+                            placeholder="Enter other TIR cases"
                         />
                         <TextField
-                            label="Poin Sulit"
+                            label="Difficult Point"
                             name="difficultPoint"
                             value={difficultPoint}
                             onChange={handleChange(setDifficultPoint)}
-                            placeholder="Masukkan poin sulit"
-
+                            placeholder="Enter difficult point"
                         />
                     </div>
 
@@ -486,7 +753,7 @@ const ProfileReportEditor: React.FC = () => {
                             className="mt-4 px-6 py-2 inline-flex justify-center items-center bg-white text-primary border border-primary rounded-full font-semibold"
                             to="/report"
                         >
-                            Kembali
+                            Back
                         </Link>
                         <button
                             type="submit"
@@ -495,7 +762,6 @@ const ProfileReportEditor: React.FC = () => {
                             <BiSave className="mr-2" />
                             Save
                         </button>
-
                     </div>
                 </form>
             </div>

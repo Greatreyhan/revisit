@@ -51,7 +51,7 @@ const AdminScheduleMap = () => {
   };
 
   return (
-    <div className="flex fixed left-0 top-0 w-screen h-screen">
+    <div className="flex fixed left-0 top-0 w-screen h-screen z-50">
       <div className="flex fixed z-50 top-3 w-full justify-center ">
         <Link
           to="/admin/schedule"
@@ -81,7 +81,7 @@ const AdminScheduleMap = () => {
           All
         </button>
       </div>
-      <div className={`${selectedData ? "block" : "hidden"} fixed bottom-0 left-0 z-10 bg-white px-8 py-6 rounded-tr`}>
+      <div className={`${selectedData ? "block" : "hidden"} fixed bottom-0 left-0 z-10 bg-white px-8 py-6 rounded-md m-3 shadow-xl`}>
         <table className={`text-sm mt-2`}>
           <tbody className="w-full">
           <tr className="text-left w-full">

@@ -214,20 +214,23 @@ const AddAttachment: React.FC<AddAttachmentProps> = ({ attachments, setAttachmen
 
       {/* Pop Up untuk tambah attachment */}
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-40">
           <div className="bg-white p-6 rounded-lg shadow-lg">
             <h2 className="text-lg font-bold mb-4">Tambah Lampiran</h2>
+
+            <div className="w-full h-64 flex justify-center">
+              {imageAttached && (
+                <a href={imageAttached} target="_blank" rel="noreferrer">
+                  <img className="w-full h-full object-contain" src={imageAttached} alt="Lampiran" />
+                </a>
+              )}
+            </div>
 
             <div className="flex flex-col w-full">
               <label className="text-xs my-2" htmlFor="image">
                 Gambar
               </label>
               <div className="flex items-center gap-x-5">
-                {imageAttached && (
-                  <a href={imageAttached} target="_blank" rel="noreferrer">
-                    <img className="w-16 h-16" src={imageAttached} alt="Lampiran" />
-                  </a>
-                )}
                 <input
                   required
                   onChange={handleFileChange}

@@ -68,7 +68,7 @@ const DealerScheduleMap = () => {
   };
 
   return (
-    <div className="flex fixed left-0 top-0 w-screen h-screen">
+    <div className="flex fixed z-50 left-0 top-0 w-screen h-screen">
       <div className="flex fixed z-50 top-3 w-full justify-center ">
         <Link
           to="/admin/schedule"

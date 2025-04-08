@@ -98,7 +98,7 @@ const AddContentInvestigation: React.FC<AddContentInvestigationProps> = ({ inves
 
             {/* Pop Up */}
             {isModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+                <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-40">
                     <div className="bg-white p-6 rounded-lg shadow-lg">
                         <h2 className="text-lg font-bold mb-4">Tambah Investigasi</h2>
 

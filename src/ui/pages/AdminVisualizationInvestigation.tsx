@@ -136,7 +136,7 @@ const AdminVisualizationInvestigation: React.FC = () => {
       </div>
 
       <div
-        className={`fixed ${isShow ? "flex" : "hidden"} z-30 justify-center items-center bg-black bg-opacity-80 w-screen top-0 left-0`}
+        className={`fixed ${isShow ? "flex" : "hidden"} z-50 justify-center items-center bg-black bg-opacity-80 w-screen top-0 left-0`}
       >
         <form className="relative md:w-10/12 w-11/12 h-screen overflow-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 bg-white rounded-lg p-6">
           <button
@@ -325,11 +325,11 @@ const AdminVisualizationInvestigation: React.FC = () => {
 
       {/* Menampilkan Grafik Balok berdasarkan Large Classification */}
       <TimeSeriesCasesChart reports={filteredReports} />
-      <div className="flex flex-wrap w-full gap-x-5 justify-between">
+      <div className="flex flex-wrap md:flex-nowrap w-full gap-x-5 justify-between">
         <PieClassification reports={filteredReports} />
         <AreaChartReport reports={filteredReports} />
       </div>
-      <div className="flex flex-wrap gap-x-5 w-full justify-around">
+      <div className="flex flex-wrap md:flex-nowrap gap-x-5 w-full justify-around">
         <SeriesChart reports={filteredReports} />
         <SegmentChart reports={filteredReports} />
       </div>

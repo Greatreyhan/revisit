@@ -94,7 +94,7 @@ const DealerVisit = () => {
               <Link
                 className="text-emerald-800 px-4 py-2 rounded-lg bg-emerald-100 flex items-center"
                 type="button"
-                to={"/admin/visit/" + allReports[keyData]?.userId + "/" + allReports[keyData]?.reportId}
+                to={"/dealer/visit/" + allReports[keyData]?.userId + "/" + allReports[keyData]?.reportId}
               >
                 <MdPrint className="text-md mr-1" />
                 <p className="text-sm">Show Visit</p>
@@ -118,7 +118,7 @@ const DealerVisit = () => {
         </div>
         <Link
           className="inline-flex items-center px-6 py-1.5 bg-primary rounded-full text-white"
-          to={"/admin/visit/visualization"}
+          to={"/dealer/visit/visualization"}
         >
           <span className="text-2xl mr-2"><MdArchitecture /></span>Visualize Visit
         </Link>
@@ -159,7 +159,7 @@ const DealerVisit = () => {
                 <td className="border-t p-4 md:flex gap-x-3 justify-around items-center hidden">
                   <Link
                     className="p-2 text-green-800 rounded-full bg-green-100"
-                    to={"/admin/visit/" + data?.userId + "/" + data?.reportId}
+                    to={"/dealer/visit/" + data?.userId + "/" + data?.reportId}
                   >
                     <MdPrint />
                   </Link>

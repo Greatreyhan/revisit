@@ -344,11 +344,11 @@ const DealerVisualizationInvestigation: React.FC = () => {
 
       {/* Menampilkan Grafik Balok berdasarkan Large Classification */}
       <TimeSeriesCasesChart reports={filteredReports} />
-      <div className="flex flex-wrap w-full gap-x-5 justify-between">
+      <div className="flex flex-wrap md:flex-nowrap w-full gap-x-5 justify-between">
         <PieClassification reports={filteredReports} />
         <AreaChartReport reports={filteredReports} />
       </div>
-      <div className="flex flex-wrap gap-x-5 w-full justify-around">
+      <div className="flex flex-wrap md:flex-nowrap gap-x-5 w-full justify-around">
         <SeriesChart reports={filteredReports} />
         <SegmentChart reports={filteredReports} />
       </div>

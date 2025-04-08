@@ -58,7 +58,7 @@ const AdminUserEditor: React.FC = () => {
                         </button>
                         <Link
                             className="mt-4 px-6 py-2 inline-flex justify-center items-center bg-white text-primary border border-primary rounded-full font-semibold"
-                            to="/admin/Article"
+                            to="/admin/user"
                         >
                             Kembali
                         </Link>

@@ -10,6 +10,8 @@ import {
     signOut,
     User,
     updatePassword,
+    updateEmail,
+    sendEmailVerification
 } from 'firebase/auth';
 import { ref as rtdbRef, set, get, remove } from 'firebase/database';
 import { AttachmentItem } from "../ui/interface/Report";
@@ -48,6 +50,8 @@ interface FirebaseContextType {
     deleteImage: (filename: string) => Promise<void>
     deleteImageWithPath: (filename: string, id: string) => Promise<void>
     updateImage: (id: string, status: string) => Promise<void>
+    updateUserEmail: (lastPassword: string, newEmail: string) => Promise<void>;
+    verifyEmail: () => Promise<void>
 }
 
 // Initialize the context
@@ -160,8 +164,8 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({ children }
             setLoading(true);
             const recordRef = rtdbRef(FIREBASE_DB, path);
             const data = await getFromDatabase(path)
-            data?.attachments?.map( async (e:AttachmentItem)=>{
-                if(e?.imageId){
+            data?.attachments?.map(async (e: AttachmentItem) => {
+                if (e?.imageId) {
                     await remove(rtdbRef(FIREBASE_DB, `images/${user?.uid}/${e.imageId.toString()}`));
                 }
             })
@@ -415,8 +419,40 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({ children }
         setLoading(false);
     }
 
+    const updateUserEmail = async (lastPassword: string, newEmail: string): Promise<void> => {
+        setLoading(true);
+        if (user) {
+            try {
+                signIn((user?.email || ""), lastPassword);
+                // Update email di Firebase Auth
+                await updateEmail(user, newEmail);
+                // Jika ingin, update email pada data di Realtime Database
+                const dbRef = rtdbRef(FIREBASE_DB, `user/${user.uid}`);
+                await set(dbRef, { ...authData, email: newEmail });
+                setMessage({ message: "Email berhasil diupdate", type: "info" });
+            } catch (error: any) {
+                setMessage({ message: "Error update email: " + error.message, type: "error" });
+            } finally {
+                setLoading(false);
+            }
+        } else {
+            setMessage({ message: "User tidak ditemukan", type: "error" });
+            setLoading(false);
+        }
+    };
 
-
+    const verifyEmail = async (): Promise<void> => {
+        if (user) {
+            try {
+                await sendEmailVerification(user);
+                setMessage({ message: "Verification email has been sent.", type: "info" });
+            } catch (error: any) {
+                setMessage({ message: "Error sending verification email: " + error.message, type: "error" });
+            }
+        } else {
+            setMessage({ message: "User tidak ditemukan", type: "error" });
+        }
+    };
 
     const value: FirebaseContextType = {
         user,
@@ -437,7 +473,9 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({ children }
         uploadEditedImageWithPath,
         deleteImage,
         deleteImageWithPath,
-        updateImage
+        updateImage,
+        updateUserEmail,
+        verifyEmail
     };
 
     return (
