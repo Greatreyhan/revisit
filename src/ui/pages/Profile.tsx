@@ -3,12 +3,18 @@ import { Article } from "../interface/Article";
 import { Portofolio } from "../interface/Portofolio";
 import { Career } from "../interface/Career";
 import { useFirebase } from "../../utils/FirebaseContext";
+import { TraineeData } from "../interface/Training";
+import { HealthReportData } from "../interface/Health";
+import { CustomerData } from "../interface/Customer";
 
 const Profile: React.FC = () => {
   const {getFromDatabase, user} = useFirebase()
   const [report, setReport] = useState<string[]>([]);
   const [visit, setVisit] = useState<string[]>([]);
   const [schedule, setSchedule] = useState<string[]>([]);
+  const [customer, setCustomer] = useState<string[]>([]);
+  const [training, setTraining] = useState<string[]>([]);
+  const [health, setHealth] = useState<string[]>([]);
 
   useEffect(() => {
     // Fetch articles
@@ -38,23 +44,29 @@ const Profile: React.FC = () => {
       }
     });
 
-    // // Fetch service
-    // getFromDatabase("service/"+user?.uid).then(data => {
-    //   const dataConverted: Service | null = data;
-    //   if (dataConverted) {
-    //     const keys = Object.keys(dataConverted);
-    //     setKeyService(keys);
-    //   }
-    // });
+    getFromDatabase("customer/"+user?.uid).then(data => {
+      const dataConverted: CustomerData | null = data;
+      if (dataConverted) {
+        const keys = Object.keys(dataConverted);
+        setCustomer(keys);
+      }
+    });
 
-    // // Fetch client
-    // getFromDatabase("client/"+user?.uid).then(data => {
-    //   const dataConverted: Client | null = data;
-    //   if (dataConverted) {
-    //     const keys = Object.keys(dataConverted);
-    //     setKeyClient(keys);
-    //   }
-    // });
+    getFromDatabase("training/"+user?.uid).then(data => {
+      const dataConverted: TraineeData | null = data;
+      if (dataConverted) {
+        const keys = Object.keys(dataConverted);
+        setTraining(keys);
+      }
+    });
+
+    getFromDatabase("health/"+user?.uid).then(data => {
+      const dataConverted: HealthReportData | null = data;
+      if (dataConverted) {
+        const keys = Object.keys(dataConverted);
+        setHealth(keys);
+      }
+    });
   }, []);
 
   return (
@@ -87,22 +99,31 @@ const Profile: React.FC = () => {
       </div>
 
       {/* Display Number of Career */}
-      {/* <div className="w-72 bg-slate-100 px-8 py-4 rounded-md">
-        <h2 className="text-lg text-slate-900">Total Client</h2>
+      <div className="w-72 bg-slate-100 px-8 py-4 rounded-md">
+        <h2 className="text-lg text-slate-900">Total Customer</h2>
         <p className="text-4xl text-primary flex justify-end items-end mt-4 font-bold">
-          {keyService.length}
+          {customer.length}
           <span className="text-sm font-light ml-2">person</span>
         </p>
-      </div> */}
+      </div>
 
       {/* Display Number of Career */}
-      {/* <div className="w-72 bg-slate-100 px-8 py-4 rounded-md">
-        <h2 className="text-lg text-slate-900">Total Unit</h2>
+      <div className="w-72 bg-slate-100 px-8 py-4 rounded-md">
+        <h2 className="text-lg text-slate-900">Total Health Report</h2>
         <p className="text-4xl text-primary flex justify-end items-end mt-4 font-bold">
-          {keyClient.length}
-          <span className="text-sm font-light ml-2">unit</span>
+          {health.length}
+          <span className="text-sm font-light ml-2">doc</span>
         </p>
-      </div> */}
+      </div>
+
+      {/* Display Number of Career */}
+      <div className="w-72 bg-slate-100 px-8 py-4 rounded-md">
+        <h2 className="text-lg text-slate-900">Total Training Report</h2>
+        <p className="text-4xl text-primary flex justify-end items-end mt-4 font-bold">
+          {training.length}
+          <span className="text-sm font-light ml-2">doc</span>
+        </p>
+      </div>
     </div>
   );
 };

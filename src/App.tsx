@@ -47,6 +47,12 @@ import DealerVisualizationInvestigation from "./ui/pages/DealerVisualizationInve
 import DealerVisuzalizationRegular from "./ui/pages/DealerVisualizationRegular";
 import ImageEditor from "./ui/organisms/ImageEditor";
 import AdminCache from "./ui/pages/AdminCache";
+import ProfileCustomer from "./ui/pages/ProfileCustomer";
+import ProfileHealth from "./ui/pages/ProfileHealth";
+import ProfileTraining from "./ui/pages/ProfileTraining";
+import ProfileHealthEditor from "./ui/pages/ProfileHealthEditor";
+import ProfileTrainingEditor from "./ui/pages/ProfileTrainingEditor";
+import ProfileCustomerEditor from "./ui/pages/ProfileCustomerEditor";
 
 function App() {
 
@@ -67,20 +73,26 @@ function App() {
     { path: "/visit", element: <ProfileVisit />, type: "profile" },
     { path: "/assistant", element: <ProfileReport />, type: "profile" },
     { path: "/warranty", element: <ProfileReport />, type: "profile" },
-    
+    { path: "/customer", element: <ProfileCustomer />, type: "profile" },
+    { path: "/health", element: <ProfileHealth />, type: "profile" },
+    { path: "/training", element: <ProfileTraining />, type: "profile" },
+
     // Form
     { path: "/report/editor", element: <ProfileReportEditor />, type: "profile" },
     { path: "/report/view/:id", element: <ReportViewer />, type: "viewer" },
     { path: "/report/editor/:id", element: <ProfileReportEditor />, type: "profile" },
-    
     { path: "/visit/editor", element: <ProfileVisitEditor />, type: "profile" },
     { path: "/visit/view/:id", element: <VisitViewer />, type: "viewer" },
     { path: "/visit/editor/:id", element: <ProfileVisitEditor />, type: "profile" },
-    
     { path: "/schedule", element: <ProfileSchedule />, type: "profile" },
     { path: "/schedule/editor", element: <ProfileScheduleEditor />, type: "profile" },
     { path: "/schedule/editor/:id", element: <ProfileScheduleEditor />, type: "profile" },
-
+    { path: "/health/editor", element: <ProfileHealthEditor />, type: "profile" },
+    { path: "/health/editor/:id", element: <ProfileHealthEditor />, type: "profile" },
+    { path: "/training/editor", element: <ProfileTrainingEditor />, type: "profile" },
+    { path: "/training/editor/:id", element: <ProfileTrainingEditor />, type: "profile" },
+    { path: "/customer/editor", element: <ProfileCustomerEditor />, type: "profile" },
+    { path: "/customer/editor/:id", element: <ProfileCustomerEditor />, type: "profile" },
     { path: "/setting", element: <ProfileSetting />, type: "profile" },
 
     // Admin Template Routes
@@ -92,10 +104,8 @@ function App() {
     { path: "/admin/user/add", element: <AdminUserEditor />, type: "admin" },
     { path: "/admin", element: <Admin />, type: "admin" },
     { path: "/admin/report/visualization", element: <AdminVisualizationInvestigation />, type: "admin" },
-
     { path: "/admin/report", element: <AdminReport />, type: "admin" },
     { path: "/admin/report/:uid/:id", element: <AdminReportViewer />, type: "viewer" },
-
     { path: "/admin/visit", element: <AdminVisit />, type: "admin" },
     { path: "/admin/visit/:uid/:id", element: <AdminVisitViewer />, type: "viewer" },
     { path: "/admin/visit/visualization", element: <AdminVisuzalizationRegular />, type: "admin" },
