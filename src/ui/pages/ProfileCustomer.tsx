@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { MdEdit, MdDelete, MdPrint, MdClose } from "react-icons/md";
+import { MdEdit, MdDelete, MdClose } from "react-icons/md";
 import { useFirebase } from "../../utils/FirebaseContext";
 import { IoMdSettings } from "react-icons/io";
 import { CustomerData } from "../interface/Customer";

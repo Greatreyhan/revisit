@@ -53,6 +53,7 @@ import ProfileTraining from "./ui/pages/ProfileTraining";
 import ProfileHealthEditor from "./ui/pages/ProfileHealthEditor";
 import ProfileTrainingEditor from "./ui/pages/ProfileTrainingEditor";
 import ProfileCustomerEditor from "./ui/pages/ProfileCustomerEditor";
+import ProfilePodium from "./ui/pages/ProfilePodium";
 
 function App() {
 
@@ -76,6 +77,7 @@ function App() {
     { path: "/customer", element: <ProfileCustomer />, type: "profile" },
     { path: "/health", element: <ProfileHealth />, type: "profile" },
     { path: "/training", element: <ProfileTraining />, type: "profile" },
+    { path: "/podium", element: <ProfilePodium />, type: "profile" },
 
     // Form
     { path: "/report/editor", element: <ProfileReportEditor />, type: "profile" },

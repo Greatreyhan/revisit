@@ -6,7 +6,7 @@ import { Logo } from '../../assets/icons';
 import { useFirebase } from '../../utils/FirebaseContext'; // Update the path as needed
 import { IoCalendarSharp } from 'react-icons/io5';
 import { Link } from 'react-router-dom';
-import { FaClipboardUser } from 'react-icons/fa6';
+import { FaClipboardUser, FaMedal } from 'react-icons/fa6';
 
 const ProfileNavigation: React.FC = () => {
     const { signOut, authData } = useFirebase();
@@ -85,6 +85,10 @@ const ProfileNavigation: React.FC = () => {
                         <MdBookmarks className='text-2xl mr-1' />
                         <span>Training Report</span>
                     </Link>
+                    <Link onClick={() => setShowNav(!showNav)} to='/podium' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
+                        <FaMedal className='text-2xl mr-1' />
+                        <span>Podium</span>
+                    </Link>
                     <Link onClick={() => setShowNav(!showNav)} to='/health' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
                         <IoMdSettings className='text-2xl mr-1' />
                         <span>Setting</span>
@@ -129,6 +133,10 @@ const ProfileNavigation: React.FC = () => {
                 <Link to='/training' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
                     <MdBookmarks className='text-2xl mr-1' />
                     <span>Training Report</span>
+                </Link>
+                <Link to='/podium' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
+                    <FaMedal className='text-2xl mr-1' />
+                    <span>Podium</span>
                 </Link>
                 <Link to='/setting' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
                     <IoMdSettings className='text-2xl mr-1' />
