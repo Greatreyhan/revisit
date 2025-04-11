@@ -1,16 +1,60 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { MdEdit, MdDelete, MdClose, MdDownload } from "react-icons/md";
+import { MdEdit, MdClose, MdDownload } from "react-icons/md";
 import { IoMdSettings } from "react-icons/io";
 import { useFirebase } from "../../utils/FirebaseContext";
 import { CustomerData } from "../interface/Customer";
+import * as XLSX from "xlsx";
 
 const AdminCustomer = () => {
   const { getFromDatabase, user } = useFirebase();
   const [dataArticle, setDataArticle] = useState<Record<string, CustomerData>>({});
   const [keyArticle, setKeyArticle] = useState<string[]>([]);
   const [keyData, setKeyData] = useState<string>("");
-  const [deleteKey, setDeleteKey] = useState<string>("");
+
+  const handleExportData = () => {
+    // Ubah dataArticle yang berbentuk objek menjadi array objek dengan Object.entries()
+    const dataArr = Object.entries(dataArticle).map(([key, customer]) => {
+      // Destruktur untuk menangani properti yang akan kita ubah tampilannya
+      const { units, locationMap, ...rest } = customer;
+  
+      // Jika units berupa array, kita buat representasi string:
+      // Misal: "Unit 1: {field: value}, Unit 2: {field: value}"
+      const unitsString =
+        Array.isArray(units) && units.length > 0
+          ? units
+              .map((unit, index) => `Unit ${index + 1}: ${JSON.stringify(unit)}`)
+              .join("; ")
+          : "";
+  
+      // Konversi objek locationMap menjadi string JSON, atau kosong jika undefined
+      const locationMapString = locationMap ? JSON.stringify(locationMap) : "";
+  
+      // Hitung total unit jika terdapat data pada customer.units
+      const totalUnits = Array.isArray(units)
+        ? units.reduce((total, unit) => total + Number(unit.qtyUnit), 0)
+        : 0;
+  
+      return {
+        CustomerID: key,
+        ...rest,
+        TotalUnits: totalUnits,
+        Units: unitsString,
+        LocationMap: locationMapString,
+      };
+    });
+  
+    // Konversi array data ke sheet Excel
+    const worksheet = XLSX.utils.json_to_sheet(dataArr);
+    // Buat workbook baru
+    const workbook = XLSX.utils.book_new();
+    // Tambahkan sheet ke workbook dengan nama "Customers"
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Customers");
+    // Simpan file Excel dengan nama "customers.xlsx"
+    XLSX.writeFile(workbook, "customers.xlsx");
+  };
+  
+
 
   useEffect(() => {
     const fetchCustomerData = async () => {
@@ -20,10 +64,10 @@ const AdminCustomer = () => {
         // Ambil seluruh data customer tanpa filter cabang
         const customerData = await getFromDatabase("customer/");
         if (!customerData) return;
-      
+
         // Persiapkan objek untuk menyimpan customer yang telah diproses.
         const filteredCustomers: Record<string, CustomerData & { customerId: string; cabangId: string }> = {};
-      
+
         // Struktur data customer misalnya: { cabangId: { customerId: customerDetail, ... } }
         Object.entries(customerData).forEach(([cabangId, customersObj]) => {
           Object.entries(customersObj as Record<string, any>).forEach(([customerId, customerDetail]) => {
@@ -34,14 +78,15 @@ const AdminCustomer = () => {
             };
           });
         });
-      
-        // Update state
+
+        console.log(filteredCustomers)
+
         setDataArticle(filteredCustomers);
         setKeyArticle(Object.keys(filteredCustomers));
       } catch (error) {
         console.error("Error fetching customer data:", error);
       }
-      
+
     };
 
     fetchCustomerData();
@@ -52,9 +97,8 @@ const AdminCustomer = () => {
       {/* Modal Info Customer */}
       <div
         onClick={() => setKeyData("")}
-        className={`fixed w-screen h-screen bg-black top-0 left-0 bg-opacity-40 ${
-          keyData === "" ? "hidden" : "flex"
-        } justify-center items-center`}
+        className={`fixed w-screen h-screen bg-black top-0 left-0 bg-opacity-40 ${keyData === "" ? "hidden" : "flex"
+          } justify-center items-center`}
       >
         <div className="pb-6 bg-slate-50 rounded-lg flex flex-col">
           <div className="relative">
@@ -106,32 +150,20 @@ const AdminCustomer = () => {
                 <MdEdit className="text-md mr-1" />
                 <p className="text-sm">Edit Data</p>
               </Link>
-
-              {/* Tombol delete pada modal info: buka modal konfirmasi delete */}
-              <button
-                className="text-rose-800 px-4 py-2 rounded-lg bg-rose-100 flex items-center"
-                type="button"
-                onClick={() => {
-                  setDeleteKey(keyData);
-                  setKeyData("");
-                }}
-              >
-                <MdDelete className="text-md mr-1" />
-                <p className="text-sm">Delete Data</p>
-              </button>
             </div>
           </div>
         </div>
-      </div>      
+      </div>
 
       <div className="flex items-center justify-between py-8">
         <p>Total Customer: {keyArticle.length}</p>
-        <Link
+        <button
+          onClick={handleExportData}
           className="inline-flex items-center px-6 py-1.5 bg-primary rounded-full text-white"
-          to={"/dealer/health/export"}
         >
-          <span className="text-2xl mr-2"><MdDownload /></span>Export Data
-        </Link>
+          <span className="text-2xl mr-2"><MdDownload /></span>
+          Export Data
+        </button>
       </div>
       <div className="flex justify-center items-center">
         <table className="table p-4 bg-white rounded-lg shadow">

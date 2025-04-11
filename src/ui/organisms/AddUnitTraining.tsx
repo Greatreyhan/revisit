@@ -5,10 +5,11 @@ import { MdDelete } from 'react-icons/md';
 
 interface PropsUnitTraining {
   unit: string[];
+  disabled? : boolean;
   setUnit: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-const AddUnitTraining: React.FC<PropsUnitTraining> = ({ unit, setUnit }) => {
+const AddUnitTraining: React.FC<PropsUnitTraining> = ({ disabled=false, unit, setUnit }) => {
   const [inputValue, setInputValue] = useState<string>("");
 
   // Fungsi untuk menambah item ke dalam array unit
@@ -53,6 +54,7 @@ const AddUnitTraining: React.FC<PropsUnitTraining> = ({ unit, setUnit }) => {
                 <span>{index + 1}. {item}</span>
                 <button
                   type="button"
+                  disabled={disabled}
                   onClick={() => removeUnit(item)}
                   className="bg-primary hover:bg-primary-dark text-white rounded-full p-1.5"
                 >

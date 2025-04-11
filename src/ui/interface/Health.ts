@@ -1,3 +1,5 @@
+import { AttachmentItem } from "./Report";
+
 export interface HealthReportData {
   healthId?: string;
   userId?: string;
@@ -11,4 +13,5 @@ export interface HealthReportData {
   rearBodyType: string;
   segment: string;
   typeUnit: string;
+  attachments: AttachmentItem[];
 }

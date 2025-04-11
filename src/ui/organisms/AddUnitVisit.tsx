@@ -7,6 +7,7 @@ import { cargoTypesData } from '../../utils/masterData';
 
 
 interface AddUnitVisitProps {
+    disabled?: boolean;
     units: UnitVisit[]
     setUnits: (units: UnitVisit[]) => void;
 }
@@ -43,7 +44,7 @@ const modelMap: Record<string, string[]> = {
 };
 
 
-const AddUnitVisit: React.FC<AddUnitVisitProps> = ({ units, setUnits }) => {
+const AddUnitVisit: React.FC<AddUnitVisitProps> = ({ disabled=false, units, setUnits }) => {
     const [trademark, setTrademark] = useState<string>("");
     const [typeUnit, setTypeUnit] = useState<string>("");
     const [dataModel, setDataModel] = useState<string[]>([])
@@ -158,6 +159,7 @@ const AddUnitVisit: React.FC<AddUnitVisitProps> = ({ units, setUnits }) => {
                         </tbody>
                     </table>
                 </ul>
+                {disabled ? 
                 <button
                     type="button" onClick={() => setIsPopupOpen(true)}
                     className="mt-4 px-6 py-2 w-full flex justify-center items-center bg-primary rounded-full text-white font-semibold"
@@ -165,6 +167,7 @@ const AddUnitVisit: React.FC<AddUnitVisitProps> = ({ units, setUnits }) => {
                     <MdAdd className="mr-2" />
                     Tambah Unit
                 </button>
+                :<></>}
 
             </div>
 

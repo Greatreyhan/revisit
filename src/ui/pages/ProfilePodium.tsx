@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { MdClose, MdEdit, MdDelete } from "react-icons/md";
+import { MdClose, MdEdit } from "react-icons/md";
 import { useFirebase } from "../../utils/FirebaseContext";
 
 // Tipe untuk summary data tiap user
@@ -34,7 +34,6 @@ const ProfilePodium: React.FC = () => {
   
   // State modal
   const [keyData, setKeyData] = useState<string>("");
-  const [deleteKey, setDeleteKey] = useState<string>("");
 
   // State untuk sorting
   const [sortConfig, setSortConfig] = useState<SortConfig>({ column: "score", order: "desc" });
@@ -120,7 +119,7 @@ const ProfilePodium: React.FC = () => {
       score: reportCount + visitCount + healthCount + trainingCount,
     };
     return acc;
-  }, {});
+  }, {} as Record<string, SummaryData>);
 
   // Array untuk iterasi tabel hanya pada user yang difilter
   const summaryKeys = Object.keys(summaryData);
@@ -231,17 +230,6 @@ const ProfilePodium: React.FC = () => {
                 <MdEdit className="text-md mr-1" />
                 <p className="text-sm">Edit Data</p>
               </Link>
-              <button
-                className="text-rose-800 px-4 py-2 rounded-lg bg-rose-100 flex items-center"
-                type="button"
-                onClick={() => {
-                  setDeleteKey(keyData);
-                  setKeyData("");
-                }}
-              >
-                <MdDelete className="text-md mr-1" />
-                <p className="text-sm">Delete Data</p>
-              </button>
             </div>
           </div>
         </div>

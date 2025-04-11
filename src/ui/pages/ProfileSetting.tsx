@@ -35,6 +35,7 @@ const ProfileSetting: React.FC = () => {
   useEffect(() => {
     getFromDatabase(`user/${user?.uid}`).then((data) => {
       if (data) {
+        console.log(data)
         setEmail(data?.email || "");
         setUsername(data?.name || "");
         setDealer(data?.dealer || "");
@@ -126,7 +127,7 @@ const ProfileSetting: React.FC = () => {
                 disabled={true}
                 label="Dealer"
                 name="dealer"
-                value={dealer}
+                value={location}
                 onChange={(e) => setDealer(e.target.value)}
                 options={[dealer]}
               />
@@ -134,7 +135,7 @@ const ProfileSetting: React.FC = () => {
                 disabled={true}
                 label="Location"
                 name="location"
-                value={location}
+                value={dealer}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="Location"
               />

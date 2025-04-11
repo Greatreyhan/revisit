@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { MdClose, MdEdit, MdDelete, MdDownload } from "react-icons/md";
+import { MdClose, MdEdit, MdDownload } from "react-icons/md";
 import { useFirebase } from "../../utils/FirebaseContext";
+import * as XLSX from "xlsx";
 
 // Tipe untuk summary data tiap user
 interface SummaryData {
@@ -37,7 +38,6 @@ const DealerPodium: React.FC = () => {
 
   // State modal
   const [keyData, setKeyData] = useState<string>("");
-  const [deleteKey, setDeleteKey] = useState<string>("");
 
   // State untuk sorting
   const [sortConfig, setSortConfig] = useState<SortConfig>({
@@ -113,7 +113,6 @@ const DealerPodium: React.FC = () => {
     if (!user?.uid) return;
     getFromDatabase(`cabang/${user.uid}`).then((data) => {
       if (data) {
-        // Asumsikan struktur data cabang berupa objek dengan key uid yang akan digunakan
         const keys = Object.keys(data);
         setCabangUIDs(keys);
       }
@@ -140,7 +139,7 @@ const DealerPodium: React.FC = () => {
       score: reportCount + visitCount + healthCount + trainingCount,
     };
     return acc;
-  }, {});
+  }, {} as Record<string, SummaryData>);
 
   // Array untuk iterasi tabel summary
   const summaryKeys = Object.keys(summaryData);
@@ -173,22 +172,50 @@ const DealerPodium: React.FC = () => {
     });
   };
 
+  // Fungsi untuk export data summary ke file Excel
+  const handleExportReport = () => {
+    // Ubah summaryData menjadi array objek untuk diexport
+    const exportData = Object.entries(summaryData).map(([uid, data]) => ({
+      UserID: uid,
+      ...data,
+    }));
+
+    console.log("Export Data:", exportData);
+
+    // Buat worksheet dari exportData
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    // Buat workbook baru, tambahkan worksheet dengan nama "PodiumSummary"
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "PodiumSummary");
+    // Simpan file Excel dengan nama "podium_summary.xlsx"
+    XLSX.writeFile(workbook, "podium_summary.xlsx");
+  };
+
   return (
     <div className="w-10/12 mx-auto pt-8">
       {/* Modal Info */}
       <div
         onClick={() => setKeyData("")}
-        className={`fixed w-screen h-screen bg-black top-0 left-0 bg-opacity-40 ${keyData === "" ? "hidden" : "flex"} justify-center items-center`}
+        className={`fixed w-screen h-screen bg-black top-0 left-0 bg-opacity-40 ${
+          keyData === "" ? "hidden" : "flex"
+        } justify-center items-center`}
       >
         <div className="pb-6 bg-slate-50 rounded-lg flex flex-col">
           <div className="relative">
-            <button onClick={() => setKeyData("")} className="absolute right-0 top-0" type="button">
+            <button
+              onClick={() => setKeyData("")}
+              className="absolute right-0 top-0"
+              type="button"
+            >
               <MdClose className="text-5xl bg-red-700 text-white p-3 rounded-tr-lg" />
             </button>
             <table className="w-full">
               <thead>
                 <tr>
-                  <td className="font-semibold py-3 px-6 rounded-t-lg bg-slate-100" colSpan={2}>
+                  <td
+                    className="font-semibold py-3 px-6 rounded-t-lg bg-slate-100"
+                    colSpan={2}
+                  >
                     Detail Summary User
                   </td>
                 </tr>
@@ -229,33 +256,24 @@ const DealerPodium: React.FC = () => {
                 <MdEdit className="text-md mr-1" />
                 <p className="text-sm">Edit Data</p>
               </Link>
-              <button
-                className="text-rose-800 px-4 py-2 rounded-lg bg-rose-100 flex items-center"
-                type="button"
-                onClick={() => {
-                  setDeleteKey(keyData);
-                  setKeyData("");
-                }}
-              >
-                <MdDelete className="text-md mr-1" />
-                <p className="text-sm">Delete Data</p>
-              </button>
             </div>
           </div>
         </div>
       </div>
-      
+
+      {/* Header */}
       <div className="flex items-center justify-between py-8">
         <p>Total User: {summaryKeys.length}</p>
-        <Link
+        {/* Ganti tombol export summary dengan memanggil handleExportReport */}
+        <button
+          onClick={handleExportReport}
           className="inline-flex items-center px-6 py-1.5 bg-primary rounded-full text-white"
-          to={"/health/editor"}
         >
           <span className="text-2xl mr-2">
             <MdDownload />
           </span>
-          Export Report
-        </Link>
+          Export Summary
+        </button>
       </div>
 
       {/* Tabel Summary Data dengan kolom sorting */}
@@ -264,28 +282,40 @@ const DealerPodium: React.FC = () => {
           <thead>
             <tr className="bg-slate-50 font-bold text-sm md:text-md">
               <th className="border p-4 whitespace-nowrap text-gray-900">#</th>
-              <th className="cursor-pointer border p-4 whitespace-nowrap text-gray-900"
-                  onClick={() => handleSort("name")}>
+              <th
+                className="cursor-pointer border p-4 whitespace-nowrap text-gray-900"
+                onClick={() => handleSort("name")}
+              >
                 Nama {sortConfig.column === "name" ? (sortConfig.order === "asc" ? "↓" : "↑") : ""}
               </th>
-              <th className="cursor-pointer border p-4 whitespace-nowrap text-gray-900"
-                  onClick={() => handleSort("report")}>
+              <th
+                className="cursor-pointer border p-4 whitespace-nowrap text-gray-900"
+                onClick={() => handleSort("report")}
+              >
                 Report {sortConfig.column === "report" ? (sortConfig.order === "asc" ? "↓" : "↑") : ""}
               </th>
-              <th className="cursor-pointer border p-4 whitespace-nowrap text-gray-900"
-                  onClick={() => handleSort("visit")}>
+              <th
+                className="cursor-pointer border p-4 whitespace-nowrap text-gray-900"
+                onClick={() => handleSort("visit")}
+              >
                 Visit {sortConfig.column === "visit" ? (sortConfig.order === "asc" ? "↓" : "↑") : ""}
               </th>
-              <th className="cursor-pointer border p-4 whitespace-nowrap text-gray-900"
-                  onClick={() => handleSort("health")}>
+              <th
+                className="cursor-pointer border p-4 whitespace-nowrap text-gray-900"
+                onClick={() => handleSort("health")}
+              >
                 Health {sortConfig.column === "health" ? (sortConfig.order === "asc" ? "↓" : "↑") : ""}
               </th>
-              <th className="cursor-pointer border p-4 whitespace-nowrap text-gray-900"
-                  onClick={() => handleSort("training")}>
+              <th
+                className="cursor-pointer border p-4 whitespace-nowrap text-gray-900"
+                onClick={() => handleSort("training")}
+              >
                 Training {sortConfig.column === "training" ? (sortConfig.order === "asc" ? "↓" : "↑") : ""}
               </th>
-              <th className="cursor-pointer border p-4 whitespace-nowrap text-gray-900"
-                  onClick={() => handleSort("score")}>
+              <th
+                className="cursor-pointer border p-4 whitespace-nowrap text-gray-900"
+                onClick={() => handleSort("score")}
+              >
                 Score {sortConfig.column === "score" ? (sortConfig.order === "asc" ? "↓" : "↑") : ""}
               </th>
             </tr>

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { BiSave } from "react-icons/bi";
 import { useFirebase } from "../../utils/FirebaseContext";
 import SelectInput from "../molecules/SelectInput";
 import InputField from "../molecules/InputField";
@@ -11,10 +10,10 @@ import AddUnitVisit from "../organisms/AddUnitVisit";
 import { MapMarkerData } from "../interface/MapSelector";
 import MapDistance from "../organisms/MapDistance";
 
-const ProfileCustomerEditor: React.FC = () => {
+const DealerCustomerEditor: React.FC = () => {
     const { saveToDatabase, user, getFromDatabase } = useFirebase();
     const navigate = useNavigate();
-    const { id } = useParams<{ id: string }>();
+    const { uid,id } = useParams<{ uid:string, id: string }>();
 
     // Basic Information
     const [customerName, setCustomerName] = useState<string>("");
@@ -84,7 +83,7 @@ const ProfileCustomerEditor: React.FC = () => {
 
     useEffect(() => {
         if (id) {
-            getFromDatabase(`customer/${user?.uid}/${id}`).then((data) => {
+            getFromDatabase(`customer/${uid}/${id}`).then((data) => {
                 if (data) {
                     setUnits(data.units || [])
                     setUnitInvolves(data.unitInvolves || [])
@@ -203,7 +202,7 @@ const ProfileCustomerEditor: React.FC = () => {
         const newData = getFormData();
 
         try {
-            await saveToDatabase(`customer/${user?.uid}/${id || Date.now()}`, newData);
+            await saveToDatabase(`customer/${uid}/${id || Date.now()}`, newData);
             setIsDataChanged(false);
             // Hapus draft setelah data berhasil dikirim
             localStorage.removeItem("profileCustomerDraft");
@@ -257,6 +256,7 @@ const ProfileCustomerEditor: React.FC = () => {
                         <div className="md:flex w-full gap-5">
                             <InputField
                                 required={true}
+                                disabled={true}
                                 label="Customer Name"
                                 name="customerName"
                                 value={customerName}
@@ -265,6 +265,7 @@ const ProfileCustomerEditor: React.FC = () => {
                             />
                             <SelectInput
                                 required={true}
+                                disabled={true}
                                 label="Dealer"
                                 name="dealer"
                                 value={dealer}
@@ -272,6 +273,7 @@ const ProfileCustomerEditor: React.FC = () => {
                                 options={DealerData}
                             />
                             <InputField
+                                disabled={true}
                                 label="Operation Date"
                                 name="dateOperation"
                                 type="date"
@@ -282,6 +284,7 @@ const ProfileCustomerEditor: React.FC = () => {
                         <div className="md:flex w-full gap-5">
                             <SelectInput
                                 required={true}
+                                disabled={true}
                                 label="Area"
                                 name="area"
                                 value={area}
@@ -293,6 +296,7 @@ const ProfileCustomerEditor: React.FC = () => {
                             />
                             <SelectInput
                                 required={true}
+                                disabled={true}
                                 label="Location"
                                 name="location"
                                 value={location}
@@ -301,6 +305,7 @@ const ProfileCustomerEditor: React.FC = () => {
                             />
                             <InputField
                                 required={true}
+                                disabled={true}
                                 label="City"
                                 name="city"
                                 value={city}
@@ -311,6 +316,7 @@ const ProfileCustomerEditor: React.FC = () => {
                         <div className="md:flex w-full gap-5">
                             <InputField
                                 required={true}
+                                disabled={true}
                                 label="Email"
                                 name="email"
                                 type="email"
@@ -320,6 +326,7 @@ const ProfileCustomerEditor: React.FC = () => {
                             />
                             <InputField
                                 required={true}
+                                disabled={true}
                                 label="Phone"
                                 name="phone"
                                 type="phone"
@@ -331,6 +338,7 @@ const ProfileCustomerEditor: React.FC = () => {
                         <div className="md:flex w-full gap-5">
                             <SelectInput
                                 required={true}
+                                disabled={true}
                                 label="Segment"
                                 name="segment"
                                 value={segment}
@@ -339,6 +347,7 @@ const ProfileCustomerEditor: React.FC = () => {
                             />
                             <SelectInput
                                 required={true}
+                                disabled={true}
                                 label="Type Customer"
                                 name="typeCustomer"
                                 value={typeCustomer}
@@ -359,6 +368,7 @@ const ProfileCustomerEditor: React.FC = () => {
                         <h2 className="font-semibold">Operational</h2>
                         <div className="md:flex w-full gap-5">
                             <InputField
+                                disabled={true}
                                 label="Days per Week"
                                 type="number"
                                 name="dayPerWeek"
@@ -367,6 +377,7 @@ const ProfileCustomerEditor: React.FC = () => {
                                 placeholder="Enter number of working days"
                             />
                             <InputField
+                                disabled={true}
                                 label="Trips per Day"
                                 type="number"
                                 name="tripPerDay"
@@ -375,6 +386,7 @@ const ProfileCustomerEditor: React.FC = () => {
                                 placeholder="Enter number of trips per day"
                             />
                             <InputField
+                                disabled={true}
                                 label="Distance per Trip"
                                 type="number"
                                 name="distancePerTrip"
@@ -384,6 +396,7 @@ const ProfileCustomerEditor: React.FC = () => {
                             />
                         </div>
                         <InputField
+                            disabled={true}
                             label="Route of Trip"
                             type="string"
                             name="routeOfTrip"
@@ -396,7 +409,7 @@ const ProfileCustomerEditor: React.FC = () => {
                     {/* Map Operation */}
                     <div className="w-full py-8 px-8 rounded-lg my-4 bg-slate-100">
                         <h2 className="font-semibold mb-4">Map Operation</h2>
-                        <div className="relative w-full flex justify-center -mb-12 z-10">
+                        {/* <div className="relative w-full flex justify-center -mb-12 z-10">
                             <button
                                 className={`mt-4 px-6 py-2 justify-center items-center bg-primary rounded-full text-white font-semibold ${
                                     showMap ? "hidden" : "inline-flex"
@@ -406,7 +419,7 @@ const ProfileCustomerEditor: React.FC = () => {
                             >
                                 Add Point
                             </button>
-                        </div>
+                        </div> */}
                         <MapDistance
                             setLocationMap={setLocationMap}
                             locationMap={locationMap || { lat: 0, lng: 0 }}
@@ -419,29 +432,13 @@ const ProfileCustomerEditor: React.FC = () => {
                         />
                     </div>
 
-                    <div className="fixed md:hidden block bottom-5 right-5">
-                        <button
-                            type="submit"
-                            className="mt-4 p-3 inline-flex justify-center items-center bg-primary rounded-full text-white font-semibold"
-                        >
-                            <BiSave className="text-2xl" />
-                        </button>
-                    </div>
-
                     <div className="flex w-full justify-end items-center gap-x-5">
                         <Link
                             className="mt-4 px-6 py-2 inline-flex justify-center items-center bg-white text-primary border border-primary rounded-full font-semibold"
-                            to="/customer"
+                            to="/dealer/customer"
                         >
                             Back
                         </Link>
-                        <button
-                            type="submit"
-                            className="mt-4 px-6 py-2 inline-flex justify-center items-center bg-primary rounded-full text-white font-semibold"
-                        >
-                            <BiSave className="mr-2" />
-                            Save
-                        </button>
                     </div>
                 </form>
             </div>
@@ -449,4 +446,4 @@ const ProfileCustomerEditor: React.FC = () => {
     );
 };
 
-export default ProfileCustomerEditor;
+export default DealerCustomerEditor;

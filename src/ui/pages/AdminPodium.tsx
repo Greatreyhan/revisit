@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { MdClose, MdEdit, MdDelete } from "react-icons/md";
+import { MdClose, MdEdit } from "react-icons/md";
 import { useFirebase } from "../../utils/FirebaseContext";
+import * as XLSX from "xlsx";
 
 // Tipe untuk summary data tiap user
 interface SummaryData {
@@ -34,7 +35,6 @@ const AdminPodium: React.FC = () => {
   
   // State modal
   const [keyData, setKeyData] = useState<string>("");
-  const [deleteKey, setDeleteKey] = useState<string>("");
 
   // State untuk sorting
   const [sortConfig, setSortConfig] = useState<SortConfig>({ column: "score", order: "desc" });
@@ -120,7 +120,7 @@ const AdminPodium: React.FC = () => {
       score: reportCount + visitCount + healthCount + trainingCount,
     };
     return acc;
-  }, {});
+  }, {} as Record<string, SummaryData>);
 
   // Array untuk iterasi tabel hanya pada user yang difilter
   const summaryKeys = Object.keys(summaryData);
@@ -154,6 +154,25 @@ const AdminPodium: React.FC = () => {
     });
   };
 
+  // Fungsi untuk export data summary ke file Excel
+  const handleExportReport = () => {
+    // Ubah summaryData menjadi array objek export
+    const exportData = Object.entries(summaryData).map(([uid, data]) => ({
+      UserID: uid,
+      ...data,
+    }));
+
+    console.log("Export Data:", exportData);
+
+    // Buat worksheet dari exportData
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    // Buat workbook baru lalu tambahkan worksheet dengan nama "PodiumSummary"
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "PodiumSummary");
+    // Simpan file Excel
+    XLSX.writeFile(workbook, "podium_summary.xlsx");
+  };
+
   return (
     <div className="w-10/12 mx-auto pt-8">
       {/* Modal Info */}
@@ -175,10 +194,7 @@ const AdminPodium: React.FC = () => {
             <table className="w-full">
               <thead>
                 <tr>
-                  <td
-                    className="font-semibold py-3 px-6 rounded-t-lg bg-slate-100"
-                    colSpan={2}
-                  >
+                  <td className="font-semibold py-3 px-6 rounded-t-lg bg-slate-100" colSpan={2}>
                     Detail Summary User
                   </td>
                 </tr>
@@ -186,39 +202,27 @@ const AdminPodium: React.FC = () => {
               <tbody>
                 <tr className="text-left">
                   <td className="px-6 w-3/12 p-2">Nama</td>
-                  <td className="w-10/12 p-2">
-                    : {summaryData[keyData]?.name}
-                  </td>
+                  <td className="w-10/12 p-2">: {summaryData[keyData]?.name}</td>
                 </tr>
                 <tr className="text-left">
                   <td className="px-6 w-3/12 p-2">Report</td>
-                  <td className="w-10/12 p-2">
-                    : {summaryData[keyData]?.report}
-                  </td>
+                  <td className="w-10/12 p-2">: {summaryData[keyData]?.report}</td>
                 </tr>
                 <tr className="text-left">
                   <td className="px-6 w-3/12 p-2">Visit</td>
-                  <td className="w-10/12 p-2">
-                    : {summaryData[keyData]?.visit}
-                  </td>
+                  <td className="w-10/12 p-2">: {summaryData[keyData]?.visit}</td>
                 </tr>
                 <tr className="text-left">
                   <td className="px-6 w-3/12 p-2">Health</td>
-                  <td className="w-10/12 p-2">
-                    : {summaryData[keyData]?.health}
-                  </td>
+                  <td className="w-10/12 p-2">: {summaryData[keyData]?.health}</td>
                 </tr>
                 <tr className="text-left">
                   <td className="px-6 w-3/12 p-2">Training</td>
-                  <td className="w-10/12 p-2">
-                    : {summaryData[keyData]?.training}
-                  </td>
+                  <td className="w-10/12 p-2">: {summaryData[keyData]?.training}</td>
                 </tr>
                 <tr className="text-left">
                   <td className="px-6 w-3/12 p-2">Score</td>
-                  <td className="w-10/12 p-2">
-                    : {summaryData[keyData]?.score}
-                  </td>
+                  <td className="w-10/12 p-2">: {summaryData[keyData]?.score}</td>
                 </tr>
               </tbody>
             </table>
@@ -231,17 +235,6 @@ const AdminPodium: React.FC = () => {
                 <MdEdit className="text-md mr-1" />
                 <p className="text-sm">Edit Data</p>
               </Link>
-              <button
-                className="text-rose-800 px-4 py-2 rounded-lg bg-rose-100 flex items-center"
-                type="button"
-                onClick={() => {
-                  setDeleteKey(keyData);
-                  setKeyData("");
-                }}
-              >
-                <MdDelete className="text-md mr-1" />
-                <p className="text-sm">Delete Data</p>
-              </button>
             </div>
           </div>
         </div>
@@ -250,6 +243,13 @@ const AdminPodium: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between py-8">
         <p>Total User: {summaryKeys.length}</p>
+        {/* Tombol Export Summary */}
+        <button
+          onClick={handleExportReport}
+          className="inline-flex items-center px-6 py-1.5 bg-primary rounded-full text-white"
+        >
+          Export Summary
+        </button>
       </div>
 
       {/* Tabel Summary Data dengan kolom sorting */}

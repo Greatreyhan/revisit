@@ -12,6 +12,7 @@ interface AttachmentItem {
 }
 
 interface AddAttachmentProps {
+  disabled?: boolean;
   attachments: AttachmentItem[];
   setAttachments: React.Dispatch<React.SetStateAction<AttachmentItem[]>>;
 }
@@ -22,7 +23,7 @@ const extractFilename = (url: string): string => {
   return match ? decodeURIComponent(match[1]) : "";
 };
 
-const AddAttachment: React.FC<AddAttachmentProps> = ({ attachments, setAttachments }) => {
+const AddAttachment: React.FC<AddAttachmentProps> = ({ disabled=false, attachments, setAttachments }) => {
   const { uploadEditedImageWithPath, deleteImageWithPath, user } = useFirebase();
   const [imageAttached, setImageAttached] = useState<string>("");
   const [imageDescription, setImageDescription] = useState<string>("");
@@ -203,6 +204,8 @@ const AddAttachment: React.FC<AddAttachmentProps> = ({ attachments, setAttachmen
         ))}
       </div>
 
+      {!disabled ?
+
       <button
         type="button"
         onClick={() => setIsModalOpen(true)}
@@ -211,6 +214,8 @@ const AddAttachment: React.FC<AddAttachmentProps> = ({ attachments, setAttachmen
         <MdAdd className="mr-2" />
         Tambah Lampiran
       </button>
+      :<></>
+    }
 
       {/* Pop Up untuk tambah attachment */}
       {isModalOpen && (

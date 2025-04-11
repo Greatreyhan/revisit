@@ -63,6 +63,9 @@ import AdminPodium from "./ui/pages/AdminPodium";
 import AdminCustomer from "./ui/pages/AdminCustomer";
 import AdminHealth from "./ui/pages/AdminHealth";
 import AdminTraining from "./ui/pages/AdminTraining";
+import DealerCustomerEditor from "./ui/pages/DealerCustomerEditor";
+import DealerTrainingEditor from "./ui/pages/DealerTrainingEditor";
+import DealerHealthEditor from "./ui/pages/DealerHealthEditor";
 
 function App() {
 
@@ -142,8 +145,11 @@ function App() {
     { path: "/dealer/setting", element: <DealerSetting />, type: "dealer" },
     { path: "/dealer/podium", element: <DealerPodium />, type: "dealer" },
     { path: "/dealer/customer", element: <DealerCustomer />, type: "dealer" },
+    { path: "/dealer/customer/:uid/:id", element: <DealerCustomerEditor />, type: "dealer" },
     { path: "/dealer/health", element: <DealerHealth />, type: "dealer" },
+    { path: "/dealer/health/:uid/:id", element: <DealerHealthEditor />, type: "dealer" },
     { path: "/dealer/training", element: <DealerTraining />, type: "dealer" },
+    { path: "/dealer/training/:uid/:id", element: <DealerTrainingEditor />, type: "dealer" },
 
   ];
 

@@ -4,11 +4,12 @@ import { MdAdd, MdDelete, MdEdit } from 'react-icons/md';
 import { TraineePerson } from '../interface/Training';
 
 interface AddTraineeProps {
+    disabled?: boolean;
     trainees: TraineePerson[];
     setTrainees: (trainees: TraineePerson[]) => void;
 }
 
-const AddTrainee: React.FC<AddTraineeProps> = ({ trainees, setTrainees }) => {
+const AddTrainee: React.FC<AddTraineeProps> = ({ disabled=false, trainees, setTrainees }) => {
     const [name, setName] = useState<string>('');
     const [position, setPosition] = useState<string>('');
     const [age, setAge] = useState<string>('');
@@ -117,6 +118,7 @@ const AddTrainee: React.FC<AddTraineeProps> = ({ trainees, setTrainees }) => {
                         ))}
                     </tbody>
                 </table>
+                {disabled ? 
                 <button
                     type="button"
                     onClick={() => setIsPopupOpen(true)}
@@ -125,6 +127,7 @@ const AddTrainee: React.FC<AddTraineeProps> = ({ trainees, setTrainees }) => {
                     <MdAdd className="mr-2" />
                     Tambah Trainee
                 </button>
+                :<></>}
             </div>
 
             {/* Popup Form */}
