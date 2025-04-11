@@ -54,6 +54,15 @@ import ProfileHealthEditor from "./ui/pages/ProfileHealthEditor";
 import ProfileTrainingEditor from "./ui/pages/ProfileTrainingEditor";
 import ProfileCustomerEditor from "./ui/pages/ProfileCustomerEditor";
 import ProfilePodium from "./ui/pages/ProfilePodium";
+import DealerPodium from "./ui/pages/DealerPodium";
+import DealerCustomer from "./ui/pages/DealerCustomer";
+import DealerHealth from "./ui/pages/DealerHealth";
+import DealerTraining from "./ui/pages/DealerTraining";
+import DealerSetting from "./ui/pages/DealerSetting";
+import AdminPodium from "./ui/pages/AdminPodium";
+import AdminCustomer from "./ui/pages/AdminCustomer";
+import AdminHealth from "./ui/pages/AdminHealth";
+import AdminTraining from "./ui/pages/AdminTraining";
 
 function App() {
 
@@ -79,7 +88,7 @@ function App() {
     { path: "/training", element: <ProfileTraining />, type: "profile" },
     { path: "/podium", element: <ProfilePodium />, type: "profile" },
 
-    // Form
+    // Field
     { path: "/report/editor", element: <ProfileReportEditor />, type: "profile" },
     { path: "/report/view/:id", element: <ReportViewer />, type: "viewer" },
     { path: "/report/editor/:id", element: <ProfileReportEditor />, type: "profile" },
@@ -111,27 +120,30 @@ function App() {
     { path: "/admin/visit", element: <AdminVisit />, type: "admin" },
     { path: "/admin/visit/:uid/:id", element: <AdminVisitViewer />, type: "viewer" },
     { path: "/admin/visit/visualization", element: <AdminVisuzalizationRegular />, type: "admin" },
-
     { path: "/admin/schedule", element: <AdminSchedule />, type: "admin" },
     { path: "/admin/schedule/map", element: <AdminScheduleMap />, type: "admin" },
+    { path: "/admin/podium", element: <AdminPodium />, type: "admin" },
+    { path: "/admin/customer", element: <AdminCustomer />, type: "admin" },
+    { path: "/admin/health", element: <AdminHealth />, type: "admin" },
+    { path: "/admin/training", element: <AdminTraining />, type: "admin" },
 
-    // Dealer Template Route
+    // Dealer
     { path: "/dealer", element: <Dealer />, type: "dealer" },
     { path: "/dealer/cabang", element: <DealerCabang />, type: "dealer" },
     { path: "/dealer/cabang/add", element: <DealerCabangEditor />, type: "dealer" },
-
     { path: "/dealer/schedule", element: <DealerSchedule />, type: "dealer" },
     { path: "/dealer/schedule/map", element: <DealerScheduleMap />, type: "dealer" },
-
     { path: "/dealer/report", element: <DealerReport />, type: "dealer" },
     { path: "/dealer/report/:uid/:id", element: <DealerReportViewer />, type: "viewer" },
     { path: "/dealer/report/visualization", element: <DealerVisualizationInvestigation />, type: "dealer" },
-
     { path: "/dealer/visit", element: <DealerVisit />, type: "dealer" },
     { path: "/dealer/visit/:uid/:id", element: <DealerVisitViewer />, type: "viewer" },
     { path: "/dealer/visit/visualization", element: <DealerVisuzalizationRegular />, type: "dealer" },
-
-    { path: "/dealer/setting", element: <ProfileSetting />, type: "dealer" },
+    { path: "/dealer/setting", element: <DealerSetting />, type: "dealer" },
+    { path: "/dealer/podium", element: <DealerPodium />, type: "dealer" },
+    { path: "/dealer/customer", element: <DealerCustomer />, type: "dealer" },
+    { path: "/dealer/health", element: <DealerHealth />, type: "dealer" },
+    { path: "/dealer/training", element: <DealerTraining />, type: "dealer" },
 
   ];
 

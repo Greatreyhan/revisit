@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { IoMdApps } from "react-icons/io";
-import { MdArticle, MdOutlineCalendarMonth, MdOutlineMenu, MdPerson } from "react-icons/md";
+import { MdArticle, MdBookmarks, MdHealthAndSafety, MdOutlineCalendarMonth, MdOutlineMenu, MdPerson, MdSupervisedUserCircle } from "react-icons/md";
 import { TbReportSearch } from "react-icons/tb";
 import { MdOutlineLogout } from "react-icons/md";
 import { Logo } from '../../assets/icons';
 import { useFirebase } from '../../utils/FirebaseContext'; // Update the path as needed
 import { Link } from 'react-router-dom';
-import { FaClipboardUser } from 'react-icons/fa6';
+import { FaClipboardUser, FaMedal } from 'react-icons/fa6';
 
 const AdminNavigation: React.FC = () => {
-    const { signOut,authData} = useFirebase();
+    const { signOut, authData } = useFirebase();
     const [showNav, setShowNav] = useState(false)
 
     const handleLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -78,6 +78,22 @@ const AdminNavigation: React.FC = () => {
                         <MdArticle className='text-2xl mr-1' />
                         <span>Blog</span>
                     </Link>
+                    <Link onClick={() => setShowNav(!showNav)} to='/admin/customer' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
+                        <MdSupervisedUserCircle className='text-2xl mr-1' />
+                        <span>Customer</span>
+                    </Link>
+                    <Link onClick={() => setShowNav(!showNav)} to='/admin/training' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
+                        <MdBookmarks className='text-2xl mr-1' />
+                        <span>Training Report</span>
+                    </Link>
+                    <Link onClick={() => setShowNav(!showNav)} to='/admin/health' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
+                        <MdHealthAndSafety className='text-2xl mr-1' />
+                        <span>Health Report</span>
+                    </Link>
+                    <Link onClick={() => setShowNav(!showNav)} to='/admin/podium' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
+                        <FaMedal className='text-2xl mr-1' />
+                        <span>Podium</span>
+                    </Link>
                     <Link onClick={() => setShowNav(!showNav)} to='/admin/user' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
                         <MdPerson className='text-2xl mr-1' />
                         <span>User</span>
@@ -114,6 +130,22 @@ const AdminNavigation: React.FC = () => {
                 <Link to='/admin/article' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
                     <MdArticle className='text-2xl mr-1' />
                     <span>Blog</span>
+                </Link>
+                <Link to='/admin/customer' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
+                    <MdSupervisedUserCircle className='text-2xl mr-1' />
+                    <span>Customer</span>
+                </Link>
+                <Link to='/admin/training' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
+                    <MdBookmarks className='text-2xl mr-1' />
+                    <span>Training Report</span>
+                </Link>
+                <Link to='/admin/health' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
+                    <MdHealthAndSafety className='text-2xl mr-1' />
+                    <span>Health Report</span>
+                </Link>
+                <Link to='/admin/podium' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
+                    <FaMedal className='text-2xl mr-1' />
+                    <span>Podium</span>
                 </Link>
                 <Link to='/admin/user' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
                     <MdPerson className='text-2xl mr-1' />

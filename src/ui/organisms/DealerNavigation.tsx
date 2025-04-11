@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { IoMdApps, IoMdSettings } from "react-icons/io";
-import { MdInsertPageBreak, MdLocationPin, MdOutlineMenu, MdPerson } from "react-icons/md";
+import { MdBookmarks, MdHealthAndSafety, MdInsertPageBreak, MdLocationPin, MdOutlineMenu, MdPerson, MdSupervisedUserCircle } from "react-icons/md";
 import { MdOutlineLogout } from "react-icons/md";
 import { Logo } from '../../assets/icons';
 import { useFirebase } from '../../utils/FirebaseContext'; // Update the path as needed
 import { IoCalendarSharp } from 'react-icons/io5';
 import { Link } from 'react-router-dom';
-import { FaClipboardUser } from 'react-icons/fa6';
+import { FaClipboardUser, FaMedal } from 'react-icons/fa6';
 
 const DealerNavigation: React.FC = () => {
     const { signOut, authData } = useFirebase();
@@ -77,6 +77,22 @@ const DealerNavigation: React.FC = () => {
                         <MdPerson className='text-2xl mr-1' />
                         <span>Cabang</span>
                     </Link>
+                    <Link onClick={() => setShowNav(!showNav)} to='/dealer/customer' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
+                        <MdSupervisedUserCircle className='text-2xl mr-1' />
+                        <span>Customer</span>
+                    </Link>
+                    <Link onClick={() => setShowNav(!showNav)} to='/dealer/training' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
+                        <MdBookmarks className='text-2xl mr-1' />
+                        <span>Training Report</span>
+                    </Link>
+                    <Link onClick={() => setShowNav(!showNav)} to='/dealer/health' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
+                        <MdHealthAndSafety className='text-2xl mr-1' />
+                        <span>Health Report</span>
+                    </Link>
+                    <Link onClick={() => setShowNav(!showNav)} to='/dealer/podium' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
+                        <FaMedal className='text-2xl mr-1' />
+                        <span>Podium</span>
+                    </Link>
                     <Link onClick={() => setShowNav(!showNav)} to='/dealer/setting' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
                         <IoMdSettings className='text-2xl mr-1' />
                         <span>Setting</span>
@@ -114,6 +130,22 @@ const DealerNavigation: React.FC = () => {
                 <Link to='/dealer/cabang' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
                     <MdPerson className='text-2xl mr-1' />
                     <span>Cabang</span>
+                </Link>
+                <Link to='/dealer/customer' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
+                    <MdSupervisedUserCircle className='text-2xl mr-1' />
+                    <span>Customer</span>
+                </Link>
+                <Link to='/dealer/training' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
+                    <MdBookmarks className='text-2xl mr-1' />
+                    <span>Training Report</span>
+                </Link>
+                <Link to='/dealer/health' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
+                    <MdHealthAndSafety className='text-2xl mr-1' />
+                    <span>Health Report</span>
+                </Link>
+                <Link to='/dealer/podium' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
+                    <FaMedal className='text-2xl mr-1' />
+                    <span>Podium</span>
                 </Link>
                 <Link to='/dealer/setting' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
                     <IoMdSettings className='text-2xl mr-1' />

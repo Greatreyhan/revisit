@@ -4,6 +4,9 @@ import { useFirebase } from "../../utils/FirebaseContext";
 import { ReportData } from "../interface/Report";
 import { VisitData } from "../interface/Visit";
 import { ScheduleData } from "../interface/Schedule";
+import { HealthReportData } from "../interface/Health";
+import { TraineeData } from "../interface/Training";
+import { CustomerData } from "../interface/Customer";
 
 
 
@@ -14,7 +17,9 @@ const Admin: React.FC = () => {
   const [investigation, setInvestigation] = useState<ReportData[]>([]);
   const [visitReport, setVisitReport] = useState<VisitData[]>([]);
   const [allSchedules, setAllSchedules] = useState<ScheduleData[]>([]);
-
+  const [allTrainee, setAllTrainee] = useState<TraineeData[]>([]);
+  const [allHealth, setAllHealth] = useState<HealthReportData[]>([]);
+  const [allCustomer, setAllCustomer] = useState<CustomerData[]>([]);
 
   useEffect(() => {
 
@@ -80,6 +85,63 @@ const Admin: React.FC = () => {
       }
     });
 
+    // Fetch dan filter Schedule
+    getFromDatabase("schedule/").then((data) => {
+      if (data) {
+        console.log("Raw Schedule Data:", data);
+        const scheduleArray: ScheduleData[] = [];
+        Object.entries(data).forEach(([userId, schedules]) => {
+          Object.entries(schedules as Record<string, any>).forEach(([scheduleId, scheduleData]) => {
+            scheduleArray.push({ userId, scheduleId, ...(scheduleData as ScheduleData) });
+          });
+        });
+        setAllSchedules(scheduleArray);
+      }
+    });
+
+    // Fetch dan filter Health
+    getFromDatabase("health/").then((data) => {
+      if (data) {
+        console.log("Raw Health Data:", data);
+        const healthArray: HealthReportData[] = [];
+        Object.entries(data).forEach(([userId, healthEntries]) => {
+          Object.entries(healthEntries as Record<string, any>).forEach(([healthId, healthData]) => {
+            healthArray.push({ userId, healthId, ...(healthData as HealthReportData) });
+          });
+        });
+        setAllHealth(healthArray);
+      }
+    });
+
+    // Fetch dan filter Training
+    getFromDatabase("training/").then((data) => {
+      if (data) {
+        console.log("Raw Training Data:", data);
+        const trainingArray: TraineeData[] = [];
+        Object.entries(data).forEach(([userId, trainingEntries]) => {
+          Object.entries(trainingEntries as Record<string, any>).forEach(([traineeId, trainingData]) => {
+            trainingArray.push({ userId, traineeId, ...(trainingData as TraineeData) });
+          });
+        });
+        setAllTrainee(trainingArray);
+      }
+    });
+
+    // Fetch dan filter Customer
+    getFromDatabase("customer/").then((data) => {
+      if (data) {
+        console.log("Raw Customer Data:", data);
+        const customerArray: CustomerData[] = [];
+        Object.entries(data).forEach(([userId, customerEntries]) => {
+          Object.entries(customerEntries as Record<string, any>).forEach(([customerId, customerData]) => {
+            customerArray.push({ userId, customerId, ...(customerData as CustomerData) });
+          });
+        });
+        setAllCustomer(customerArray);
+      }
+    });
+
+
   }, []);
 
   return (
@@ -126,6 +188,30 @@ const Admin: React.FC = () => {
         <p className="text-4xl text-primary flex justify-end items-end mt-4 font-bold">
           {keyData.length}
           <span className="text-sm font-light ml-2">user</span>
+        </p>
+      </div>
+
+      <div className="w-72 bg-slate-100 px-8 py-4 rounded-md">
+        <h2 className="text-lg text-slate-900">Health Report</h2>
+        <p className="text-4xl text-primary flex justify-end items-end mt-4 font-bold">
+          {allHealth.length}
+          <span className="text-sm font-light ml-2">laporan</span>
+        </p>
+      </div>
+
+      <div className="w-72 bg-slate-100 px-8 py-4 rounded-md">
+        <h2 className="text-lg text-slate-900">Training Report</h2>
+        <p className="text-4xl text-primary flex justify-end items-end mt-4 font-bold">
+          {allTrainee.length}
+          <span className="text-sm font-light ml-2">laporan</span>
+        </p>
+      </div>
+
+      <div className="w-72 bg-slate-100 px-8 py-4 rounded-md">
+        <h2 className="text-lg text-slate-900">Customer</h2>
+        <p className="text-4xl text-primary flex justify-end items-end mt-4 font-bold">
+          {allCustomer.length}
+          <span className="text-sm font-light ml-2">data</span>
         </p>
       </div>
 

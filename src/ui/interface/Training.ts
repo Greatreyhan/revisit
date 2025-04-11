@@ -10,6 +10,8 @@ export interface TraineePerson {
 }
 
 export interface TraineeData {
+    traineeId? : string;
+    userId? : string;
     trainerName: string;
     dealer: string;
     customerName: string;
