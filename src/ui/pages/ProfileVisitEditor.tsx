@@ -82,6 +82,10 @@ const ProfileVisitEditor: React.FC = () => {
     // State to check if data has been changed
     const [isDataChanged, setIsDataChanged] = useState<boolean>(false);
 
+    // Customer Modal
+    const [showCustomerModal, setShowCustomerModal] = useState<boolean>(false)
+    const [customers, setCustomers] = useState<any[]>([]);
+
     // Function untuk mendeteksi perubahan input
     const handleChange = (setter: React.Dispatch<React.SetStateAction<string>>) => (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -144,6 +148,18 @@ const ProfileVisitEditor: React.FC = () => {
         competitorInfo,
     });
 
+    // Fetch list of existing customers
+    useEffect(() => {
+        if (user) {
+            getFromDatabase(`customer/${user.uid}`).then((data) => {
+                if (data) {
+                    const list = Object.entries(data).map(([key, val]: any) => ({ id: key, ...val }));
+                    setCustomers(list);
+                }
+            });
+        }
+    }, [user]);
+
     useEffect(() => {
         if (id) {
             getFromDatabase(`visit/${user?.uid}/${id}`).then((data) => {
@@ -187,7 +203,7 @@ const ProfileVisitEditor: React.FC = () => {
                     setMapAttached(data.mapAttached || "")
                     setMapMarkers(data.mapMarkers || [])
                     setMapDistance(data.mapDistance || 0)
-                    setLocationMap(data.locationMap || {lat: 0,lng: 0})
+                    setLocationMap(data.locationMap || { lat: 0, lng: 0 })
 
                     // Road Condition
                     setHighway(data.highway || "");
@@ -198,7 +214,7 @@ const ProfileVisitEditor: React.FC = () => {
                     setFlatRoad(data.flatRoad || "");
                     setClimbRoad(data.climbRoad || "");
                     setMaximumSlope(data.maximumSlope || "")
-                    setLoadingRatio(data.loadingsetLoadingRatio || "")
+                    setLoadingRatio(data.loadingRatio || "")
                     setYearsOfUse(data.yearsOfUse || "")
 
                     // Problem Background
@@ -390,8 +406,60 @@ const ProfileVisitEditor: React.FC = () => {
         };
     }, [isDataChanged]);
 
+    // Handler when choosing a customer from modal
+    const handleSelectCustomer = (cust: any) => {
+        setUnits(cust.units || [])
+        setUnitInvolves(cust.unitInvolves || [])
+        setCustomerName(cust.customerName || "");
+        setDealer(cust.dealer || "");
+        setDateOperation(cust.dateOperation || "");
+        setArea(cust.area || "");
+        setDataLocation(areaMap[cust.area] || []);
+        setLocation(cust.location || "");
+        setCity(cust.city || "");
+        setSegment(cust.segment || "");
+        setDayPerWeek(cust.dayPerWeek || "");
+        setTripPerDay(cust.tripPerDay || "");
+        setDistancePerTrip(cust.distancePerTrip || "");
+        setRouteOfTrip(cust.routeOfTrip || "");
+        setMapAttached(cust.mapAttached || "");
+        setMapMarkers(cust.mapMarkers || []);
+        setMapDistance(cust.mapDistance || 0);
+        setLocationMap(cust.locationMap || { lat: 0, lng: 0 });
+        setIsDataChanged(true);
+        setShowCustomerModal(false);
+    };
+
     return (
         <div className="App overflow-x-hidden">
+
+            {showCustomerModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                    <div className="bg-white w-3/4 max-w-lg p-6 rounded-lg">
+                        <h3 className="text-lg font-semibold mb-4">Pilih Customer yang Sudah Ada</h3>
+                        <ul className="max-h-60 overflow-y-auto">
+                            {customers.map((c) => (
+                                <li
+                                    key={c.id}
+                                    className="p-2 hover:bg-gray-200 cursor-pointer"
+                                    onClick={() => handleSelectCustomer(c)}
+                                >
+                                    {c.customerName}
+                                </li>
+                            ))}
+                        </ul>
+                        <div className="mt-4 flex justify-end">
+                            <button
+                                type="button"
+                                className="px-4 py-2 bg-gray-300 rounded-full"
+                                onClick={() => setShowCustomerModal(false)}
+                            >
+                                Tutup
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
             <div className="pt-16">
                 <form
                     className="md:w-10/12 w-11/12 flex flex-col mx-auto my-8 justify-around items-center"
@@ -407,15 +475,18 @@ const ProfileVisitEditor: React.FC = () => {
 
                     {/* General Information */}
                     <div className="w-full py-8 px-8 rounded-lg my-4 bg-slate-100">
+                        <div className="w-full gap-5 flex items-center justify-between">
                         <h2 className="font-semibold">General Information</h2>
+                            <button
+                                type="button"
+                                className="px-4 py-2 bg-primary text-white rounded-full font-semibold"
+                                onClick={() => setShowCustomerModal(true)}
+                            >
+                                Select Customer
+                            </button>
+                        </div>
+
                         <div className="md:flex w-full gap-5">
-                            {/* <InputField
-                                label="Form Number"
-                                name="formNumber"
-                                value={formNumber}
-                                onChange={handleChange(setFormNumber)}
-                                placeholder="Enter form number"
-                            /> */}
                             <InputField
                                 required={true}
                                 label="Visitor Name"
@@ -578,9 +649,8 @@ const ProfileVisitEditor: React.FC = () => {
                         <h2 className="font-semibold mb-4">Map Operation</h2>
                         <div className="relative w-full flex justify-center -mb-12 z-10">
                             <button
-                                className={`mt-4 px-6 py-2 justify-center items-center bg-primary rounded-full text-white font-semibold ${
-                                    showMap ? "hidden" : "inline-flex"
-                                }`}
+                                className={`mt-4 px-6 py-2 justify-center items-center bg-primary rounded-full text-white font-semibold ${showMap ? "hidden" : "inline-flex"
+                                    }`}
                                 onClick={() => setShowMap(true)}
                                 type="button"
                             >

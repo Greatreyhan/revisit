@@ -118,7 +118,7 @@ const AddTrainee: React.FC<AddTraineeProps> = ({ disabled=false, trainees, setTr
                         ))}
                     </tbody>
                 </table>
-                {disabled ? 
+                {!disabled ? 
                 <button
                     type="button"
                     onClick={() => setIsPopupOpen(true)}

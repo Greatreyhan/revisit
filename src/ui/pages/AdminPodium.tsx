@@ -3,10 +3,12 @@ import { Link } from "react-router-dom";
 import { MdClose, MdEdit } from "react-icons/md";
 import { useFirebase } from "../../utils/FirebaseContext";
 import * as XLSX from "xlsx";
+import { DealerData } from "../../utils/masterData";
 
 // Tipe untuk summary data tiap user
 interface SummaryData {
   name: string;
+  dealer: string;
   report: number;
   visit: number;
   health: number;
@@ -32,12 +34,15 @@ const AdminPodium: React.FC = () => {
   // Data user dan key dari data user (semua data user)
   const [userData, setUserData] = useState<Record<string, any>>({});
   const [userKeys, setUserKeys] = useState<string[]>([]);
-  
+
   // State modal
   const [keyData, setKeyData] = useState<string>("");
 
   // State untuk sorting
   const [sortConfig, setSortConfig] = useState<SortConfig>({ column: "score", order: "desc" });
+
+  const [filterDealer, setFilterDealer] = useState<string>("");
+
 
   // Ambil data report
   useEffect(() => {
@@ -113,11 +118,12 @@ const AdminPodium: React.FC = () => {
     const trainingCount = training[uid] || 0;
     acc[uid] = {
       name: userData[uid]?.name || "N/A",
+      dealer: userData[uid]?.location || "N/A",
       report: reportCount,
       visit: visitCount,
       health: healthCount,
       training: trainingCount,
-      score: reportCount + visitCount + healthCount + trainingCount,
+      score: reportCount*2 + visitCount*2 + healthCount + trainingCount*5,
     };
     return acc;
   }, {} as Record<string, SummaryData>);
@@ -125,9 +131,14 @@ const AdminPodium: React.FC = () => {
   // Array untuk iterasi tabel hanya pada user yang difilter
   const summaryKeys = Object.keys(summaryData);
 
+  // Apply dealer filter pada daftar kunci
+  const filteredKeys = summaryKeys.filter(
+    (uid) => !filterDealer || summaryData[uid].dealer === filterDealer
+  );
+
   // Fungsi untuk mengurutkan data sesuai konfigurasi sortConfig
   const sortedKeys = (): string[] => {
-    const keysArray = [...summaryKeys];
+    const keysArray = [...filteredKeys];
     keysArray.sort((a, b) => {
       const field = sortConfig.column;
       const aValue = summaryData[a][field];
@@ -178,9 +189,8 @@ const AdminPodium: React.FC = () => {
       {/* Modal Info */}
       <div
         onClick={() => setKeyData("")}
-        className={`fixed w-screen h-screen bg-black top-0 left-0 bg-opacity-40 ${
-          keyData === "" ? "hidden" : "flex"
-        } justify-center items-center`}
+        className={`fixed w-screen h-screen bg-black top-0 left-0 bg-opacity-40 ${keyData === "" ? "hidden" : "flex"
+          } justify-center items-center`}
       >
         <div className="pb-6 bg-slate-50 rounded-lg flex flex-col">
           <div className="relative">
@@ -243,6 +253,19 @@ const AdminPodium: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between py-8">
         <p>Total User: {summaryKeys.length}</p>
+
+        <select
+          value={filterDealer}
+          onChange={(e) => setFilterDealer(e.target.value)}
+          className="border rounded px-4 py-2"
+        >
+          <option value="">All Dealer</option>
+          {DealerData.map((dealer) => (
+            <option key={dealer} value={dealer}>
+              {dealer}
+            </option>
+          ))}
+        </select>
         {/* Tombol Export Summary */}
         <button
           onClick={handleExportReport}
@@ -263,6 +286,12 @@ const AdminPodium: React.FC = () => {
                 onClick={() => handleSort("name")}
               >
                 Nama {sortConfig.column === "name" ? (sortConfig.order === "asc" ? "↓" : "↑") : ""}
+              </th>
+              <th
+                className="cursor-pointer border p-4 whitespace-nowrap text-gray-900"
+                onClick={() => handleSort("name")}
+              >
+                Dealer {sortConfig.column === "dealer" ? (sortConfig.order === "asc" ? "↓" : "↑") : ""}
               </th>
               <th
                 className="cursor-pointer border p-4 whitespace-nowrap text-gray-900"
@@ -301,6 +330,7 @@ const AdminPodium: React.FC = () => {
               <tr key={uid} className="text-gray-700 text-sm md:text-md">
                 <td className="border p-4">{i + 1}</td>
                 <td className="border p-4">{summaryData[uid].name}</td>
+                <td className="border p-4">{summaryData[uid].dealer}</td>
                 <td className="border p-4">{summaryData[uid].report}</td>
                 <td className="border p-4">{summaryData[uid].visit}</td>
                 <td className="border p-4">{summaryData[uid].health}</td>

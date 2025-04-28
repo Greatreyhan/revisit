@@ -17,6 +17,7 @@ export interface Unit {
     qtyUnit: string;
     goodType: string;
     route: string;
+    euroType?: string;
     distance: string;
 }
 

@@ -171,7 +171,7 @@ const VisitViewer: React.FC = () => {
                                 <th className="border border-gray-200 px-4 py-2 text-sm">Type Unit</th>
                                 <th className="border border-gray-200 px-4 py-2 text-sm">Qty</th>
                                 <th className="border border-gray-200 px-4 py-2 text-sm">Rear Body Type</th>
-                                <th className="border border-gray-200 px-4 py-2 text-sm">Payload (ton)</th>
+                                <th className="border border-gray-200 px-4 py-2 text-sm">Payload (kg)</th>
                                 <th className="border border-gray-200 px-4 py-2 text-sm">Goods</th>
                                 <th className="border border-gray-200 px-4 py-2 text-sm">Body Maker</th>
                             </tr>

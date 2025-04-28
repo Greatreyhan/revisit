@@ -380,3 +380,34 @@ export const classificationMap: Record<string, string[]> = {
     "HVAC": hvacIssuesData,
     "Frame": frameIssuesData,
 };
+
+export const merkData = ["HINO", "ISUZU", "MITSUBISHI", "UD"];
+
+export const HINO = [
+    "Dutro", "Ranger", "Other"
+];
+
+export const ISUZU = [
+    "TRAGA", "NLR", "NLR L", "NMR", "NMR L", "NMR HD 5.8", "NMR HD 6.5",
+    "NPS", "NLR B", "NLR B L", "NQR 81", "FRR Q", "FTR P", "FTR S", "FTR T",
+    "FVR L D", "FVR P", "FVR Q", "FVR S", "FVR U", "GVR J", "GVR J HP ABS",
+    "FVM N", "FVM U", "FVM N HP ABS", "FVM U HP", "FVZ N HP", "FVZ U HP",
+    "FVZ L HP MX", "GVZ K HP ABS", "GXZ K ABS", "Other"
+];
+
+export const MITSUBISHI = [
+    "Canter", "Fighter", "Fuso", "L300", "Other"
+];
+
+export const UD = [
+    "Quester", "Kuzer", "Other"
+];
+
+
+export const modelMap: Record<string, string[]> = {
+    "HINO": HINO,
+    "ISUZU": ISUZU,
+    "MITSUBISHI": MITSUBISHI,
+    "UD": UD,
+
+};

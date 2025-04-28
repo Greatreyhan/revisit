@@ -52,6 +52,8 @@ interface FirebaseContextType {
     updateImage: (id: string, status: string) => Promise<void>
     updateUserEmail: (lastPassword: string, newEmail: string) => Promise<void>;
     verifyEmail: () => Promise<void>
+    uploadPdfWithPath: (e: React.ChangeEvent<HTMLInputElement>, setPdfUrl: (url: string) => void, setId: (date: number) => void, pathReq: string) => void;
+    deletePdfWithPath: (filename: string, id: string) => Promise<void>;
 }
 
 // Initialize the context
@@ -454,6 +456,66 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({ children }
         }
     };
 
+    const uploadPdfWithPath = async (
+        e: React.ChangeEvent<HTMLInputElement>,
+        setPdfUrl: (url: string) => void,
+        setId: (date: number) => void,
+        pathReq: string
+    ): Promise<void> => {
+        const file = e.target.files?.[0];
+        setLoading(true);
+        if (!file || file.type !== 'application/pdf') {
+            setMessage({ message: 'Please upload a PDF file.', type: 'error' });
+            setLoading(false);
+            return;
+        }
+        try {
+            const dateTime = Date.now();
+            const newFileName = `${dateTime}.pdf`;
+            const storageRef = ref(FIREBASE_STORE, `pdf/${newFileName}`);
+            const uploadTask = uploadBytesResumable(storageRef, file);
+
+            uploadTask.on(
+                'state_changed',
+                snapshot => {
+                    const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                    console.log(`PDF Upload is ${progress}% done`);
+                },
+                error => console.error(error),
+                async () => {
+                    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                    // Save reference under specified path
+                    const dbRef = rtdbRef(FIREBASE_DB, `pdf/${pathReq}/${dateTime}`);
+                    await set(dbRef, { url: downloadURL, status: 'pending' });
+                    setPdfUrl(downloadURL);
+                    setId(dateTime);
+                }
+            );
+        } catch (error: any) {
+            console.error('PDF upload error:', error);
+            setMessage({ message: `Error uploading PDF: ${error.message}`, type: 'error' });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const deletePdfWithPath = async (filename: string, id: string): Promise<void> => {
+        try {
+            setLoading(true);
+            const storagePath = `pdf/${filename}`;
+            const pdfRef = ref(FIREBASE_STORE, storagePath);
+            await deleteObject(pdfRef);
+            // Remove DB reference
+            const dbRef = rtdbRef(FIREBASE_DB, `pdf/${user?.uid}/${id}`);
+            await remove(dbRef);
+            setMessage({ message: 'Successfully deleted PDF', type: 'info' });
+        } catch (error: any) {
+            setMessage({ message: `Error deleting PDF: ${error.message}`, type: 'error' });
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const value: FirebaseContextType = {
         user,
         authData,
@@ -475,7 +537,9 @@ export const FirebaseProvider: React.FC<{ children: ReactNode }> = ({ children }
         deleteImageWithPath,
         updateImage,
         updateUserEmail,
-        verifyEmail
+        verifyEmail,
+        uploadPdfWithPath,
+        deletePdfWithPath,
     };
 
     return (

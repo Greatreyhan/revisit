@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { BiSave } from "react-icons/bi";
 import { useFirebase } from "../../utils/FirebaseContext";
 import SelectInput from "../molecules/SelectInput";
 import InputField from "../molecules/InputField";
@@ -184,27 +183,27 @@ const DealerHealthEditor: React.FC = () => {
                         </div> */}
                     </div>
                     <div className="fixed md:hidden block bottom-5 right-5">
-                        <button
+                        {/* <button
                             type="submit"
                             className="mt-4 p-3 inline-flex justify-center items-center bg-primary rounded-full text-white font-semibold"
                         >
                             <BiSave className="text-2xl" />
-                        </button>
+                        </button> */}
                     </div>
                     <div className="flex w-full justify-end items-center gap-x-5">
                         <Link
                             className="mt-4 px-6 py-2 inline-flex justify-center items-center bg-white text-primary border border-primary rounded-full font-semibold"
-                            to="/health"
+                            to="/dealer/health"
                         >
                             Kembali
                         </Link>
-                        <button
+                        {/* <button
                             type="submit"
                             className="mt-4 px-6 py-2 inline-flex justify-center items-center bg-primary rounded-full text-white font-semibold"
                         >
                             <BiSave className="mr-2" />
                             Save
-                        </button>
+                        </button> */}
                     </div>
                 </form>
             </div>

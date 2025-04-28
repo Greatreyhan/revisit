@@ -1,35 +1,31 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { MdPrint, MdDangerous, MdGppGood, MdArchitecture, MdClose } from "react-icons/md";
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+import { MdPrint, MdDangerous, MdGppGood, MdArchitecture, MdClose, MdFileDownload } from "react-icons/md";
 import { useFirebase } from "../../utils/FirebaseContext";
 import { ReportData } from "../interface/Report";
 import { IoMdSettings } from "react-icons/io";
-
 
 const DealerReport = () => {
   const { getFromDatabase, user } = useFirebase();
   const [allReports, setAllReports] = useState<ReportData[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<string>("All");
-  const [keyData, setKeyData] = useState<number>(-1)
+  const [keyData, setKeyData] = useState<number>(-1);
 
   useEffect(() => {
     const fetchData = async () => {
       if (!user?.uid) return;
 
       try {
-        // Ambil daftar cabang yang terkait dengan user
         const cabangData = await getFromDatabase(`cabang/${user.uid}`);
         const keys = cabangData ? Object.keys(cabangData) : [];
-
-        // Ambil semua data schedule
         const reportData = await getFromDatabase("report/");
         if (!reportData) return;
 
         const reportArray: ReportData[] = [];
-
         Object.entries(reportData).forEach(([userId, schedules]) => {
-          // Hanya proses jika userId ada di keys
           if (keys.includes(userId)) {
             Object.entries(schedules as Record<string, any>).forEach(([reportId, reportDetail]) => {
               reportArray.push({ userId, reportId, ...(reportDetail as ReportData) });
@@ -46,7 +42,6 @@ const DealerReport = () => {
     fetchData();
   }, [user?.uid]);
 
-  // Filter data berdasarkan pencarian (judul, unit, customer, dealer) dan status
   const filteredReports = allReports.filter((report) => {
     const title = `${report.largeClassification} ${report.middleClassification} ${report.partProblem}`.toLowerCase();
     const unit = `${report.focusModel} ${report.euroType}`.toLowerCase();
@@ -63,10 +58,71 @@ const DealerReport = () => {
       statusFilter === "All"
         ? true
         : report.status === statusFilter ||
-        (statusFilter === "Operational" && report.status !== "Breakdown");
+          (statusFilter === "Operational" && report.status !== "Breakdown");
 
     return matchesSearch && matchesStatus;
   });
+
+  const exportToExcel = () => {
+    const dataToExport = filteredReports.map((report, index) => ({
+      "#": index + 1,
+      Context: report.context,
+      LargeClassification: report.largeClassification,
+      MiddleClassification: report.middleClassification,
+      PartProblem: report.partProblem,
+      Visitor: report.visitor,
+      Reviewer: report.reviewer,
+      Approval: report.approval,
+      CustomerName: report.customerName,
+      Area: report.area,
+      Location: report.location,
+      City: report.city,
+      Dealer: report.dealer,
+      Series: report.series,
+      VehicleType: report.vehicleType,
+      FocusModel: report.focusModel,
+      EuroType: report.euroType,
+      VIN: report.VIN,
+      EGN: report.EGN,
+      ProductionDate: report.productionDate,
+      Payload: report.payload,
+      Mileage: report.mileage,
+      Karoseri: report.karoseri,
+      Segment: report.segment,
+      Application: report.application,
+      LoadingUnit: report.loadingUnit,
+      ProblemDate: report.problemDate,
+      VisitDate: report.visitDate,
+      Status: report.status,
+      Highway: report.highway,
+      CityRoad: report.cityRoad,
+      CountryRoad: report.countryRoad,
+      OnRoad: report.onRoad,
+      OffRoad: report.offRoad,
+      FlatRoad: report.flatRoad,
+      ClimbRoad: report.climbRoad,
+      Phenomenon: report.phenomenon,
+      HistoryMaintenance: report.historyMaintenance,
+      FATemporaryInvestigation: report.FATemporaryInvestigation,
+      InvestigationResult: report.investigationResult,
+      CustomerVoice: report.customerVoice,
+      TemporaryAction: report.temporaryAction,
+      Homework: report.homework,
+      OtherCaseTIR: report.otherCaseTIR,
+      DifficultPoint: report.difficultPoint,
+      Attachments: report.attachments.map(a => `${a.imageDescription} (${a.imageAttached})`).join('; '),
+      Investigations: report.investigations.map(i => `${i.content} - ${i.result} - ${i.standard} - ${i.judge}`).join('; '),
+      Units: report.units.map(u => `${u.trademark} ${u.typeUnit} x${u.qtyUnit} ${u.goodType} ${u.route}`).join('; '),
+      UnitInvolves: report.unitInvolves.map(ui => `${ui.VIN} (${ui.mileage})`).join('; '),
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Reports");
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(blob, "DealerReports.xlsx");
+  };
 
   return (
     <div className="md:w-10/12 w-11/12 mx-auto pt-8">
@@ -135,7 +191,14 @@ const DealerReport = () => {
           />
         </div>
 
-        <div>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={exportToExcel}
+            className="inline-flex items-center px-6 py-1.5 bg-primary rounded-full text-white"
+          >
+            <span className="text-2xl mr-2"><MdFileDownload /></span>
+            Export ke Excel
+          </button>
           <Link
             className="inline-flex items-center px-6 py-1.5 bg-primary rounded-full text-white"
             to={"/dealer/report/visualization"}

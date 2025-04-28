@@ -11,7 +11,7 @@ import { MapMarkerData } from "../interface/MapSelector";
 import MapDistance from "../organisms/MapDistance";
 
 const DealerCustomerEditor: React.FC = () => {
-    const { saveToDatabase, user, getFromDatabase } = useFirebase();
+    const { saveToDatabase, getFromDatabase } = useFirebase();
     const navigate = useNavigate();
     const { uid,id } = useParams<{ uid:string, id: string }>();
 

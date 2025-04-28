@@ -66,146 +66,122 @@ import AdminTraining from "./ui/pages/AdminTraining";
 import DealerCustomerEditor from "./ui/pages/DealerCustomerEditor";
 import DealerTrainingEditor from "./ui/pages/DealerTrainingEditor";
 import DealerHealthEditor from "./ui/pages/DealerHealthEditor";
+import TestSort from "./ui/organisms/TestSort";
+
+
+const NotFound: React.FC = () => (
+  <div className="flex flex-col justify-center items-center h-screen">
+    <h1 className="text-3xl font-bold">404 - Page Not Found</h1>
+    <p className="mt-2">Maaf, halaman yang Anda cari tidak tersedia.</p>
+  </div>
+);
 
 function App() {
-
   const routes = [
     // Landing Template Routes
-    { path: "/", element: <Home />, type: "landing" },
-    { path: "/blog", element: <Blog />, type: "landing" },
-    { path: "/article/:id", element: <Article />, type: "landing" },
-    { path: "/test", element: <ImageEditor />, type: "view" },
+    { path: '/', element: <Home />, layout: 'landing' },
+    { path: '/blog', element: <Blog />, layout: 'landing' },
+    { path: '/article/:id', element: <Article />, layout: 'landing' },
+    { path: '/test', element: <ImageEditor />, layout: 'view' },
 
-
-    // Login Route
-    { path: "/login", element: <Login />, type: "basic" },
+    // Login
+    { path: '/login', element: <Login />, layout: 'basic' },
 
     // Profile
-    { path: "/profile", element: <Profile />, type: "profile" },
-    { path: "/report", element: <ProfileReport />, type: "profile" },
-    { path: "/visit", element: <ProfileVisit />, type: "profile" },
-    { path: "/assistant", element: <ProfileReport />, type: "profile" },
-    { path: "/warranty", element: <ProfileReport />, type: "profile" },
-    { path: "/customer", element: <ProfileCustomer />, type: "profile" },
-    { path: "/health", element: <ProfileHealth />, type: "profile" },
-    { path: "/training", element: <ProfileTraining />, type: "profile" },
-    { path: "/podium", element: <ProfilePodium />, type: "profile" },
+    { path: '/profile', element: <Profile />, layout: 'profile' },
+    { path: '/report', element: <ProfileReport />, layout: 'profile' },
+    { path: '/visit', element: <ProfileVisit />, layout: 'profile' },
+    { path: '/assistant', element: <ProfileReport />, layout: 'profile' },
+    { path: '/warranty', element: <ProfileReport />, layout: 'profile' },
+    { path: '/customer', element: <ProfileCustomer />, layout: 'profile' },
+    { path: '/health', element: <ProfileHealth />, layout: 'profile' },
+    { path: '/training', element: <ProfileTraining />, layout: 'profile' },
+    { path: '/podium', element: <ProfilePodium />, layout: 'profile' },
 
-    // Field
-    { path: "/report/editor", element: <ProfileReportEditor />, type: "profile" },
-    { path: "/report/view/:id", element: <ReportViewer />, type: "viewer" },
-    { path: "/report/editor/:id", element: <ProfileReportEditor />, type: "profile" },
-    { path: "/visit/editor", element: <ProfileVisitEditor />, type: "profile" },
-    { path: "/visit/view/:id", element: <VisitViewer />, type: "viewer" },
-    { path: "/visit/editor/:id", element: <ProfileVisitEditor />, type: "profile" },
-    { path: "/schedule", element: <ProfileSchedule />, type: "profile" },
-    { path: "/schedule/editor", element: <ProfileScheduleEditor />, type: "profile" },
-    { path: "/schedule/editor/:id", element: <ProfileScheduleEditor />, type: "profile" },
-    { path: "/health/editor", element: <ProfileHealthEditor />, type: "profile" },
-    { path: "/health/editor/:id", element: <ProfileHealthEditor />, type: "profile" },
-    { path: "/training/editor", element: <ProfileTrainingEditor />, type: "profile" },
-    { path: "/training/editor/:id", element: <ProfileTrainingEditor />, type: "profile" },
-    { path: "/customer/editor", element: <ProfileCustomerEditor />, type: "profile" },
-    { path: "/customer/editor/:id", element: <ProfileCustomerEditor />, type: "profile" },
-    { path: "/setting", element: <ProfileSetting />, type: "profile" },
+    // Field Editors & Viewers
+    { path: '/report/editor', element: <ProfileReportEditor />, layout: 'profile' },
+    { path: '/report/view/:id', element: <ReportViewer />, layout: 'viewer' },
+    { path: '/report/editor/:id', element: <ProfileReportEditor />, layout: 'profile' },
+    { path: '/visit/editor', element: <ProfileVisitEditor />, layout: 'profile' },
+    { path: '/visit/view/:id', element: <VisitViewer />, layout: 'viewer' },
+    { path: '/visit/editor/:id', element: <ProfileVisitEditor />, layout: 'profile' },
+    { path: '/schedule', element: <ProfileSchedule />, layout: 'profile' },
+    { path: '/schedule/editor', element: <ProfileScheduleEditor />, layout: 'profile' },
+    { path: '/schedule/editor/:id', element: <ProfileScheduleEditor />, layout: 'profile' },
+    { path: '/health/editor', element: <ProfileHealthEditor />, layout: 'profile' },
+    { path: '/health/editor/:id', element: <ProfileHealthEditor />, layout: 'profile' },
+    { path: '/training/editor', element: <ProfileTrainingEditor />, layout: 'profile' },
+    { path: '/training/editor/:id', element: <ProfileTrainingEditor />, layout: 'profile' },
+    { path: '/customer/editor', element: <ProfileCustomerEditor />, layout: 'profile' },
+    { path: '/customer/editor/:id', element: <ProfileCustomerEditor />, layout: 'profile' },
+    { path: '/setting', element: <ProfileSetting />, layout: 'profile' },
 
-    // Admin Template Routes
-    { path: "/admin/add-article", element: <AdminArticleEditor />, type: "admin" },
-    { path: "/admin/edit-article/:id", element: <AdminArticleEditor />, type: "admin" },
-    { path: "/admin/article", element: <AdminArticle />, type: "admin" },
-    { path: "/admin/user", element: <AdminUser />, type: "admin" },
-    { path: "/admin/cache", element: <AdminCache />, type: "admin" },
-    { path: "/admin/user/add", element: <AdminUserEditor />, type: "admin" },
-    { path: "/admin", element: <Admin />, type: "admin" },
-    { path: "/admin/report/visualization", element: <AdminVisualizationInvestigation />, type: "admin" },
-    { path: "/admin/report", element: <AdminReport />, type: "admin" },
-    { path: "/admin/report/:uid/:id", element: <AdminReportViewer />, type: "viewer" },
-    { path: "/admin/visit", element: <AdminVisit />, type: "admin" },
-    { path: "/admin/visit/:uid/:id", element: <AdminVisitViewer />, type: "viewer" },
-    { path: "/admin/visit/visualization", element: <AdminVisuzalizationRegular />, type: "admin" },
-    { path: "/admin/schedule", element: <AdminSchedule />, type: "admin" },
-    { path: "/admin/schedule/map", element: <AdminScheduleMap />, type: "admin" },
-    { path: "/admin/podium", element: <AdminPodium />, type: "admin" },
-    { path: "/admin/customer", element: <AdminCustomer />, type: "admin" },
-    { path: "/admin/health", element: <AdminHealth />, type: "admin" },
-    { path: "/admin/training", element: <AdminTraining />, type: "admin" },
+    // Admin Routes
+    { path: '/admin/add-article', element: <AdminArticleEditor />, layout: 'admin' },
+    { path: '/admin/edit-article/:id', element: <AdminArticleEditor />, layout: 'admin' },
+    { path: '/admin/article', element: <AdminArticle />, layout: 'admin' },
+    { path: '/admin/user', element: <AdminUser />, layout: 'admin' },
+    { path: '/admin/cache', element: <AdminCache />, layout: 'admin' },
+    { path: '/admin/user/add', element: <AdminUserEditor />, layout: 'admin' },
+    { path: '/admin', element: <Admin />, layout: 'admin' },
+    { path: '/admin/report/visualization', element: <AdminVisualizationInvestigation />, layout: 'admin' },
+    { path: '/admin/report', element: <AdminReport />, layout: 'admin' },
+    { path: '/admin/report/:uid/:id', element: <AdminReportViewer />, layout: 'viewer' },
+    { path: '/admin/visit', element: <AdminVisit />, layout: 'admin' },
+    { path: '/admin/visit/:uid/:id', element: <AdminVisitViewer />, layout: 'viewer' },
+    { path: '/admin/visit/visualization', element: <AdminVisuzalizationRegular />, layout: 'admin' },
+    { path: '/admin/schedule', element: <AdminSchedule />, layout: 'admin' },
+    { path: '/admin/schedule/map', element: <AdminScheduleMap />, layout: 'admin' },
+    { path: '/admin/podium', element: <AdminPodium />, layout: 'admin' },
+    { path: '/admin/customer', element: <AdminCustomer />, layout: 'admin' },
+    { path: '/admin/health', element: <AdminHealth />, layout: 'admin' },
+    { path: '/admin/training', element: <AdminTraining />, layout: 'admin' },
 
-    // Dealer
-    { path: "/dealer", element: <Dealer />, type: "dealer" },
-    { path: "/dealer/cabang", element: <DealerCabang />, type: "dealer" },
-    { path: "/dealer/cabang/add", element: <DealerCabangEditor />, type: "dealer" },
-    { path: "/dealer/schedule", element: <DealerSchedule />, type: "dealer" },
-    { path: "/dealer/schedule/map", element: <DealerScheduleMap />, type: "dealer" },
-    { path: "/dealer/report", element: <DealerReport />, type: "dealer" },
-    { path: "/dealer/report/:uid/:id", element: <DealerReportViewer />, type: "viewer" },
-    { path: "/dealer/report/visualization", element: <DealerVisualizationInvestigation />, type: "dealer" },
-    { path: "/dealer/visit", element: <DealerVisit />, type: "dealer" },
-    { path: "/dealer/visit/:uid/:id", element: <DealerVisitViewer />, type: "viewer" },
-    { path: "/dealer/visit/visualization", element: <DealerVisuzalizationRegular />, type: "dealer" },
-    { path: "/dealer/setting", element: <DealerSetting />, type: "dealer" },
-    { path: "/dealer/podium", element: <DealerPodium />, type: "dealer" },
-    { path: "/dealer/customer", element: <DealerCustomer />, type: "dealer" },
-    { path: "/dealer/customer/:uid/:id", element: <DealerCustomerEditor />, type: "dealer" },
-    { path: "/dealer/health", element: <DealerHealth />, type: "dealer" },
-    { path: "/dealer/health/:uid/:id", element: <DealerHealthEditor />, type: "dealer" },
-    { path: "/dealer/training", element: <DealerTraining />, type: "dealer" },
-    { path: "/dealer/training/:uid/:id", element: <DealerTrainingEditor />, type: "dealer" },
+    // Dealer Routes
+    { path: '/dealer', element: <Dealer />, layout: 'dealer' },
+    { path: '/dealer/cabang', element: <DealerCabang />, layout: 'dealer' },
+    { path: '/dealer/cabang/add', element: <DealerCabangEditor />, layout: 'dealer' },
+    { path: '/dealer/schedule', element: <DealerSchedule />, layout: 'dealer' },
+    { path: '/dealer/schedule/map', element: <DealerScheduleMap />, layout: 'dealer' },
+    { path: '/dealer/report', element: <DealerReport />, layout: 'dealer' },
+    { path: '/dealer/report/:uid/:id', element: <DealerReportViewer />, layout: 'viewer' },
+    { path: '/dealer/report/visualization', element: <DealerVisualizationInvestigation />, layout: 'dealer' },
+    { path: '/dealer/visit', element: <DealerVisit />, layout: 'dealer' },
+    { path: '/dealer/visit/:uid/:id', element: <DealerVisitViewer />, layout: 'viewer' },
+    { path: '/dealer/visit/visualization', element: <DealerVisuzalizationRegular />, layout: 'dealer' },
+    { path: '/dealer/setting', element: <DealerSetting />, layout: 'dealer' },
+    { path: '/dealer/podium', element: <DealerPodium />, layout: 'dealer' },
+    { path: '/dealer/customer', element: <DealerCustomer />, layout: 'dealer' },
+    { path: '/dealer/customer/:uid/:id', element: <DealerCustomerEditor />, layout: 'dealer' },
+    { path: '/dealer/health', element: <DealerHealth />, layout: 'dealer' },
+    { path: '/dealer/health/:uid/:id', element: <DealerHealthEditor />, layout: 'dealer' },
+    { path: '/dealer/training', element: <DealerTraining />, layout: 'dealer' },
+    { path: '/dealer/training/:uid/:id', element: <DealerTrainingEditor />, layout: 'dealer' },
 
+    { path: '/dnd', element: <TestSort />, layout: 'profile' },
+
+    // Catch-all 404
+    { path: '*', element: <NotFound />, layout: 'basic' },
   ];
 
   return (
     <FirebaseProvider>
       <BrowserRouter>
         <Routes>
-          {routes.map(({ path, element, type }, index) => {
-            if (type === "landing") {
-              return (
-                <Route
-                  key={index}
-                  path={path}
-                  element={<LandingTemplate>{element}</LandingTemplate>}
-                />
-              );
-            } else if (type === "admin") {
-              return (
-                <Route
-                  key={index}
-                  path={path}
-                  element={<AdminTemplate>{element}</AdminTemplate>}
-                />
-              );
-            } else if (type === "dealer") {
-              return (
-                <Route
-                  key={index}
-                  path={path}
-                  element={<DealerTemplate>{element}</DealerTemplate>}
-                />
-              );
-            } else if (type === "profile") {
-              return (
-                <Route
-                  key={index}
-                  path={path}
-                  element={<ProfileTemplate>{element}</ProfileTemplate>}
-                />
-              );
-            } else if (type === "viewer") {
-              return (
-                <Route
-                  key={index}
-                  path={path}
-                  element={<ViewerTemplate>{element}</ViewerTemplate>}
-                />
-              );
-            } else {
-              return (
-                <Route
-                  key={index}
-                  path={path}
-                  element={element}
-                />
-              );
+          {routes.map(({ path, element, layout }, index) => {
+            switch (layout) {
+              case 'landing':
+                return <Route key={index} path={path} element={<LandingTemplate>{element}</LandingTemplate>} />;
+              case 'admin':
+                return <Route key={index} path={path} element={<AdminTemplate>{element}</AdminTemplate>} />;
+              case 'dealer':
+                return <Route key={index} path={path} element={<DealerTemplate>{element}</DealerTemplate>} />;
+              case 'profile':
+                return <Route key={index} path={path} element={<ProfileTemplate>{element}</ProfileTemplate>} />;
+              case 'viewer':
+                return <Route key={index} path={path} element={<ViewerTemplate>{element}</ViewerTemplate>} />;
+              default:
+                return <Route key={index} path={path} element={element} />;
             }
           })}
         </Routes>

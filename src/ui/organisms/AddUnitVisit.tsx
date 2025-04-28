@@ -3,8 +3,7 @@ import InputField from '../molecules/InputField';
 import { MdAdd, MdDelete, MdEdit } from 'react-icons/md';
 import SelectInput from '../molecules/SelectInput';
 import { UnitVisit } from '../interface/Visit';
-import { cargoTypesData } from '../../utils/masterData';
-
+import { cargoTypesData, merkData, modelMap } from '../../utils/masterData';
 
 interface AddUnitVisitProps {
     disabled?: boolean;
@@ -12,39 +11,8 @@ interface AddUnitVisitProps {
     setUnits: (units: UnitVisit[]) => void;
 }
 
-const merkData = ["HINO", "ISUZU", "MITSUBISHI", "UD"];
 
-const HINO = [
-    "Dutro", "Ranger"
-];
-
-const ISUZU = [
-    "TRAGA", "NLR", "NLR L", "NMR", "NMR L", "NMR HD 5.8", "NMR HD 6.5",
-    "NPS", "NLR B", "NLR B L", "NQR 81", "FRR Q", "FTR P", "FTR S", "FTR T",
-    "FVR L D", "FVR P", "FVR Q", "FVR S", "FVR U", "GVR J", "GVR J HP ABS",
-    "FVM N", "FVM U", "FVM N HP ABS", "FVM U HP", "FVZ N HP", "FVZ U HP",
-    "FVZ L HP MX", "GVZ K HP ABS", "GXZ K ABS"
-];
-
-const MITSUBISHI = [
-    "Canter", "Fighter", "Fuso", "L300"
-];
-
-const UD = [
-    "Quester", "Kuzer"
-];
-
-
-const modelMap: Record<string, string[]> = {
-    "HINO": HINO,
-    "ISUZU": ISUZU,
-    "MITSUBISHI": MITSUBISHI,
-    "UD": UD,
-
-};
-
-
-const AddUnitVisit: React.FC<AddUnitVisitProps> = ({ disabled=false, units, setUnits }) => {
+const AddUnitVisit: React.FC<AddUnitVisitProps> = ({ disabled = false, units, setUnits }) => {
     const [trademark, setTrademark] = useState<string>("");
     const [typeUnit, setTypeUnit] = useState<string>("");
     const [dataModel, setDataModel] = useState<string[]>([])
@@ -53,19 +21,21 @@ const AddUnitVisit: React.FC<AddUnitVisitProps> = ({ disabled=false, units, setU
     const [payload, setPayload] = useState<string>("");
     const [goods, setGoods] = useState<string>("");
     const [bodyMaker, setBodyMaker] = useState<string>("");
+    const [euroType, setEuroType] = useState<string>("");
     const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
     const [editIndex, setEditIndex] = useState<number | null>(null);
 
     const handleAddOrUpdateUnit = () => {
-        if (trademark && typeUnit && qtyUnit && rearBodyType && goods && payload && bodyMaker) {
-            const newUnit: UnitVisit = { 
-                trademark, 
-                typeUnit, 
-                qtyUnit, 
-                rearBodyType, 
-                payload, 
-                goods, 
+        if (trademark && typeUnit && qtyUnit && rearBodyType && goods && payload && bodyMaker && euroType) {
+            const newUnit: UnitVisit = {
+                trademark,
+                typeUnit,
+                qtyUnit,
+                rearBodyType,
+                payload,
+                goods,
                 bodyMaker,
+                euroType,
             };
 
             if (editIndex !== null) {
@@ -90,6 +60,7 @@ const AddUnitVisit: React.FC<AddUnitVisitProps> = ({ disabled=false, units, setU
         setRearBodyType(unit.rearBodyType); // Menggunakan state yang sesuai
         setPayload(unit.payload); // Menggunakan state yang sesuai
         setBodyMaker(unit.bodyMaker);
+        setEuroType(unit.euroType ?? "Unknown");
         setEditIndex(index);
         setIsPopupOpen(true);
     };
@@ -111,6 +82,7 @@ const AddUnitVisit: React.FC<AddUnitVisitProps> = ({ disabled=false, units, setU
         setPayload("");
         setGoods("");
         setBodyMaker("");
+        setEuroType("");
         setIsPopupOpen(false);
     };
 
@@ -127,6 +99,7 @@ const AddUnitVisit: React.FC<AddUnitVisitProps> = ({ disabled=false, units, setU
                                 <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Merk</th>
                                 <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Model</th>
                                 <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Qty</th>
+                                <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900">Emission</th>
                                 <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900 md:table-cell hidden">Rear Body Type</th>
                                 <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900 md:table-cell hidden">Payload</th>
                                 <th className="border p-1.5 dark:border-dark-5 whitespace-nowrap font-normal text-gray-900 md:table-cell hidden">Goods</th>
@@ -141,6 +114,7 @@ const AddUnitVisit: React.FC<AddUnitVisitProps> = ({ disabled=false, units, setU
                                     <td className="border p-1.5 dark:border-dark-5 text-center">{unit.trademark}</td>
                                     <td className="border p-1.5 dark:border-dark-5 text-center">{unit.typeUnit}</td>
                                     <td className="border p-1.5 dark:border-dark-5 text-center">{unit.qtyUnit}</td>
+                                    <td className="border p-1.5 dark:border-dark-5 text-center">{unit.euroType ?? "Unknown"}</td>
                                     <td className="border p-1.5 dark:border-dark-5 text-center md:table-cell hidden">{unit.rearBodyType}</td>
                                     <td className="border p-1.5 dark:border-dark-5 text-center md:table-cell hidden">{unit.payload}</td>
                                     <td className="border p-1.5 dark:border-dark-5 text-center md:table-cell hidden">{unit.goods}</td>
@@ -159,15 +133,15 @@ const AddUnitVisit: React.FC<AddUnitVisitProps> = ({ disabled=false, units, setU
                         </tbody>
                     </table>
                 </ul>
-                {disabled ? 
-                <button
-                    type="button" onClick={() => setIsPopupOpen(true)}
-                    className="mt-4 px-6 py-2 w-full flex justify-center items-center bg-primary rounded-full text-white font-semibold"
-                >
-                    <MdAdd className="mr-2" />
-                    Tambah Unit
-                </button>
-                :<></>}
+                {!disabled ?
+                    <button
+                        type="button" onClick={() => setIsPopupOpen(true)}
+                        className="mt-4 px-6 py-2 w-full flex justify-center items-center bg-primary rounded-full text-white font-semibold"
+                    >
+                        <MdAdd className="mr-2" />
+                        Tambah Unit
+                    </button>
+                    : <></>}
 
             </div>
 
@@ -182,10 +156,13 @@ const AddUnitVisit: React.FC<AddUnitVisitProps> = ({ disabled=false, units, setU
                             <SelectInput label="Tipe Unit" name="typeUnit" value={typeUnit} onChange={(e) => setTypeUnit(e.target.value)} options={dataModel} />
                         </div>
                         <div className="flex w-full gap-5">
+                            <SelectInput label="Euro Type" name="euroType" value={euroType} onChange={(e) => setEuroType(e.target.value)} options={["Euro 2", "Euro 4", "Unknown"]} />
                             <InputField label="Jumlah Unit" type='number' name="qtyUnit" value={qtyUnit} onChange={(e) => setQtyUnit(e.target.value)} placeholder="Masukkan jumlah unit" />
-                            <SelectInput label="Rear Body Type" name="rearBodyType" value={rearBodyType} onChange={(e) => setRearBodyType(e.target.value)} options={cargoTypesData} />
                         </div>
+                        <div className="flex w-full gap-5">
+                            <SelectInput label="Rear Body Type" name="rearBodyType" value={rearBodyType} onChange={(e) => setRearBodyType(e.target.value)} options={cargoTypesData} />
                         <InputField type="number" label="Payload (KG)" name="payload" value={payload} onChange={(e) => setPayload(e.target.value)} placeholder="Payload" />
+                        </div>
                         <InputField label="Goods" name="goods" value={goods} onChange={(e) => setGoods(e.target.value)} placeholder="Masukkan jenis Muatan" />
                         <InputField label="Body Maker" name="bodyMaker" value={bodyMaker} onChange={(e) => setBodyMaker(e.target.value)} placeholder="Body Maker" />
                         <div className="flex justify-end gap-5 mt-4">

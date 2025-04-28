@@ -1,31 +1,29 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { MdArchitecture, MdClose, MdPrint } from "react-icons/md";
+import { MdArchitecture, MdClose, MdFileDownload, MdPrint } from "react-icons/md";
+import { IoMdSettings } from "react-icons/io";
 import { useFirebase } from "../../utils/FirebaseContext";
 import { VisitData } from "../interface/Visit";
-import { IoMdSettings } from "react-icons/io";
+import * as XLSX from "xlsx";
 
 const DealerVisit = () => {
   const { getFromDatabase, user } = useFirebase();
   const [allReports, setAllReports] = useState<VisitData[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [keyData, setKeyData] = useState<number>(-1)
-  
+  const [keyData, setKeyData] = useState<number>(-1);
+
   useEffect(() => {
     const fetchData = async () => {
       if (!user?.uid) return;
 
       try {
-        // Ambil daftar cabang yang terkait dengan user
         const cabangData = await getFromDatabase(`cabang/${user.uid}`);
         const keys = cabangData ? Object.keys(cabangData) : [];
 
-        // Ambil semua data schedule
         const visitData = await getFromDatabase("visit/");
         if (!visitData) return;
 
         const visitArray: VisitData[] = [];
-
         Object.entries(visitData).forEach(([userId, visits]) => {
           if (keys.includes(userId)) {
             Object.entries(visits as Record<string, any>).forEach(([reportId, visitDetail]) => {
@@ -39,19 +37,76 @@ const DealerVisit = () => {
         console.error("Error fetching data:", error);
       }
     };
-
     fetchData();
   }, [user?.uid]);
 
   const filteredReports = allReports.filter((report) => {
-    const customer = report.customerName.toLowerCase();
-    const dealer = report.dealer.toLowerCase();
-    const segment = report.segment?.toLowerCase() || "";
-    const area = report.area?.toLowerCase() || "";
-    const query = searchQuery.toLowerCase();
-
-    return customer.includes(query) || dealer.includes(query) || segment.includes(query) || area.includes(query);
+    const q = searchQuery.toLowerCase();
+    return [
+      report.customerName,
+      report.dealer,
+      report.segment || "",
+      report.area,
+    ].some(field => field.toLowerCase().includes(q));
   });
+
+  const handleExport = () => {
+    // Flatten data for Excel
+    const exportData = filteredReports.map((r) => ({
+      visitId: r.visitId,
+      reportId: r.reportId,
+      userId: r.userId,
+      context: r.context,
+      formNumber: r.formNumber,
+      visitorName: r.visitorName,
+      visitDate: r.visitDate,
+      visitor: r.visitor,
+      reviewer: r.reviewer,
+      approval: r.approval,
+      customerName: r.customerName,
+      dealer: r.dealer,
+      dateOperation: r.dateOperation,
+      area: r.area,
+      dataLocation: JSON.stringify(r.dataLocation),
+      location: r.location,
+      city: r.city,
+      segment: r.segment,
+      dayPerWeek: r.dayPerWeek,
+      tripPerDay: r.tripPerDay,
+      distancePerTrip: r.distancePerTrip,
+      routeOfTrip: r.routeOfTrip,
+      mapAttached: r.mapAttached,
+      mapMarkers: JSON.stringify(r.mapMarkers),
+      mapDistance: r.mapDistance,
+      locationMap: JSON.stringify(r.locationMap),
+      highway: r.highway,
+      cityRoad: r.cityRoad,
+      countryRoad: r.countryRoad,
+      onRoad: r.onRoad,
+      offRoad: r.offRoad,
+      flatRoad: r.flatRoad,
+      climbRoad: r.climbRoad,
+      maximumSlope: r.maximumSlope,
+      loadingRatio: r.loadingRatio,
+      yearsOfUse: r.yearsOfUse,
+      reasonOfPurchase: r.reasonOfPurchase,
+      customerInfo: r.customerInfo,
+      serviceInfo: r.serviceInfo,
+      sparepartInfo: r.sparepartInfo,
+      technicalInfo: r.technicalInfo,
+      competitorInfo: r.competitorInfo,
+      attachments: JSON.stringify(r.attachments),
+      investigations: JSON.stringify(r.investigations),
+      units: JSON.stringify(r.units),
+      unitInvolves: JSON.stringify(r.unitInvolves),
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Visits");
+    XLSX.writeFile(workbook, "DealerVisits.xlsx");
+  };
+
 
   return (
     <div className="md:w-10/12 w-11/12 mx-auto pt-8">
@@ -116,6 +171,14 @@ const DealerVisit = () => {
             className="w-full p-2 border rounded-lg"
           />
         </div>
+        <button
+          onClick={handleExport}
+          className="inline-flex items-center px-4 py-2 bg-primary text-white rounded-full"
+        >
+          {/* Bisa ganti icon excel jika perlu */}
+          <span className="text-2xl mr-2"><MdFileDownload /></span>
+          Export Excel
+        </button>
         <Link
           className="inline-flex items-center px-6 py-1.5 bg-primary rounded-full text-white"
           to={"/dealer/visit/visualization"}

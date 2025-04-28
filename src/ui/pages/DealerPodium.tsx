@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { MdClose, MdEdit, MdDownload } from "react-icons/md";
+import React, { useState, useEffect, useMemo } from "react";
+import { MdArrowOutward, MdClose, MdDownload, MdFormatListBulleted, MdPrint } from "react-icons/md";
 import { useFirebase } from "../../utils/FirebaseContext";
 import * as XLSX from "xlsx";
+import { Link } from "react-router-dom";
 
 // Tipe untuk summary data tiap user
 interface SummaryData {
+  uid: string;
   name: string;
-  report: number;
-  visit: number;
-  health: number;
-  training: number;
-  score: number; // field tambahan untuk score
+  report: string[];    // array ID report
+  visit: string[];     // array ID visit
+  health: string[];    // array ID health
+  training: string[];  // array ID training
+  score: number;       // skor berdasarkan panjang array
 }
 
 // Tipe untuk konfigurasi sorting
@@ -23,313 +24,304 @@ interface SortConfig {
 const DealerPodium: React.FC = () => {
   const { getFromDatabase, user } = useFirebase();
 
-  // State untuk data kategori
-  const [report, setReport] = useState<Record<string, number>>({});
-  const [visit, setVisit] = useState<Record<string, number>>({});
-  const [health, setHealth] = useState<Record<string, number>>({});
-  const [training, setTraining] = useState<Record<string, number>>({});
+  // State untuk daftar ID kategori per user
+  const [reportData, setReportData] = useState<Record<string, Record<string, any>>>({});
+  const [visitData, setVisitData] = useState<Record<string, Record<string, any>>>({});
+  const [healthData, setHealthData] = useState<Record<string, Record<string, any>>>({});
+  const [trainingData, setTrainingData] = useState<Record<string, Record<string, any>>>({});
 
-  // Data user dan key dari data user (semua data user)
+  // Data user dan key dari data user
   const [userData, setUserData] = useState<Record<string, any>>({});
   const [userKeys, setUserKeys] = useState<string[]>([]);
 
-  // State untuk uid yang diperoleh dari data cabang
+  // State untuk cabang
   const [cabangUIDs, setCabangUIDs] = useState<string[]>([]);
 
-  // State modal
+  // State untuk modal detail IDs
   const [keyData, setKeyData] = useState<string>("");
 
   // State untuk sorting
-  const [sortConfig, setSortConfig] = useState<SortConfig>({
-    column: "score",
-    order: "desc",
-  });
+  const [sortConfig, setSortConfig] = useState<SortConfig>({ column: "score", order: "desc" });
 
-  // Ambil data report
-  useEffect(() => {
-    getFromDatabase("report").then((data) => {
-      if (data) {
-        const reportCount: Record<string, number> = {};
-        Object.keys(data).forEach((uid) => {
-          reportCount[uid] = Object.keys(data[uid]).length;
-        });
-        setReport(reportCount);
-      }
-    });
-  }, [getFromDatabase]);
+  // State untuk date filter
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
 
-  // Ambil data visit
+  // Ambil data kategori dan simpan object data
   useEffect(() => {
-    getFromDatabase("visit").then((data) => {
-      if (data) {
-        const visitCount: Record<string, number> = {};
-        Object.keys(data).forEach((uid) => {
-          visitCount[uid] = Object.keys(data[uid]).length;
-        });
-        setVisit(visitCount);
-      }
-    });
-  }, [getFromDatabase]);
-
-  // Ambil data health
-  useEffect(() => {
-    getFromDatabase("health").then((data) => {
-      if (data) {
-        const healthCount: Record<string, number> = {};
-        Object.keys(data).forEach((uid) => {
-          healthCount[uid] = Object.keys(data[uid]).length;
-        });
-        setHealth(healthCount);
-      }
-    });
-  }, [getFromDatabase]);
-
-  // Ambil data training
-  useEffect(() => {
-    getFromDatabase("training").then((data) => {
-      if (data) {
-        const trainingCount: Record<string, number> = {};
-        Object.keys(data).forEach((uid) => {
-          trainingCount[uid] = Object.keys(data[uid]).length;
-        });
-        setTraining(trainingCount);
-      }
-    });
+    getFromDatabase("report").then(data => data && setReportData(data));
+    getFromDatabase("visit").then(data => data && setVisitData(data));
+    getFromDatabase("health").then(data => data && setHealthData(data));
+    getFromDatabase("training").then(data => data && setTrainingData(data));
   }, [getFromDatabase]);
 
   // Ambil data user
   useEffect(() => {
     getFromDatabase("user").then((data) => {
       if (data) {
-        const keys = Object.keys(data);
         setUserData(data);
-        setUserKeys(keys);
+        setUserKeys(Object.keys(data));
       }
     });
   }, [getFromDatabase, user]);
 
-  // Ambil data cabang untuk user yang sedang login (misalnya cabang yang terkait dengan user)
+  // Ambil cabang UIDs
   useEffect(() => {
     if (!user?.uid) return;
     getFromDatabase(`cabang/${user.uid}`).then((data) => {
-      if (data) {
-        const keys = Object.keys(data);
-        setCabangUIDs(keys);
-      }
+      if (data) setCabangUIDs(Object.keys(data));
     });
   }, [getFromDatabase, user?.uid]);
 
-  // Filter data user: hanya ambil user dengan type "Field" dan uid-nya terdapat pada data cabang
-  const filteredUserKeys = userKeys.filter(
-    (uid) => userData[uid]?.type === "Field" && cabangUIDs.includes(uid)
+  // Filter user field berdasarkan cabang
+  const filteredUserKeys = useMemo(
+    () => userKeys.filter(
+      (uid) => userData[uid]?.type === "Field" && cabangUIDs.includes(uid)
+    ),
+    [userKeys, userData, cabangUIDs]
   );
 
-  // Membuat summary data untuk user yang sudah difilter, serta menghitung score
-  const summaryData: Record<string, SummaryData> = filteredUserKeys.reduce((acc, uid) => {
-    const reportCount = report[uid] || 0;
-    const visitCount = visit[uid] || 0;
-    const healthCount = health[uid] || 0;
-    const trainingCount = training[uid] || 0;
-    acc[uid] = {
-      name: userData[uid]?.name || "N/A",
-      report: reportCount,
-      visit: visitCount,
-      health: healthCount,
-      training: trainingCount,
-      score: reportCount + visitCount + healthCount + trainingCount,
-    };
-    return acc;
-  }, {} as Record<string, SummaryData>);
+  // Helper: konversi tanggal input ke timestamp ms
+  const toStartMs = (date: string) => date ? new Date(date).setHours(0, 0, 0, 0) : null;
+  const toEndMs = (date: string) => date ? new Date(date).setHours(23, 59, 59, 999) : null;
 
-  // Array untuk iterasi tabel summary
-  const summaryKeys = Object.keys(summaryData);
+  // Bangun summaryData full
+  const summaryData: Record<string, SummaryData> = useMemo(() => {
+    return filteredUserKeys.reduce((acc, uid) => {
+      const rIds = Object.keys(reportData[uid] || {});
+      const vIds = Object.keys(visitData[uid] || {});
+      const hIds = Object.keys(healthData[uid] || {});
+      const tIds = Object.keys(trainingData[uid] || {});
+      acc[uid] = {
+        uid,
+        name: userData[uid]?.name || "N/A",
+        report: rIds,
+        visit: vIds,
+        health: hIds,
+        training: tIds,
+        score: rIds.length * 2 + vIds.length * 2 + hIds.length + tIds.length * 5,
+      };
+      return acc;
+    }, {} as Record<string, SummaryData>);
+  }, [filteredUserKeys, reportData, visitData, healthData, trainingData, userData]);
 
-  // Fungsi untuk mengurutkan data sesuai konfigurasi sortConfig
+  // Aplikasikan date filter -> filteredSummaryData
+  const filteredSummaryData = useMemo(() => {
+    const startMs = toStartMs(startDate);
+    const endMs = toEndMs(endDate);
+    const result: Record<string, SummaryData> = {};
+    Object.entries(summaryData).forEach(([uid, data]) => {
+      const filterByDate = (ids: string[]) => ids.filter(id => {
+        const ts = parseInt(id);
+        if (startMs !== null && ts < startMs) return false;
+        if (endMs !== null && ts > endMs) return false;
+        return true;
+      });
+      const r = filterByDate(data.report);
+      const v = filterByDate(data.visit);
+      const h = filterByDate(data.health);
+      const t = filterByDate(data.training);
+      result[uid] = {
+        ...data,
+        report: r,
+        visit: v,
+        health: h,
+        training: t,
+        score: r.length * 2 + v.length * 2 + h.length + t.length * 5,
+      };
+    });
+    return result;
+  }, [startDate, endDate, summaryData]);
+
+  const summaryKeys = Object.keys(filteredSummaryData);
+
+  // Sorting helper on filtered data
   const sortedKeys = (): string[] => {
-    const keysArray = [...summaryKeys];
-    keysArray.sort((a, b) => {
+    return [...summaryKeys].sort((a, b) => {
       const field = sortConfig.column;
-      const aValue = summaryData[a][field];
-      const bValue = summaryData[b][field];
-
-      if (typeof aValue === "number" && typeof bValue === "number") {
-        return sortConfig.order === "asc" ? aValue - bValue : bValue - aValue;
-      } else {
-        const cmp = String(aValue).localeCompare(String(bValue));
-        return sortConfig.order === "asc" ? cmp : -cmp;
-      }
+      const aVal = filteredSummaryData[a][field];
+      const bVal = filteredSummaryData[b][field];
+      const aNum = Array.isArray(aVal) ? aVal.length : (aVal as number);
+      const bNum = Array.isArray(bVal) ? bVal.length : (bVal as number);
+      return sortConfig.order === "asc" ? aNum - bNum : bNum - aNum;
     });
-    return keysArray;
   };
 
-  // Handler untuk mengubah sorting ketika header tabel diklik
+  // Handle sort
   const handleSort = (column: keyof SummaryData) => {
-    setSortConfig((prev) => {
-      if (prev.column === column) {
-        return { column, order: prev.order === "asc" ? "desc" : "asc" };
-      }
-      return { column, order: "asc" };
-    });
+    setSortConfig(prev =>
+      prev.column === column
+        ? { column, order: prev.order === "asc" ? "desc" : "asc" }
+        : { column, order: "asc" }
+    );
   };
 
-  // Fungsi untuk export data summary ke file Excel
+  // Export to Excel menggunakan filteredSummaryData
   const handleExportReport = () => {
-    // Ubah summaryData menjadi array objek untuk diexport
-    const exportData = Object.entries(summaryData).map(([uid, data]) => ({
-      UserID: uid,
-      ...data,
-    }));
-
-    console.log("Export Data:", exportData);
-
-    // Buat worksheet dari exportData
-    const worksheet = XLSX.utils.json_to_sheet(exportData);
-    // Buat workbook baru, tambahkan worksheet dengan nama "PodiumSummary"
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "PodiumSummary");
-    // Simpan file Excel dengan nama "podium_summary.xlsx"
-    XLSX.writeFile(workbook, "podium_summary.xlsx");
+    const exportData = summaryKeys.map(uid => {
+      const d = filteredSummaryData[uid];
+      return {
+        UserID: uid,
+        Name: d.name,
+        ReportCount: d.report.length,
+        VisitCount: d.visit.length,
+        HealthCount: d.health.length,
+        TrainingCount: d.training.length,
+        Score: d.score,
+        ReportIDs: d.report.join(", "),
+        VisitIDs: d.visit.join(", "),
+        HealthIDs: d.health.join(", "),
+        TrainingIDs: d.training.join(", "),
+      };
+    });
+    const ws = XLSX.utils.json_to_sheet(exportData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "PodiumSummary");
+    XLSX.writeFile(wb, "podium_summary.xlsx");
   };
+
+  function formatDate(msTimestamp: number): string {
+    const d = new Date(msTimestamp);
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
+  }
 
   return (
     <div className="w-10/12 mx-auto pt-8">
+      {/* Filter Tanggal */}
+      <div className="flex items-center space-x-4 mb-6">
+        <div>
+          <label className="block text-sm font-medium">Dari Tanggal:</label>
+          <input
+            type="date"
+            value={startDate}
+            onChange={e => setStartDate(e.target.value)}
+            className="mt-1 block border p-2 rounded"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium">Sampai Tanggal:</label>
+          <input
+            type="date"
+            value={endDate}
+            onChange={e => setEndDate(e.target.value)}
+            className="mt-1 block border p-2 rounded"
+          />
+        </div>
+        <button
+          onClick={() => { setStartDate(''); setEndDate(''); }}
+          className="mt-6 px-3 py-1 bg-gray-300 rounded"
+        >Reset</button>
+      </div>
+
       {/* Modal Info */}
-      <div
-        onClick={() => setKeyData("")}
-        className={`fixed w-screen h-screen bg-black top-0 left-0 bg-opacity-40 ${
-          keyData === "" ? "hidden" : "flex"
-        } justify-center items-center`}
-      >
-        <div className="pb-6 bg-slate-50 rounded-lg flex flex-col">
-          <div className="relative">
+      {keyData && (
+        <div
+          onClick={() => setKeyData("")}
+          className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50"
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            className="bg-white rounded-lg p-6 max-w-lg w-full relative"
+          >
             <button
               onClick={() => setKeyData("")}
-              className="absolute right-0 top-0"
-              type="button"
+              className="absolute top-2 right-2"
             >
-              <MdClose className="text-5xl bg-red-700 text-white p-3 rounded-tr-lg" />
+              <MdClose className="text-2xl text-gray-600" />
             </button>
-            <table className="w-full">
-              <thead>
-                <tr>
-                  <td
-                    className="font-semibold py-3 px-6 rounded-t-lg bg-slate-100"
-                    colSpan={2}
-                  >
-                    Detail Summary User
-                  </td>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="text-left">
-                  <td className="px-6 w-3/12 p-2">Nama</td>
-                  <td className="w-10/12 p-2">: {summaryData[keyData]?.name}</td>
-                </tr>
-                <tr className="text-left">
-                  <td className="px-6 w-3/12 p-2">Report</td>
-                  <td className="w-10/12 p-2">: {summaryData[keyData]?.report}</td>
-                </tr>
-                <tr className="text-left">
-                  <td className="px-6 w-3/12 p-2">Visit</td>
-                  <td className="w-10/12 p-2">: {summaryData[keyData]?.visit}</td>
-                </tr>
-                <tr className="text-left">
-                  <td className="px-6 w-3/12 p-2">Health</td>
-                  <td className="w-10/12 p-2">: {summaryData[keyData]?.health}</td>
-                </tr>
-                <tr className="text-left">
-                  <td className="px-6 w-3/12 p-2">Training</td>
-                  <td className="w-10/12 p-2">: {summaryData[keyData]?.training}</td>
-                </tr>
-                <tr className="text-left">
-                  <td className="px-6 w-3/12 p-2">Score</td>
-                  <td className="w-10/12 p-2">: {summaryData[keyData]?.score}</td>
-                </tr>
-              </tbody>
-            </table>
-            <hr className="mt-8" />
-            <div className="flex mt-2 gap-3 px-8 pt-4">
-              <Link
-                className="text-sky-800 px-4 py-2 rounded-lg bg-sky-100 flex items-center"
-                to={"/profile/editor/" + keyData}
-              >
-                <MdEdit className="text-md mr-1" />
-                <p className="text-sm">Edit Data</p>
-              </Link>
+            <h3 className="text-xl font-semibold mb-4">{filteredSummaryData[keyData].name}</h3>
+            <div className="space-y-3">
+              <div>
+                <p className="mt-4 font-semibold">{filteredSummaryData[keyData].report.length} Investigasi</p>
+                <div className="flex flex-col gap-2 mt-2">
+                  {filteredSummaryData[keyData].report.map(id => (
+                    <div className="flex justify-between items-center" key={id}>
+                      <span className="text-xs w-1/6">{formatDate(parseInt(id))}</span><span className="text-sm w-full ml-8">{reportData[keyData][id]?.customerName}</span><Link target="_blank" to={`/dealer/report/${keyData}/${id}`}><MdArrowOutward className="text-xl bg-primary rounded-full p-1 text-white cursor-pointer" /></Link>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <p className="mt-4 font-semibold">{filteredSummaryData[keyData].visit.length} Reguler Visit</p>
+                <div className="flex flex-col gap-2 mt-2">
+                  {filteredSummaryData[keyData].visit.map(id => (
+                    <div className="flex justify-between items-center" key={id}>
+                      <span className="text-xs w-1/6">{formatDate(parseInt(id))}</span><span className="text-sm w-full ml-8">{visitData[keyData][id]?.customerName}</span><Link target="_blank" to={`/dealer/visit/${keyData}/${id}`}><MdArrowOutward className="text-xl bg-primary rounded-full p-1 text-white cursor-pointer" /></Link>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <p className="mt-4 font-semibold">{filteredSummaryData[keyData].health.length} Health Report</p>
+                <div className="flex flex-col gap-2 mt-2">
+                  {filteredSummaryData[keyData].health.map(id => (
+                    <div className="flex justify-between items-center" key={id}>
+                      <span className="text-xs w-1/6">{formatDate(parseInt(id))}</span><span className="text-sm w-full ml-8">{healthData[keyData][id]?.customerName}</span><Link target="_blank" to={`/dealer/health/${keyData}/${id}`}><MdArrowOutward className="text-xl bg-primary rounded-full p-1 text-white cursor-pointer" /></Link>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <p className="mt-4 font-semibold">{filteredSummaryData[keyData].training.length} Training Report</p>
+                <div className="flex flex-col gap-2 mt-2">
+                  {filteredSummaryData[keyData].training.map(id => (
+                    <div className="flex justify-between items-center" key={id}>
+                      <span className="text-xs w-1/6">{formatDate(parseInt(id))}</span><span className="text-sm w-full ml-8">{trainingData[keyData][id]?.customerName}</span><Link target="_blank" to={`/dealer/training/${keyData}/${id}`}><MdArrowOutward className="text-xl bg-primary rounded-full p-1 text-white cursor-pointer" /></Link>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Header */}
       <div className="flex items-center justify-between py-8">
         <p>Total User: {summaryKeys.length}</p>
-        {/* Ganti tombol export summary dengan memanggil handleExportReport */}
         <button
           onClick={handleExportReport}
           className="inline-flex items-center px-6 py-1.5 bg-primary rounded-full text-white"
         >
-          <span className="text-2xl mr-2">
-            <MdDownload />
-          </span>
+          <span className="text-2xl mr-2"><MdDownload /></span>
           Export Summary
         </button>
       </div>
 
-      {/* Tabel Summary Data dengan kolom sorting */}
+      {/* Tabel Summary Data */}
       <div className="flex justify-center items-center">
         <table className="table p-4 bg-white rounded-lg shadow w-full">
           <thead>
             <tr className="bg-slate-50 font-bold text-sm md:text-md">
               <th className="border p-4 whitespace-nowrap text-gray-900">#</th>
-              <th
-                className="cursor-pointer border p-4 whitespace-nowrap text-gray-900"
-                onClick={() => handleSort("name")}
-              >
-                Nama {sortConfig.column === "name" ? (sortConfig.order === "asc" ? "↓" : "↑") : ""}
-              </th>
-              <th
-                className="cursor-pointer border p-4 whitespace-nowrap text-gray-900"
-                onClick={() => handleSort("report")}
-              >
-                Report {sortConfig.column === "report" ? (sortConfig.order === "asc" ? "↓" : "↑") : ""}
-              </th>
-              <th
-                className="cursor-pointer border p-4 whitespace-nowrap text-gray-900"
-                onClick={() => handleSort("visit")}
-              >
-                Visit {sortConfig.column === "visit" ? (sortConfig.order === "asc" ? "↓" : "↑") : ""}
-              </th>
-              <th
-                className="cursor-pointer border p-4 whitespace-nowrap text-gray-900"
-                onClick={() => handleSort("health")}
-              >
-                Health {sortConfig.column === "health" ? (sortConfig.order === "asc" ? "↓" : "↑") : ""}
-              </th>
-              <th
-                className="cursor-pointer border p-4 whitespace-nowrap text-gray-900"
-                onClick={() => handleSort("training")}
-              >
-                Training {sortConfig.column === "training" ? (sortConfig.order === "asc" ? "↓" : "↑") : ""}
-              </th>
-              <th
-                className="cursor-pointer border p-4 whitespace-nowrap text-gray-900"
-                onClick={() => handleSort("score")}
-              >
-                Score {sortConfig.column === "score" ? (sortConfig.order === "asc" ? "↓" : "↑") : ""}
-              </th>
+              <th className="cursor-pointer border p-4" onClick={() => handleSort("name")}>Nama {sortConfig.column === "name" ? (sortConfig.order === "asc" ? "↓" : "↑") : ""}</th>
+              <th className="cursor-pointer border p-4" onClick={() => handleSort("report")}>Report {sortConfig.column === "report" ? (sortConfig.order === "asc" ? "↓" : "↑") : ""}</th>
+              <th className="cursor-pointer border p-4" onClick={() => handleSort("visit")}>Visit {sortConfig.column === "visit" ? (sortConfig.order === "asc" ? "↓" : "↑") : ""}</th>
+              <th className="cursor-pointer border p-4" onClick={() => handleSort("health")}>Health {sortConfig.column === "health" ? (sortConfig.order === "asc" ? "↓" : "↑") : ""}</th>
+              <th className="cursor-pointer border p-4" onClick={() => handleSort("training")}>Training {sortConfig.column === "training" ? (sortConfig.order === "asc" ? "↓" : "↑") : ""}</th>
+              <th className="cursor-pointer border p-4" onClick={() => handleSort("score")}>Score {sortConfig.column === "score" ? (sortConfig.order === "asc" ? "↓" : "↑") : ""}</th>
+              <th className="border p-4 whitespace-nowrap">Action</th>
             </tr>
           </thead>
           <tbody>
             {sortedKeys().map((uid, i) => (
               <tr key={uid} className="text-gray-700 text-sm md:text-md">
                 <td className="border p-4">{i + 1}</td>
-                <td className="border p-4">{summaryData[uid].name}</td>
-                <td className="border p-4">{summaryData[uid].report}</td>
-                <td className="border p-4">{summaryData[uid].visit}</td>
-                <td className="border p-4">{summaryData[uid].health}</td>
-                <td className="border p-4">{summaryData[uid].training}</td>
-                <td className="border p-4">{summaryData[uid].score}</td>
+                <td className="border p-4">{filteredSummaryData[uid].name}</td>
+                <td className="border p-4">{filteredSummaryData[uid].report.length}</td>
+                <td className="border p-4">{filteredSummaryData[uid].visit.length}</td>
+                <td className="border p-4">{filteredSummaryData[uid].health.length}</td>
+                <td className="border p-4">{filteredSummaryData[uid].training.length}</td>
+                <td className="border p-4">{filteredSummaryData[uid].score}</td>
+                <td className="border p-4 flex justify-center items-center">
+                  <button
+                    onClick={() => setKeyData(uid)}
+                    className="p-1.5 text-lg rounded-full bg-emerald-100 text-emerald-900"
+                  ><MdPrint /></button>
+                </td>
               </tr>
             ))}
           </tbody>

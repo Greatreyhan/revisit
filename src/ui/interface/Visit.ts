@@ -16,6 +16,7 @@ export interface UnitVisit {
     trademark: string;
     typeUnit: string;
     qtyUnit: string;
+    euroType? : string;
     rearBodyType: string;
     payload: string;
     goods: string;

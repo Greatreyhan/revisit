@@ -178,7 +178,7 @@ const ReportViewer: React.FC = () => {
                                 <th className="border border-gray-400 px-4 py-2 text-sm">Qty (Units)</th>
                                 <th className="border border-gray-400 px-4 py-2 text-sm">Goods</th>
                                 <th className="border border-gray-400 px-4 py-2 text-sm">Route</th>
-                                <th className="border border-gray-400 px-4 py-2 text-sm">Distance</th>
+                                <th className="border border-gray-400 px-4 py-2 text-sm">Distance (km)</th>
                             </tr>
                         </thead>
                         <tbody>
