@@ -1,9 +1,24 @@
-// AddAttachment.tsx
 import React, { useState, useEffect } from "react";
 import InputField from "../molecules/InputField";
-import { MdAdd, MdClose, MdDelete } from "react-icons/md";
+import { MdAdd, MdClose, MdDelete, MdModeEdit } from "react-icons/md";
 import { useFirebase } from "../../utils/FirebaseContext";
-import ImageEditorModal from "./ImageEditorModal"; // Pastikan path ini sesuai
+import ImageEditorModal from "./ImageEditorModal";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  horizontalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import DraggableAttachment from "./DraggableAttachment";
 
 interface AttachmentItem {
   imageAttached: string;
@@ -23,24 +38,37 @@ const extractFilename = (url: string): string => {
   return match ? decodeURIComponent(match[1]) : "";
 };
 
-const AddAttachment: React.FC<AddAttachmentProps> = ({ disabled=false, attachments, setAttachments }) => {
+const AddAttachment: React.FC<AddAttachmentProps> = ({ disabled = false, attachments, setAttachments }) => {
   const { uploadEditedImageWithPath, deleteImageWithPath, user } = useFirebase();
   const [imageAttached, setImageAttached] = useState<string>("");
   const [imageDescription, setImageDescription] = useState<string>("");
   const [imageId, setImageId] = useState<number>(0);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectIndex, setSelectIndex] = useState<number>(-1);
   const [editDescription, setEditDescription] = useState<string>("");
-
-  // State untuk Image Editor Modal
   const [showEditorModal, setShowEditorModal] = useState<boolean>(false);
   const [editorImage, setEditorImage] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     if (selectIndex !== -1 && attachments[selectIndex]) {
       setEditDescription(attachments[selectIndex].imageDescription);
     }
   }, [selectIndex, attachments]);
+
+  // DnD-kit sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const oldIndex = Number(active.id);
+    const newIndex = Number(over.id);
+    const newOrder = arrayMove(attachments, oldIndex, newIndex);
+    setAttachments(newOrder);
+  };
 
   const handleAddAttachment = () => {
     if (imageAttached && imageDescription && imageId) {
@@ -58,32 +86,30 @@ const AddAttachment: React.FC<AddAttachmentProps> = ({ disabled=false, attachmen
       const attachmentToDelete = attachments[selectIndex];
       const filename = extractFilename(attachmentToDelete.imageAttached);
       if (filename && deleteImageWithPath) {
-        await deleteImageWithPath(filename, attachmentToDelete?.imageId?.toString() ?? "");
+        await deleteImageWithPath(filename, attachmentToDelete.imageId?.toString() ?? "");
       }
-      const updatedAttachments = attachments.filter((_, index) => index !== selectIndex);
-      setAttachments(updatedAttachments);
+      const updated = attachments.filter((_, i) => i !== selectIndex);
+      setAttachments(updated);
       setSelectIndex(-1);
     }
   };
 
   const handleUpdateAttachment = () => {
     if (selectIndex !== -1) {
-      const updatedAttachments = attachments.map((item, idx) =>
+      const updated = attachments.map((item, idx) =>
         idx === selectIndex ? { ...item, imageDescription: editDescription } : item
       );
-      setAttachments(updatedAttachments);
+      setAttachments(updated);
       setSelectIndex(-1);
     }
   };
 
-  // Handler untuk file input: membaca file dan membuka image editor
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files && e.target.files[0];
+    const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (event) => {
-        const result = event.target?.result as string;
-        // Buka modal image editor dengan gambar yang dipilih
+      reader.onload = (ev) => {
+        const result = ev.target?.result as string;
         setEditorImage(result);
         setShowEditorModal(true);
       };
@@ -93,37 +119,23 @@ const AddAttachment: React.FC<AddAttachmentProps> = ({ disabled=false, attachmen
 
   const dataURLtoFile = (dataurl: string, filename: string): File => {
     const arr = dataurl.split(',');
-    const mimeMatch = arr[0].match(/:(.*?);/);
-    if (!mimeMatch) {
-      throw new Error('Invalid dataURL');
-    }
-    const mime = mimeMatch[1];
+    const mime = arr[0].match(/:(.*?);/)![1];
     const bstr = atob(arr[1]);
     let n = bstr.length;
     const u8arr = new Uint8Array(n);
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
-    }
+    while (n--) u8arr[n] = bstr.charCodeAt(n);
     return new File([u8arr], filename, { type: mime });
   };
 
-  // Callback dari ImageEditorModal ketika pengguna menyimpan hasil edit
   const handleEditorSave = async (editedImage: string) => {
     setShowEditorModal(false);
-
-    // Konversi Data URL ke File
     const editedFile = dataURLtoFile(editedImage, "edited-image.png");
-
-    // Panggil fungsi upload dengan file hasil edit
-    // Pastikan fungsi uploadEditedImageWithPath telah disesuaikan untuk menerima File
-    await uploadEditedImageWithPath(editedFile, (downloadURL: string) => {
-      // Setelah upload berhasil, update state imageAttached dan imageId
-      setImageAttached(downloadURL);
-    }, (newImageId: number) => {
-      setImageId(newImageId);
-    }, user?.uid ?? "");
-
-    // Jika upload berhasil, kamu bisa langsung menambahkan attachment
+    await uploadEditedImageWithPath(
+      editedFile,
+      (downloadURL: string) => setImageAttached(downloadURL),
+      (newImageId: number) => setImageId(newImageId),
+      user?.uid ?? ""
+    );
   };
 
   return (
@@ -183,40 +195,41 @@ const AddAttachment: React.FC<AddAttachmentProps> = ({ disabled=false, attachmen
         )}
       </div>
 
-      {/* List Lampiran */}
-      <div className="flex flex-wrap mt-4 w-full">
-
-        {attachments?.map((attachment, index) => (
-          <button
-            onClick={() => setSelectIndex(index)}
-            type="button"
-            key={index}
-            className="border rounded-md shadow-md md:w-4/12 w-5/12"
-          >
-            <img
-              src={attachment.imageAttached}
-              alt="Lampiran"
-              className="w-full md:h-56 h-32 object-cover rounded-t-md"
-            />
-            <p className="py-2 text-center bg-primary rounded-b-md text-white">
-              {attachment.imageDescription}
-            </p>
-          </button>
-        ))}
-      </div>
+      {/* Drag-and-Drop List */}
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext
+          items={attachments.map((_, idx) => idx.toString())}
+          strategy={horizontalListSortingStrategy}
+        >
+          <div className="flex flex-wrap mt-4 w-full">
+            {attachments.map((att, idx) => (
+              <div className="relative border rounded-md shadow-md md:w-4/12 w-5/12">
+                <div className="absolute top-1 cursor-pointer left-1 w-8 h-8 flex justify-center items-center bg-primary rounded-full text-white" onClick={() => setSelectIndex(idx)}><MdModeEdit /></div>
+                <DraggableAttachment
+                  key={idx}
+                  id={idx.toString()}
+                  index={idx}
+                  imageAttached={att.imageAttached}
+                  imageDescription={att.imageDescription}
+                />
+              </div>
+            ))}
+          </div>
+        </SortableContext>
+      </DndContext>
 
       {!disabled ?
 
-      <button
-        type="button"
-        onClick={() => setIsModalOpen(true)}
-        className="mt-4 px-6 py-2 w-full flex justify-center items-center bg-primary rounded-full text-white font-semibold"
-      >
-        <MdAdd className="mr-2" />
-        Tambah Lampiran
-      </button>
-      :<></>
-    }
+        <button
+          type="button"
+          onClick={() => setIsModalOpen(true)}
+          className="mt-4 px-6 py-2 w-full flex justify-center items-center bg-primary rounded-full text-white font-semibold"
+        >
+          <MdAdd className="mr-2" />
+          Tambah Lampiran
+        </button>
+        : <></>
+      }
 
       {/* Pop Up untuk tambah attachment */}
       {isModalOpen && (
@@ -271,6 +284,7 @@ const AddAttachment: React.FC<AddAttachmentProps> = ({ disabled=false, attachmen
           </div>
         </div>
       )}
+
 
       {showEditorModal && (
         <ImageEditorModal
