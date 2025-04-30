@@ -85,6 +85,8 @@ const ProfileVisitEditor: React.FC = () => {
     // Customer Modal
     const [showCustomerModal, setShowCustomerModal] = useState<boolean>(false)
     const [customers, setCustomers] = useState<any[]>([]);
+    const [customerId, setCustomerId] = useState<string>("")
+
 
     // Function untuk mendeteksi perubahan input
     const handleChange = (setter: React.Dispatch<React.SetStateAction<string>>) => (
@@ -95,7 +97,7 @@ const ProfileVisitEditor: React.FC = () => {
     };
 
     // Fungsi untuk menggabungkan semua data form ke dalam 1 objek
-    const getFormData = () => ({
+    const getFormData = (custId: string) => ({
         attachments,
         investigations,
         units,
@@ -146,6 +148,32 @@ const ProfileVisitEditor: React.FC = () => {
         sparepartInfo,
         technicalInfo,
         competitorInfo,
+
+        // customer ID
+        customerId : custId || ""
+    });
+
+    const getCustomerData = () => ({
+        units,
+        unitInvolves,
+        mapAttached,
+        mapMarkers,
+        mapDistance,
+        locationMap,
+        customerName,
+        dealer,
+        dateOperation,
+        area,
+        location,
+        city,
+        email: "",
+        phone: "",
+        segment,
+        typeCustomer: "",
+        dayPerWeek,
+        tripPerDay,
+        distancePerTrip,
+        routeOfTrip,
     });
 
     // Fetch list of existing customers
@@ -225,6 +253,8 @@ const ProfileVisitEditor: React.FC = () => {
                     setTechnicalInfo(data.technicalInfo || "");
                     setCompetitorInfo(data.competitorInfo || "");
 
+                    // Customer ID
+                    setCustomerId(data.customerId || "");
                 }
             });
         }
@@ -233,7 +263,7 @@ const ProfileVisitEditor: React.FC = () => {
     // Auto-save ke localStorage setiap data berubah
     useEffect(() => {
         if (isDataChanged) {
-            const formData = getFormData();
+            const formData = getFormData(customerId);
             localStorage.setItem("profileVisitDraft", JSON.stringify(formData));
         }
     }, [
@@ -281,6 +311,7 @@ const ProfileVisitEditor: React.FC = () => {
         units,
         unitInvolves,
         isDataChanged,
+        customerId
     ]);
 
     // Restore data dari localStorage ketika komponen dimount
@@ -343,6 +374,8 @@ const ProfileVisitEditor: React.FC = () => {
                 setTechnicalInfo(data.technicalInfo || "");
                 setCompetitorInfo(data.competitorInfo || "");
 
+                setCustomerId(data.customerId || "");
+
                 // Setelah restore, anggap data sudah tidak berubah
                 setIsDataChanged(false);
             } else {
@@ -351,30 +384,85 @@ const ProfileVisitEditor: React.FC = () => {
         }
     }, []);
 
+
     const handleSendData = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Minimal validation; bisa dikembangkan lebih lanjut
+        // 0) Basic form validation
         if (!customerName || !location) {
             console.log("Some important data is still missing!");
             return;
         }
 
-        const newData = getFormData();
+        // 1) Determine the customer ID
+        const customerIdInput = customerId || Date.now().toString();
 
+        // 2) See if it already exists in state
+        const idExists = customers.some(c => c.id === customerIdInput);
+
+        // 3) Ask for confirmation
+        let confirmed: boolean;
+        if (idExists) {
+            confirmed = window.confirm(
+                `A customer with ID "${customerIdInput}" already exists.\n` +
+                `Do you want to UPDATE this customer’s data?`
+            );
+        } else {
+            confirmed = window.confirm(
+                `No customer found with ID "${customerIdInput}".\n` +
+                `Do you want to CREATE a new customer record?`
+            );
+        }
+
+        // 4) Bail out if user clicks “Cancel”
+        if (!confirmed) {
+            console.log(
+                idExists
+                    ? "User opted NOT to update existing customer."
+                    : "User opted NOT to create new customer."
+            );
+            return;
+        }
+
+        // 5) Build the object to save (make sure it includes the chosen ID)
+        const newCustomer = {
+            id: customerIdInput,
+            ...getCustomerData(),
+        };
+
+        // 6) Write (or overwrite) to the customer path
+        try {
+            await saveToDatabase(
+                `customer/${user?.uid}/${customerIdInput}`,
+                newCustomer
+            );
+            setIsDataChanged(false);
+            localStorage.removeItem("profileCustomerDraft");
+            // Optional: toast success here
+            navigate("/customer");
+        } catch (error) {
+            console.error("Error saving customer:", error);
+            return;
+        }
+
+        // 7) (unchanged) your “visit” save logic
+        const newData = getFormData(customerIdInput);
         try {
             attachments.forEach(data => {
                 updateImage(data?.imageId?.toString() ?? "", "uploaded");
             });
-            await saveToDatabase(`visit/${user?.uid}/${id || Date.now()}`, newData);
+            await saveToDatabase(
+                `visit/${user?.uid}/${id || Date.now()}`,
+                newData
+            );
             setIsDataChanged(false);
-            // Hapus draft setelah data berhasil dikirim
             localStorage.removeItem("profileVisitDraft");
             navigate("/visit");
         } catch (error) {
-            console.error("Error saving data:", error);
+            console.error("Error saving visit:", error);
         }
     };
+
 
     // Mengatur beforeunload dan back button untuk memberi peringatan jika ada perubahan data
     useEffect(() => {
@@ -428,7 +516,9 @@ const ProfileVisitEditor: React.FC = () => {
         setLocationMap(cust.locationMap || { lat: 0, lng: 0 });
         setIsDataChanged(true);
         setShowCustomerModal(false);
+        setCustomerId(cust.id)
     };
+
 
     return (
         <div className="App overflow-x-hidden">
@@ -466,25 +556,16 @@ const ProfileVisitEditor: React.FC = () => {
                     onSubmit={handleSendData}
                 >
                     <TextField
-                        label="Context"
+                        label="Note"
                         name="context"
                         value={context}
                         onChange={handleChange(setContext)}
-                        placeholder="Enter context"
+                        placeholder="Enter Note"
                     />
 
                     {/* General Information */}
                     <div className="w-full py-8 px-8 rounded-lg my-4 bg-slate-100">
-                        <div className="w-full gap-5 flex items-center justify-between">
                         <h2 className="font-semibold">General Information</h2>
-                            <button
-                                type="button"
-                                className="px-4 py-2 bg-primary text-white rounded-full font-semibold"
-                                onClick={() => setShowCustomerModal(true)}
-                            >
-                                Select Customer
-                            </button>
-                        </div>
 
                         <div className="md:flex w-full gap-5">
                             <InputField
@@ -532,7 +613,16 @@ const ProfileVisitEditor: React.FC = () => {
 
                     {/* Basic Information */}
                     <div className="w-full py-8 px-8 rounded-lg my-4 bg-slate-100">
-                        <h2 className="font-semibold">Basic Information</h2>
+                        <div className="w-full gap-5 flex items-center justify-between">
+                            <h2 className="font-semibold">Basic Information</h2>
+                            <button
+                                type="button"
+                                className="px-4 py-2 bg-primary text-white rounded-full font-semibold"
+                                onClick={() => setShowCustomerModal(true)}
+                            >
+                                Select Customer
+                            </button>
+                        </div>
                         <div className="md:flex w-full gap-5">
                             <InputField
                                 required={true}

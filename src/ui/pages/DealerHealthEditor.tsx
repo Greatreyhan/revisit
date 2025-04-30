@@ -6,7 +6,6 @@ import InputField from "../molecules/InputField";
 import { cargoTypesData, dataModelIsuzu, DealerData, segmentData } from "../../utils/masterData";
 import AddAttachment from "../organisms/AddAttachment";
 import { AttachmentItem } from "../interface/Report";
-import { BiSave } from "react-icons/bi";
 import AddHealthReport from "../organisms/AddHealthReport";
 import { PdfAttachmentItem } from "../interface/PDF";
 

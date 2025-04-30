@@ -411,3 +411,36 @@ export const modelMap: Record<string, string[]> = {
     "UD": UD,
 
 };
+
+export const driverMateri = [
+    'Basic Driver',
+    'Defensive Driving',
+    'P2H & Defensive Driving',
+    'P2H & Economic Driving',
+    'P2H & Emergency Handling'
+];
+
+export const mekanikMateri = [
+    'Daily Inspection & Periodical Maintenance',
+    'Vehicle Inspection',
+    'Vehicle Inspection & Periodical Maintenance',
+    'Periodical Maintenance',
+    'Basic Mechanic',
+    'Power Train & Full Air Brake',
+    'Electrical, Engine & Commonrail Technology',
+    'Isuzu Electrical Course',
+    'Full Air Brake Course'
+];
+
+export const generalMateri = [
+    '8-Step Improvement & 7 Tools QCC',
+    'General Knowledge',
+    'Euro4 Technology',
+    'Product Knowledge'
+];
+
+export const classificationMateri: Record<string, string[]> = {
+    "Driver": driverMateri,
+    "Mechanic": mekanikMateri,
+    "General": generalMateri,
+};

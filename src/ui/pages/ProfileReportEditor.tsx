@@ -402,11 +402,11 @@ const ProfileReportEditor: React.FC = () => {
             <div className="pt-16">
                 <form className="md:w-10/12 w-11/12 flex flex-col mx-auto my-4 justify-around items-center" onSubmit={handleSendData}>
                     <TextField
-                        label="Context"
+                        label="Note"
                         name="context"
                         value={context}
                         onChange={handleChange(setContext)}
-                        placeholder="Enter context"
+                        placeholder="Enter Note"
                     />
 
                     {/* General Information */}

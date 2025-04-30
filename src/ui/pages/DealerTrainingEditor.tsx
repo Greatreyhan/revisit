@@ -7,7 +7,6 @@ import InputField from "../molecules/InputField";
 import { DealerData } from "../../utils/masterData";
 import AddAttachment from "../organisms/AddAttachment";
 import { AttachmentItem } from "../interface/Report";
-import AddUnitTraining from "../organisms/AddUnitTraining";
 import AddTrainee from "../organisms/AddTrainee";
 import { TraineePerson } from "../interface/Training";
 
