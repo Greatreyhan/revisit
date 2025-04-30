@@ -6,12 +6,11 @@ import InputField from "../molecules/InputField";
 import { cargoTypesData, dataModelIsuzu, DealerData, segmentData } from "../../utils/masterData";
 import AddAttachment from "../organisms/AddAttachment";
 import { AttachmentItem } from "../interface/Report";
-import { BiSave } from "react-icons/bi";
 import AddHealthReport from "../organisms/AddHealthReport";
 import { PdfAttachmentItem } from "../interface/PDF";
 
 
-const DealerHealthEditor: React.FC = () => {
+const AdminHealthEditor: React.FC = () => {
     const { saveToDatabase, getFromDatabase } = useFirebase()
     const navigate = useNavigate();
     const { uid, id } = useParams<{ uid: string, id: string }>();
@@ -257,7 +256,7 @@ const DealerHealthEditor: React.FC = () => {
                     <div className="flex w-full justify-end items-center gap-x-5">
                         <Link
                             className="mt-4 px-6 py-2 inline-flex justify-center items-center bg-white text-primary border border-primary rounded-full font-semibold"
-                            to="/health"
+                            to="/admin/health"
                         >
                             Kembali
                         </Link>
@@ -268,4 +267,4 @@ const DealerHealthEditor: React.FC = () => {
     );
 };
 
-export default DealerHealthEditor;
+export default AdminHealthEditor;

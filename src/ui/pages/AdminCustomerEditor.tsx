@@ -10,7 +10,7 @@ import AddUnitVisit from "../organisms/AddUnitVisit";
 import { MapMarkerData } from "../interface/MapSelector";
 import MapDistance from "../organisms/MapDistance";
 
-const DealerCustomerEditor: React.FC = () => {
+const AdminCustomerEditor: React.FC = () => {
     const { saveToDatabase, getFromDatabase } = useFirebase();
     const navigate = useNavigate();
     const { uid,id } = useParams<{ uid:string, id: string }>();
@@ -435,7 +435,7 @@ const DealerCustomerEditor: React.FC = () => {
                     <div className="flex w-full justify-end items-center gap-x-5">
                         <Link
                             className="mt-4 px-6 py-2 inline-flex justify-center items-center bg-white text-primary border border-primary rounded-full font-semibold"
-                            to="/dealer/customer"
+                            to="/admin/customer"
                         >
                             Back
                         </Link>
@@ -446,4 +446,4 @@ const DealerCustomerEditor: React.FC = () => {
     );
 };
 
-export default DealerCustomerEditor;
+export default AdminCustomerEditor;

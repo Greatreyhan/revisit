@@ -9,11 +9,11 @@ import * as XLSX from "xlsx";
 const AdminTraining = () => {
   const { getFromDatabase, user } = useFirebase();
   // Menyimpan data training yang sudah difilter.
-  const [dataArticle, setDataArticle] = useState<
-    Record<string, TraineeData & { trainingId: string; cabangId: string }>
+  const [data, setData] = useState<
+    Record<string, TraineeData & { trainingId: string; userId: string }>
   >({});
   // Menyimpan daftar key (trainingId) untuk keperluan render pada tabel.
-  const [keyArticle, setKeyArticle] = useState<string[]>([]);
+  const [key, setKey] = useState<string[]>([]);
   // State untuk menampilkan modal detail data training.
   const [keyData, setKeyData] = useState<string>("");
 
@@ -26,18 +26,17 @@ const AdminTraining = () => {
         if (!trainingData) return;
 
         // Kumpulkan seluruh data training tanpa melakukan filter berdasarkan cabang.
-        const filteredTraining: Record<string, TraineeData & { trainingId: string; cabangId: string }> = {};
+        const filteredTraining: Record<string, TraineeData & { trainingId: string; userId: string }> = {};
 
-        Object.entries(trainingData).forEach(([cabangId, trainingObj]) => {
+        Object.entries(trainingData).forEach(([userId, trainingObj]) => {
           Object.entries(trainingObj as Record<string, any>).forEach(([trainingId, trainingDetail]) => {
-            filteredTraining[trainingId] = { ...trainingDetail, trainingId, cabangId };
+            filteredTraining[trainingId] = { ...trainingDetail, trainingId, userId };
           });
         });
 
         // Set data ke state.
-        console.log(filteredTraining)
-        setDataArticle(filteredTraining);
-        setKeyArticle(Object.keys(filteredTraining));
+        setData(filteredTraining);
+        setKey(Object.keys(filteredTraining));
       } catch (error) {
         console.error("Error fetching training data:", error);
       }
@@ -47,11 +46,9 @@ const AdminTraining = () => {
   }, [user?.uid, getFromDatabase]);
   
   const handleExportReport = () => {
-    // Debug: Pastikan dataArticle sudah terisi
-    console.log("dataArticle:", dataArticle);
   
-    // Ubah dataArticle yang berbentuk objek menjadi array objek
-    const dataArr = Object.entries(dataArticle).map(([key, training]) => {
+    // Ubah data yang berbentuk objek menjadi array objek
+    const dataArr = Object.entries(data).map(([key, training]) => {
       // Destruktur field-field yang perlu diformat
       const { unit, trainee, attachments, ...rest } = training;
   
@@ -140,28 +137,28 @@ const AdminTraining = () => {
                 <tr className="text-left">
                   <td className="px-6 w-3/12 p-2">Customer</td>
                   <td className="w-10/12 p-2">
-                    : {dataArticle[keyData]?.customerName}
+                    : {data[keyData]?.customerName}
                   </td>
                 </tr>
                 <tr className="text-left">
                   <td className="px-6 w-3/12 p-2">Title</td>
                   <td className="w-10/12 p-2">
-                    : {dataArticle[keyData]?.title}
+                    : {data[keyData]?.title}
                   </td>
                 </tr>
                 <tr className="text-left">
                   <td className="px-6 w-3/12 p-2">Unit</td>
                   <td className="w-10/12 p-2">
                     :{" "}
-                    {dataArticle[keyData]?.unit
-                      ? dataArticle[keyData]?.unit.join(", ")
+                    {data[keyData]?.unit
+                      ? data[keyData]?.unit.join(", ")
                       : "-"}
                   </td>
                 </tr>
                 <tr className="text-left">
                   <td className="px-6 w-3/12 p-2">Dealer</td>
                   <td className="w-10/12 p-2">
-                    : {dataArticle[keyData]?.dealer}
+                    : {data[keyData]?.dealer}
                   </td>
                 </tr>
               </tbody>
@@ -182,7 +179,7 @@ const AdminTraining = () => {
 
       {/* Header & Create Training */}
       <div className="flex items-center justify-between py-8">
-        <p>Total Training: {keyArticle.length}</p>
+        <p>Total Training: {key.length}</p>
         {/* Ganti Link export report dengan button yang memanggil handleExportReport */}
         <button
           onClick={handleExportReport}
@@ -215,27 +212,27 @@ const AdminTraining = () => {
             </tr>
           </thead>
           <tbody>
-            {keyArticle.map((key, i) => (
+            {key.map((key, i) => (
               <tr key={key} className="text-gray-700 md:text-md text-sm">
                 <td className="border p-4">{i + 1}</td>
                 <td className="border p-4">
-                  {dataArticle[key]?.customerName}
+                  {data[key]?.customerName}
                 </td>
                 <td className="border p-4 md:table-cell hidden">
-                  {dataArticle[key]?.title}
+                  {data[key]?.title}
                 </td>
                 <td className="border p-4">
-                  {dataArticle[key]?.startDate}
+                  {data[key]?.startDate}
                 </td>
                 <td className="border p-4 text-center">
-                  {dataArticle[key]?.unit
-                    ? dataArticle[key]?.unit.length
+                  {data[key]?.unit
+                    ? data[key]?.unit.length
                     : 0}
                 </td>
                 <td className="border-t p-4 md:flex gap-x-3 justify-around items-center hidden">
                   <Link
                     className="p-2 text-sky-800 rounded-full bg-sky-100"
-                    to={"/training/editor/" + key}
+                    to={"/admin/training/" + data[key]?.userId + "/" + key}
                   >
                     <MdEdit />
                   </Link>

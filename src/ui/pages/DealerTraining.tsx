@@ -9,11 +9,11 @@ import * as XLSX from "xlsx";
 const DealerTraining = () => {
   const { getFromDatabase, user } = useFirebase();
   // Menyimpan data training yang sudah difilter.
-  const [dataArticle, setDataArticle] = useState<
+  const [data, setData] = useState<
     Record<string, TraineeData & { trainingId: string; userId: string }>
   >({});
   // Menyimpan daftar key (trainingId) untuk keperluan render pada tabel.
-  const [keyArticle, setKeyArticle] = useState<string[]>([]);
+  const [key, setKey] = useState<string[]>([]);
   // State untuk menampilkan modal detail data training.
   const [keyData, setKeyData] = useState<string>("");
   // State untuk menampilkan modal konfirmasi penghapusan.
@@ -42,8 +42,8 @@ const DealerTraining = () => {
         });
 
         // Set data ke state.
-        setDataArticle(filteredTraining);
-        setKeyArticle(Object.keys(filteredTraining));
+        setData(filteredTraining);
+        setKey(Object.keys(filteredTraining));
       } catch (error) {
         console.error("Error fetching training data:", error);
       }
@@ -54,11 +54,9 @@ const DealerTraining = () => {
 
   // Fungsi untuk export report data training ke Excel
   const handleExportReport = () => {
-    // Debug: Pastikan dataArticle terisi
-    console.log("dataArticle:", dataArticle);
 
-    // Ubah dataArticle yang berbentuk objek menjadi array objek
-    const dataArr = Object.entries(dataArticle).map(([key, training]) => {
+    // Ubah data yang berbentuk objek menjadi array objek
+    const dataArr = Object.entries(data).map(([key, training]) => {
       // Destruktur field-field yang perlu diformat
       const { unit, trainee, attachments, ...rest } = training;
 
@@ -140,21 +138,21 @@ const DealerTraining = () => {
               <tbody>
                 <tr className="text-left">
                   <td className="px-6 w-3/12 p-2">Customer</td>
-                  <td className="w-10/12 p-2">: {dataArticle[keyData]?.customerName}</td>
+                  <td className="w-10/12 p-2">: {data[keyData]?.customerName}</td>
                 </tr>
                 <tr className="text-left">
                   <td className="px-6 w-3/12 p-2">Title</td>
-                  <td className="w-10/12 p-2">: {dataArticle[keyData]?.title}</td>
+                  <td className="w-10/12 p-2">: {data[keyData]?.title}</td>
                 </tr>
                 <tr className="text-left">
                   <td className="px-6 w-3/12 p-2">Unit</td>
                   <td className="w-10/12 p-2">
-                    : {dataArticle[keyData]?.unit ? dataArticle[keyData]?.unit.join(", ") : "-"}
+                    : {data[keyData]?.unit ? data[keyData]?.unit.join(", ") : "-"}
                   </td>
                 </tr>
                 <tr className="text-left">
                   <td className="px-6 w-3/12 p-2">Dealer</td>
-                  <td className="w-10/12 p-2">: {dataArticle[keyData]?.dealer}</td>
+                  <td className="w-10/12 p-2">: {data[keyData]?.dealer}</td>
                 </tr>
               </tbody>
             </table>
@@ -162,7 +160,7 @@ const DealerTraining = () => {
             <div className="flex mt-2 gap-3 px-8 pt-4">
               <Link
                 className="text-sky-800 px-4 py-2 rounded-lg bg-sky-100 flex items-center"
-                to={"/dealer/training/" + dataArticle[keyData]?.userId + "/" + keyData}
+                to={"/dealer/training/" + data[keyData]?.userId + "/" + keyData}
               >
                 <MdEdit className="text-md mr-1" />
                 <p className="text-sm">Edit Data</p>
@@ -175,7 +173,7 @@ const DealerTraining = () => {
 
       {/* Header & Create Training */}
       <div className="flex items-center justify-between py-8">
-        <p>Total Training: {keyArticle.length}</p>
+        <p>Total Training: {key.length}</p>
         {/* Ganti tombol export report dengan memanggil handleExportReport */}
         <button
           onClick={handleExportReport}
@@ -202,17 +200,17 @@ const DealerTraining = () => {
             </tr>
           </thead>
           <tbody>
-            {keyArticle.map((key, i) => (
+            {key.map((key, i) => (
               <tr key={key} className="text-gray-700 md:text-md text-sm">
                 <td className="border p-4">{i + 1}</td>
-                <td className="border p-4">{dataArticle[key]?.customerName}</td>
-                <td className="border p-4 md:table-cell hidden">{dataArticle[key]?.title}</td>
-                <td className="border p-4">{dataArticle[key]?.startDate}</td>
+                <td className="border p-4">{data[key]?.customerName}</td>
+                <td className="border p-4 md:table-cell hidden">{data[key]?.title}</td>
+                <td className="border p-4">{data[key]?.startDate}</td>
                 <td className="border p-4 text-center">
-                  {dataArticle[key]?.unit ? dataArticle[key]?.unit.length : 0}
+                  {data[key]?.unit ? data[key]?.unit.length : 0}
                 </td>
                 <td className="border-t p-4 md:flex gap-x-3 justify-around items-center hidden">
-                  <Link className="p-2 text-sky-800 rounded-full bg-sky-100" to={"/dealer/training/" + dataArticle[key]?.userId + "/" + key}>
+                  <Link className="p-2 text-sky-800 rounded-full bg-sky-100" to={"/dealer/training/" + data[key]?.userId + "/" + key}>
                     <MdEdit />
                   </Link>
                 </td>

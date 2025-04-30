@@ -81,10 +81,10 @@ const TestSort: React.FC = () => {
     });
   };
 
-  const handleEdit = (index: number) => {
-    console.log('Edit item at', index);
-    // implement your edit logic here
-  };
+  // const handleEdit = (index: number) => {
+  //   console.log('Edit item at', index);
+  //   // implement your edit logic here
+  // };
 
   return (
     <DndContext
@@ -105,8 +105,6 @@ const TestSort: React.FC = () => {
                 index={index}
                 imageAttached={item.imageAttached}
                 imageDescription={item.imageDescription}
-                imageId={item.imageId}
-                onEdit={handleEdit}
               />
             ))}
           </div>

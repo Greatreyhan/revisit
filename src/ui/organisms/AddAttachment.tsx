@@ -17,6 +17,7 @@ import {
   SortableContext,
   sortableKeyboardCoordinates,
   horizontalListSortingStrategy,
+  verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import DraggableAttachment from "./DraggableAttachment";
 
@@ -199,12 +200,15 @@ const AddAttachment: React.FC<AddAttachmentProps> = ({ disabled = false, attachm
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext
           items={attachments.map((_, idx) => idx.toString())}
-          strategy={horizontalListSortingStrategy}
+          strategy={verticalListSortingStrategy}
         >
           <div className="flex flex-wrap mt-4 w-full">
             {attachments.map((att, idx) => (
               <div className="relative border rounded-md shadow-md md:w-4/12 w-5/12">
-                <div className="absolute top-1 cursor-pointer left-1 w-8 h-8 flex justify-center items-center bg-primary rounded-full text-white" onClick={() => setSelectIndex(idx)}><MdModeEdit /></div>
+                {!disabled ?
+                <button type="button" className="absolute top-1 cursor-pointer left-1 w-8 h-8 flex justify-center items-center bg-primary rounded-full text-white" onClick={() => setSelectIndex(idx)}><MdModeEdit /></button>
+                :
+                null}
                 <DraggableAttachment
                   key={idx}
                   id={idx.toString()}

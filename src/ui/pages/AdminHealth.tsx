@@ -8,8 +8,8 @@ import * as XLSX from "xlsx";
 
 const AdminHealth = () => {
   const { getFromDatabase, user } = useFirebase();
-  const [dataArticle, setDataArticle] = useState<{ [key: string]: HealthReportData }>({});
-  const [keyArticle, setKeyArticle] = useState<string[]>([]);
+  const [data, setData] = useState<{ [key: string]: HealthReportData }>({});
+  const [key, setKey] = useState<string[]>([]);
   const [keyData, setKeyData] = useState<string>("");
 
   useEffect(() => {
@@ -21,17 +21,17 @@ const AdminHealth = () => {
         if (!healthData) return;
       
         // Kumpulkan seluruh data health tanpa filter cabang.
-        const filteredHealth: Record<string, HealthReportData & { healthId: string; cabangId: string }> = {};
+        const filteredHealth: Record<string, HealthReportData & { healthId: string; userId: string }> = {};
       
-        Object.entries(healthData).forEach(([cabangId, healthObj]) => {
+        Object.entries(healthData).forEach(([userId, healthObj]) => {
           Object.entries(healthObj as Record<string, any>).forEach(([healthId, healthDetail]) => {
-            filteredHealth[healthId] = { ...healthDetail, healthId, cabangId };
+            filteredHealth[healthId] = { ...healthDetail, healthId, userId };
           });
         });
       
         // Set data ke state.
-        setDataArticle(filteredHealth);
-        setKeyArticle(Object.keys(filteredHealth));
+        setData(filteredHealth);
+        setKey(Object.keys(filteredHealth));
       } catch (error) {
         console.error("Error fetching health data:", error);
       }
@@ -42,11 +42,8 @@ const AdminHealth = () => {
 
   // Fungsi untuk export report data health ke Excel
   const handleExportReport = () => {
-    // Debug: Pastikan dataArticle terisi
-    console.log("dataArticle:", dataArticle);
-
-    // Ubah dataArticle yang berbentuk objek menjadi array objek
-    const dataArr = Object.entries(dataArticle).map(([key, health]) => {
+    // Ubah data yang berbentuk objek menjadi array objek
+    const dataArr = Object.entries(data).map(([key, health]) => {
       // Jika ada field attachments (misalnya array objek), kita flatten dengan custom mapping.
       const { attachments, ...rest } = health;
       const attachmentsString =
@@ -98,19 +95,19 @@ const AdminHealth = () => {
               <tbody>
                 <tr className="text-left">
                   <td className="px-6 w-3/12 p-2">Nama</td>
-                  <td className="w-10/12 p-2">: {dataArticle[keyData]?.customerName}</td>
+                  <td className="w-10/12 p-2">: {data[keyData]?.customerName}</td>
                 </tr>
                 <tr className="text-left">
                   <td className="px-6 w-3/12 p-2">Type</td>
-                  <td className="w-10/12 p-2">: {dataArticle[keyData]?.typeUnit}</td>
+                  <td className="w-10/12 p-2">: {data[keyData]?.typeUnit}</td>
                 </tr>
                 <tr className="text-left">
                   <td className="px-6 w-3/12 p-2">Segment</td>
-                  <td className="w-10/12 p-2">: {dataArticle[keyData]?.segment}</td>
+                  <td className="w-10/12 p-2">: {data[keyData]?.segment}</td>
                 </tr>
                 <tr className="text-left">
                   <td className="px-6 w-3/12 p-2">Rear Body Type</td>
-                  <td className="w-10/12 p-2">: {dataArticle[keyData]?.rearBodyType}</td>
+                  <td className="w-10/12 p-2">: {data[keyData]?.rearBodyType}</td>
                 </tr>
               </tbody>
             </table>
@@ -129,7 +126,7 @@ const AdminHealth = () => {
       </div>
 
       <div className="flex items-center justify-between py-8">
-        <p>Total Health: {keyArticle.length}</p>
+        <p>Total Health: {key.length}</p>
         {/* Ganti Link export report dengan tombol yang memanggil handleExportReport */}
         <button
           onClick={handleExportReport}
@@ -152,18 +149,18 @@ const AdminHealth = () => {
             </tr>
           </thead>
           <tbody>
-            {keyArticle.map((key, i) => (
+            {key.map((key, i) => (
               <tr key={key} className="text-gray-700 md:text-md text-sm">
                 <td className="border p-4">{i + 1}</td>
-                <td className="border p-4">{dataArticle[key]?.customerName}</td>
-                <td className="border p-4 md:table-cell hidden">{dataArticle[key]?.segment}</td>
-                <td className="border p-4">{dataArticle[key]?.typeUnit}</td>
-                <td className="border p-4 md:table-cell hidden">{dataArticle[key]?.rearBodyType}</td>
+                <td className="border p-4">{data[key]?.customerName}</td>
+                <td className="border p-4 md:table-cell hidden">{data[key]?.segment}</td>
+                <td className="border p-4">{data[key]?.typeUnit}</td>
+                <td className="border p-4 md:table-cell hidden">{data[key]?.rearBodyType}</td>
                 <td className="border-t p-4 md:flex gap-x-3 justify-around items-center hidden">
                   <Link
                     className="p-2 text-sky-800 rounded-full bg-sky-100"
-                    to={"/health/editor/" + key}
-                  >
+                    to={`/admin/health/${data[key]?.userId}/${key}`}
+                    >
                     <MdEdit />
                   </Link>
                 </td>

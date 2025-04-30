@@ -10,7 +10,7 @@ interface DraggableAttachmentProps {
   imageDescription: string;
 }
 
-const DraggableAttachment: React.FC<DraggableAttachmentProps> = ({ id, index, imageAttached, imageDescription }) => {
+const DraggableAttachment: React.FC<DraggableAttachmentProps> = ({ id, imageAttached, imageDescription }) => {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
 
   const style = {
@@ -21,7 +21,6 @@ const DraggableAttachment: React.FC<DraggableAttachmentProps> = ({ id, index, im
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
       <div
-        onClick={() => onSelect(index)}
         className="border rounded-md shadow-md w-full"
       >
         <img

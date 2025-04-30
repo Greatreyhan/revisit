@@ -16,7 +16,7 @@ const DealerHealth = () => {
   const [endDate, setEndDate] = useState<string>("");
 
   useEffect(() => {
-    const fetchTrainingData = async () => {
+    const fetchHealthData = async () => {
       if (!user?.uid) return;
       try {
         const cabangData = await getFromDatabase(`cabang/${user.uid}`);
@@ -25,23 +25,23 @@ const DealerHealth = () => {
         const healthData = await getFromDatabase("health");
         if (!healthData) return;
 
-        const filteredTraining: Record<string, HealthReportData & { healthId: string; userId: string }> = {};
+        const filteredHealth: Record<string, HealthReportData & { healthId: string; userId: string }> = {};
         Object.entries(healthData).forEach(([userId, healthObj]) => {
           if (cabangKeys.includes(userId)) {
             Object.entries(healthObj as Record<string, any>).forEach(([healthId, healthDetail]) => {
-              filteredTraining[healthId] = { ...healthDetail, healthId, userId };
+              filteredHealth[healthId] = { ...healthDetail, healthId, userId };
             });
           }
         });
 
-        setData(filteredTraining);
-        setKeys(Object.keys(filteredTraining));
+        setData(filteredHealth);
+        setKeys(Object.keys(filteredHealth));
       } catch (error) {
         console.error("Error fetching health data:", error);
       }
     };
 
-    fetchTrainingData();
+    fetchHealthData();
   }, [user?.uid, getFromDatabase]);
 
   // Filter data by date based on key (timestamp)

@@ -45,7 +45,7 @@ import AdminVisualizationInvestigation from "./ui/pages/AdminVisualizationInvest
 import AdminVisuzalizationRegular from "./ui/pages/AdminVisualizationRegular";
 import DealerVisualizationInvestigation from "./ui/pages/DealerVisualizationInvestigation";
 import DealerVisuzalizationRegular from "./ui/pages/DealerVisualizationRegular";
-import ImageEditor from "./ui/organisms/ImageEditor";
+// import ImageEditor from "./ui/organisms/ImageEditor";
 import AdminCache from "./ui/pages/AdminCache";
 import ProfileCustomer from "./ui/pages/ProfileCustomer";
 import ProfileHealth from "./ui/pages/ProfileHealth";
@@ -66,7 +66,10 @@ import AdminTraining from "./ui/pages/AdminTraining";
 import DealerCustomerEditor from "./ui/pages/DealerCustomerEditor";
 import DealerTrainingEditor from "./ui/pages/DealerTrainingEditor";
 import DealerHealthEditor from "./ui/pages/DealerHealthEditor";
-import TestSort from "./ui/organisms/TestSort";
+import AdminCustomerEditor from "./ui/pages/AdminCustomerEditor";
+import AdminHealthEditor from "./ui/pages/AdminHealthEditor";
+import AdminTrainingEditor from "./ui/pages/AdminTrainingEditor";
+// import TestSort from "./ui/organisms/TestSort";
 
 
 const NotFound: React.FC = () => (
@@ -82,7 +85,7 @@ function App() {
     { path: '/', element: <Home />, layout: 'landing' },
     { path: '/blog', element: <Blog />, layout: 'landing' },
     { path: '/article/:id', element: <Article />, layout: 'landing' },
-    { path: '/test', element: <ImageEditor />, layout: 'view' },
+    // { path: '/test', element: <ImageEditor />, layout: 'view' },
 
     // Login
     { path: '/login', element: <Login />, layout: 'basic' },
@@ -136,6 +139,10 @@ function App() {
     { path: '/admin/customer', element: <AdminCustomer />, layout: 'admin' },
     { path: '/admin/health', element: <AdminHealth />, layout: 'admin' },
     { path: '/admin/training', element: <AdminTraining />, layout: 'admin' },
+    { path: '/admin/customer/:uid/:id', element: <AdminCustomerEditor />, layout: 'admin' },
+    { path: '/admin/health/:uid/:id', element: <AdminHealthEditor />, layout: 'admin' },
+    { path: '/admin/training/:uid/:id', element: <AdminTrainingEditor />, layout: 'admin' },
+
 
     // Dealer Routes
     { path: '/dealer', element: <Dealer />, layout: 'dealer' },
@@ -158,7 +165,7 @@ function App() {
     { path: '/dealer/training', element: <DealerTraining />, layout: 'dealer' },
     { path: '/dealer/training/:uid/:id', element: <DealerTrainingEditor />, layout: 'dealer' },
 
-    { path: '/dnd', element: <TestSort />, layout: 'profile' },
+    // { path: '/dnd', element: <TestSort />, layout: 'profile' },
 
     // Catch-all 404
     { path: '*', element: <NotFound />, layout: 'basic' },

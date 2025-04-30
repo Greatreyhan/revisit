@@ -8,18 +8,16 @@ import * as XLSX from "xlsx";
 
 const AdminCustomer = () => {
   const { getFromDatabase, user } = useFirebase();
-  const [dataArticle, setDataArticle] = useState<Record<string, CustomerData>>({});
-  const [keyArticle, setKeyArticle] = useState<string[]>([]);
+  const [data, setData] = useState<Record<string, CustomerData>>({});
+  const [key, setKey] = useState<string[]>([]);
   const [keyData, setKeyData] = useState<string>("");
 
   const handleExportData = () => {
-    // Ubah dataArticle yang berbentuk objek menjadi array objek dengan Object.entries()
-    const dataArr = Object.entries(dataArticle).map(([key, customer]) => {
+    // Ubah data yang berbentuk objek menjadi array objek dengan Object.entries()
+    const dataArr = Object.entries(data).map(([key, customer]) => {
       // Destruktur untuk menangani properti yang akan kita ubah tampilannya
       const { units, locationMap, ...rest } = customer;
   
-      // Jika units berupa array, kita buat representasi string:
-      // Misal: "Unit 1: {field: value}, Unit 2: {field: value}"
       const unitsString =
         Array.isArray(units) && units.length > 0
           ? units
@@ -66,23 +64,21 @@ const AdminCustomer = () => {
         if (!customerData) return;
 
         // Persiapkan objek untuk menyimpan customer yang telah diproses.
-        const filteredCustomers: Record<string, CustomerData & { customerId: string; cabangId: string }> = {};
+        const filteredCustomers: Record<string, CustomerData & { customerId: string; userId: string }> = {};
 
-        // Struktur data customer misalnya: { cabangId: { customerId: customerDetail, ... } }
-        Object.entries(customerData).forEach(([cabangId, customersObj]) => {
+        // Struktur data customer misalnya: { userId: { customerId: customerDetail, ... } }
+        Object.entries(customerData).forEach(([userId, customersObj]) => {
           Object.entries(customersObj as Record<string, any>).forEach(([customerId, customerDetail]) => {
             filteredCustomers[customerId] = {
               ...customerDetail,
               customerId,
-              cabangId,
+              userId,
             };
           });
         });
 
-        console.log(filteredCustomers)
-
-        setDataArticle(filteredCustomers);
-        setKeyArticle(Object.keys(filteredCustomers));
+        setData(filteredCustomers);
+        setKey(Object.keys(filteredCustomers));
       } catch (error) {
         console.error("Error fetching customer data:", error);
       }
@@ -119,17 +115,17 @@ const AdminCustomer = () => {
               <tbody>
                 <tr className="text-left">
                   <td className="px-6 w-3/12 p-2">Nama</td>
-                  <td className="w-10/12 p-2">: {dataArticle[keyData]?.customerName}</td>
+                  <td className="w-10/12 p-2">: {data[keyData]?.customerName}</td>
                 </tr>
                 <tr className="text-left">
                   <td className="px-6 w-3/12 p-2">Area</td>
-                  <td className="w-10/12 p-2">: {dataArticle[keyData]?.area}</td>
+                  <td className="w-10/12 p-2">: {data[keyData]?.area}</td>
                 </tr>
                 <tr className="text-left">
                   <td className="px-6 w-3/12 p-2">Units</td>
                   <td className="w-10/12 p-2">
                     :{" "}
-                    {dataArticle[keyData]?.units?.reduce(
+                    {data[keyData]?.units?.reduce(
                       (sum, unit) => sum + (Number(unit.qtyUnit) || 0),
                       0
                     )}
@@ -137,7 +133,7 @@ const AdminCustomer = () => {
                 </tr>
                 <tr className="text-left">
                   <td className="px-6 w-3/12 p-2">Segment</td>
-                  <td className="w-10/12 p-2">: {dataArticle[keyData]?.segment}</td>
+                  <td className="w-10/12 p-2">: {data[keyData]?.segment}</td>
                 </tr>
               </tbody>
             </table>
@@ -156,7 +152,7 @@ const AdminCustomer = () => {
       </div>
 
       <div className="flex items-center justify-between py-8">
-        <p>Total Customer: {keyArticle.length}</p>
+        <p>Total Customer: {key.length}</p>
         <button
           onClick={handleExportData}
           className="inline-flex items-center px-6 py-1.5 bg-primary rounded-full text-white"
@@ -180,18 +176,18 @@ const AdminCustomer = () => {
             </tr>
           </thead>
           <tbody>
-            {keyArticle.map((key, i) => (
+            {key.map((key, i) => (
               <tr key={key} className="text-gray-700 md:text-md text-sm">
                 <td className="border p-4">{i + 1}</td>
-                <td className="border p-4">{dataArticle[key]?.customerName}</td>
+                <td className="border p-4">{data[key]?.customerName}</td>
                 <td className="border p-4 md:table-cell hidden">
-                  {dataArticle[key]?.segment}
+                  {data[key]?.segment}
                 </td>
                 <td className="border p-4">
-                  {dataArticle[key]?.typeCustomer}
+                  {data[key]?.typeCustomer}
                 </td>
                 <td className="border p-4 text-center">
-                  {dataArticle[key]?.units?.reduce(
+                  {data[key]?.units?.reduce(
                     (total, unit) => total + parseInt(unit.qtyUnit, 10),
                     0
                   ) || 0}
@@ -199,7 +195,7 @@ const AdminCustomer = () => {
                 <td className="border-t p-4 md:flex gap-x-3 justify-around items-center hidden">
                   <Link
                     className="p-2 text-sky-800 rounded-full bg-sky-100"
-                    to={"/health/editor/" + key}
+                    to={"/admin/customer/" + data[key]?.userId + "/" + key}
                   >
                     <MdEdit />
                   </Link>

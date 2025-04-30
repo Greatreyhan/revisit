@@ -88,6 +88,7 @@ const AddHealthReport: React.FC<AddHealthReportProps> = ({ disabled = false, att
             <div className="h-96 mt-2">
               <PDFViewerModal pdfUrl={attachments[selectIndex].pdfUrl} />
             </div>
+            {!disabled?
             <div className="flex justify-end gap-2 mt-4">
               <button type="button" className="flex items-center px-4 py-2 bg-red-100 text-red-700 rounded" onClick={handleDeleteReport}>
                 <MdDelete className="mr-1" /> Hapus
@@ -96,6 +97,7 @@ const AddHealthReport: React.FC<AddHealthReportProps> = ({ disabled = false, att
                 Simpan
               </button>
             </div>
+            :null}
           </div>
         )}
       </div>
@@ -135,10 +137,13 @@ const AddHealthReport: React.FC<AddHealthReportProps> = ({ disabled = false, att
               onChange={e => setPdfDescription(e.target.value)}
               placeholder="Masukkan deskripsi laporan"
             />
+            {!disabled ?
             <div className="flex justify-end gap-2 mt-4">
               <button type="button" className="px-4 py-2 text-gray-700" onClick={() => setIsModalOpen(false)}>Batal</button>
               <button type="button" className="px-4 py-2 bg-primary text-white rounded" disabled={!pdfUrl || !pdfDescription} onClick={handleAddReport}>Simpan</button>
             </div>
+            :
+            null}
           </div>
         </div>
       )}

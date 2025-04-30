@@ -7,11 +7,10 @@ import InputField from "../molecules/InputField";
 import { DealerData } from "../../utils/masterData";
 import AddAttachment from "../organisms/AddAttachment";
 import { AttachmentItem } from "../interface/Report";
-import AddUnitTraining from "../organisms/AddUnitTraining";
 import AddTrainee from "../organisms/AddTrainee";
 import { TraineePerson } from "../interface/Training";
 
-const DealerTrainingEditor: React.FC = () => {
+const AdminTrainingEditor: React.FC = () => {
     const { saveToDatabase, getFromDatabase, user } = useFirebase()
     const navigate = useNavigate();
     const { uid,id } = useParams<{ uid:string, id: string }>();
@@ -169,7 +168,7 @@ const DealerTrainingEditor: React.FC = () => {
                     <div className="flex w-full justify-end items-center gap-x-5">
                         <Link
                             className="mt-4 px-6 py-2 inline-flex justify-center items-center bg-white text-primary border border-primary rounded-full font-semibold"
-                            to="/dealer/training"
+                            to="/admin/training"
                         >
                             Kembali
                         </Link>
@@ -180,4 +179,4 @@ const DealerTrainingEditor: React.FC = () => {
     );
 };
 
-export default DealerTrainingEditor;
+export default AdminTrainingEditor;
