@@ -3,74 +3,83 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
-import { Blog, Home, Login, Admin, Article } from "./ui/pages"
+import { Blog, Home, Login, Article } from "./ui/pages/Public"
 import { FirebaseProvider } from './utils/FirebaseContext';
 import AdminTemplate from './ui/templates/AdminTemplate';
-
-import AdminArticleEditor from './ui/pages/AdminArticleEditor';
-import AdminArticle from './ui/pages/AdminArticle';
 import LandingTemplate from './ui/templates/LandingTemplate';
-
 import ProfileTemplate from "./ui/templates/ProfileTemplate";
-import Profile from "./ui/pages/Profile";
-import ProfileReport from "./ui/pages/ProfileReport";
-import ProfileReportEditor from "./ui/pages/ProfileReportEditor";
-import ReportViewer from "./ui/pages/ReportViewer";
 import ViewerTemplate from "./ui/templates/ViewerTemplate";
-import ProfileVisit from "./ui/pages/ProfileVisit";
-import ProfileVisitEditor from "./ui/pages/ProfileVisitEditor";
-import VisitViewer from "./ui/pages/VisitViewer";
-import AdminUser from "./ui/pages/AdminUser";
-import AdminUserEditor from "./ui/pages/AdminUserEditor";
-import ProfileSchedule from "./ui/pages/ProfileSchedule";
-import ProfileScheduleEditor from "./ui/pages/ProfileScheduleEditor";
-import AdminReport from "./ui/pages/AdminReport";
-import AdminVisit from "./ui/pages/AdminVisit";
-import AdminSchedule from "./ui/pages/AdminSchedule";
-import AdminReportViewer from "./ui/pages/AdminReportViewer";
-import AdminVisitViewer from "./ui/pages/AdminVisitViewer";
-import ProfileSetting from "./ui/pages/ProfileSetting";
-import AdminScheduleMap from "./ui/pages/AdminScheduleMap";
-import Dealer from "./ui/pages/Dealer";
-import DealerTemplate from "./ui/templates/DealerTemplate";
-import DealerCabang from "./ui/pages/DealerCabang";
-import DealerCabangEditor from "./ui/pages/DealerCabangEditor";
-import DealerSchedule from "./ui/pages/DealerSchedule";
-import DealerScheduleMap from "./ui/pages/DealerScheduleMap";
-import DealerReport from "./ui/pages/DealerReport ";
-import DealerVisitViewer from "./ui/pages/DealerVisitViewer";
-import DealerReportViewer from "./ui/pages/DealerReportViewer";
-import DealerVisit from "./ui/pages/DealerVisit";
-import AdminVisualizationInvestigation from "./ui/pages/AdminVisualizationInvestigation";
-import AdminVisuzalizationRegular from "./ui/pages/AdminVisualizationRegular";
-import DealerVisualizationInvestigation from "./ui/pages/DealerVisualizationInvestigation";
-import DealerVisuzalizationRegular from "./ui/pages/DealerVisualizationRegular";
-// import ImageEditor from "./ui/organisms/ImageEditor";
-import AdminCache from "./ui/pages/AdminCache";
-import ProfileCustomer from "./ui/pages/ProfileCustomer";
-import ProfileHealth from "./ui/pages/ProfileHealth";
-import ProfileTraining from "./ui/pages/ProfileTraining";
-import ProfileHealthEditor from "./ui/pages/ProfileHealthEditor";
-import ProfileTrainingEditor from "./ui/pages/ProfileTrainingEditor";
-import ProfileCustomerEditor from "./ui/pages/ProfileCustomerEditor";
-import ProfilePodium from "./ui/pages/ProfilePodium";
-import DealerPodium from "./ui/pages/DealerPodium";
-import DealerCustomer from "./ui/pages/DealerCustomer";
-import DealerHealth from "./ui/pages/DealerHealth";
-import DealerTraining from "./ui/pages/DealerTraining";
-import DealerSetting from "./ui/pages/DealerSetting";
-import AdminPodium from "./ui/pages/AdminPodium";
-import AdminCustomer from "./ui/pages/AdminCustomer";
-import AdminHealth from "./ui/pages/AdminHealth";
-import AdminTraining from "./ui/pages/AdminTraining";
-import DealerCustomerEditor from "./ui/pages/DealerCustomerEditor";
-import DealerTrainingEditor from "./ui/pages/DealerTrainingEditor";
-import DealerHealthEditor from "./ui/pages/DealerHealthEditor";
-import AdminCustomerEditor from "./ui/pages/AdminCustomerEditor";
-import AdminHealthEditor from "./ui/pages/AdminHealthEditor";
-import AdminTrainingEditor from "./ui/pages/AdminTrainingEditor";
-// import TestSort from "./ui/organisms/TestSort";
 
+import {
+  Admin,
+  AdminArticle,
+  AdminArticleEditor,
+  AdminCache,
+  AdminCustomer,
+  AdminCustomerEditor,
+  AdminHealth,
+  AdminHealthEditor,
+  AdminPodium,
+  AdminReport,
+  AdminReportViewer,
+  AdminSchedule,
+  AdminScheduleMap,
+  AdminTraining,
+  AdminTrainingEditor,
+  AdminUser,
+  AdminUserEditor,
+  AdminVisit,
+  AdminVisitViewer,
+  AdminVisualizationInvestigation,
+  // AdminVisualizationRegular
+} from "./ui/pages/Admin";
+import {
+  Dealer,
+  DealerCabang,
+  DealerCabangEditor,
+  DealerCustomer,
+  DealerCustomerEditor,
+  DealerHealth,
+  DealerHealthEditor,
+  DealerPodium,
+  DealerReport,
+  DealerReportViewer,
+  DealerSchedule,
+  DealerScheduleMap,
+  DealerSetting,
+  DealerTraining,
+  DealerTrainingEditor,
+  DealerVisit,
+  DealerVisitViewer,
+  DealerVisualizationInvestigation,
+  // DealerVisualizationRegular
+} from "./ui/pages/Dealer";
+
+import {
+  Profile,
+  // ProfileAssistant,
+  ProfileCustomer,
+  ProfileCustomerEditor,
+  ProfileHealth,
+  ProfileHealthEditor,
+  ProfilePodium,
+  ProfileReport,
+  ProfileReportEditor,
+  ProfileSchedule,
+  ProfileScheduleEditor,
+  ProfileSetting,
+  ProfileTraining,
+  ProfileTrainingEditor,
+  ProfileVisit,
+  ProfileVisitEditor,
+  ReportViewer,
+  VisitViewer,
+  // ProfileWarranty
+} from "./ui/pages/Field";
+
+import AdminVisuzalizationRegular from "./ui/pages/Admin/AdminVisualizationRegular";
+import DealerVisuzalizationRegular from "./ui/pages/Dealer/DealerVisualizationRegular";
+import DealerTemplate from "./ui/templates/DealerTemplate";
 
 const NotFound: React.FC = () => (
   <div className="flex flex-col justify-center items-center h-screen">
@@ -85,7 +94,6 @@ function App() {
     { path: '/', element: <Home />, layout: 'landing' },
     { path: '/blog', element: <Blog />, layout: 'landing' },
     { path: '/article/:id', element: <Article />, layout: 'landing' },
-    // { path: '/test', element: <ImageEditor />, layout: 'view' },
 
     // Login
     { path: '/login', element: <Login />, layout: 'basic' },
@@ -164,8 +172,6 @@ function App() {
     { path: '/dealer/health/:uid/:id', element: <DealerHealthEditor />, layout: 'dealer' },
     { path: '/dealer/training', element: <DealerTraining />, layout: 'dealer' },
     { path: '/dealer/training/:uid/:id', element: <DealerTrainingEditor />, layout: 'dealer' },
-
-    // { path: '/dnd', element: <TestSort />, layout: 'profile' },
 
     // Catch-all 404
     { path: '*', element: <NotFound />, layout: 'basic' },

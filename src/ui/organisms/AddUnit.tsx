@@ -11,7 +11,6 @@ interface AddUnitProps {
 }
 
 
-
 const AddUnit: React.FC<AddUnitProps> = ({ units, setUnits }) => {
     const [trademark, setTrademark] = useState<string>("");
     const [typeUnit, setTypeUnit] = useState<string>("");
@@ -135,22 +134,22 @@ const AddUnit: React.FC<AddUnitProps> = ({ units, setUnits }) => {
                     <div className="bg-white p-6 rounded shadow-lg md:w-1/3">
                         <h2 className="text-lg font-bold mb-4">Tambah Unit Terlibat</h2>
                         <div className="flex w-full gap-5">
-                            <SelectInput label="Merek" name="trademark" value={trademark} onChange={(e) => { setTrademark(e.target.value); setDataModel(modelMap[e.target.value] || []); }} options={merkData} />
-                            <SelectInput label="Tipe Unit" name="typeUnit" value={typeUnit} onChange={(e) => setTypeUnit(e.target.value)} options={dataModel} />
+                            <SelectInput required={true} label="Merek" name="trademark" value={trademark} onChange={(e) => { setTrademark(e.target.value); setDataModel(modelMap[e.target.value] || []); }} options={merkData} />
+                            <SelectInput required={true} label="Tipe Unit" name="typeUnit" value={typeUnit} onChange={(e) => setTypeUnit(e.target.value)} options={dataModel} />
                         </div>
                         <div className="flex w-full gap-5">
-                            <InputField label="Jumlah Unit" type='number' name="qtyUnit" value={qtyUnit} onChange={(e) => setQtyUnit(e.target.value)} placeholder="Masukkan jumlah unit" />
-                            <InputField label="Tipe Barang" name="goodType" value={goodType} onChange={(e) => setGoodType(e.target.value)} placeholder="Masukkan tipe barang" />
+                            <InputField required={true} label="Jumlah Unit" type='number' name="qtyUnit" value={qtyUnit} onChange={(e) => setQtyUnit(e.target.value)} placeholder="Masukkan jumlah unit" />
+                            <InputField required={true} label="Tipe Barang" name="goodType" value={goodType} onChange={(e) => setGoodType(e.target.value)} placeholder="Masukkan tipe barang" />
                         </div>
                         <div className="flex w-full gap-5">
-                            <SelectInput label="Euro Type" name="euroType" value={euroType} onChange={(e) => setEuroType(e.target.value)} options={["Euro 2", "Euro 4", "Unknown"]} />
-                            <InputField type="number" label="Jarak Tempuh (KM)" name="distance" value={distance} onChange={(e) => setDistance(e.target.value)} placeholder="Masukkan jarak tempuh" />
+                            <SelectInput required={true} label="Euro Type" name="euroType" value={euroType} onChange={(e) => setEuroType(e.target.value)} options={["Euro 2", "Euro 4", "Unknown"]} />
+                            <InputField required={true} type="number" label="Jarak Tempuh (KM)" name="distance" value={distance} onChange={(e) => setDistance(e.target.value)} placeholder="Masukkan jarak tempuh" />
                         </div>
-                        <InputField label="Rute" name="route" value={route} onChange={(e) => setRoute(e.target.value)} placeholder="Masukkan rute perjalanan" />
+                        <InputField required={true} label="Rute" name="route" value={route} onChange={(e) => setRoute(e.target.value)} placeholder="Masukkan rute perjalanan" />
                         <div className="flex justify-end gap-5 mt-4">
                             <button type="button" className="bg-white text-primary px-4 py-2 rounded-md" onClick={() => resetForm()}>Batal</button>
                             {editIndex !== null && <button type="button" className="text-white bg-primary px-4 py-2 rounded-md flex items-center" onClick={handleDelete}><MdDelete className='mr-1' />Hapus</button>}
-                            <button type="button" className="text-white bg-primary px-4 py-2 rounded-md" onClick={handleAddOrUpdateUnit}>Simpan</button>
+                            <button type="button" className={`text-white ${trademark && typeUnit && qtyUnit && goodType && route && distance ? "bg-primary": "bg-slate-500 cursor-not-allowed"} px-4 py-2 rounded-md`} onClick={handleAddOrUpdateUnit}>Simpan</button>
                         </div>
                     </div>
                 </div>

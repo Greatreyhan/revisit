@@ -77,7 +77,7 @@ const ProfileNavigation: React.FC = () => {
                         <MdSupervisedUserCircle className='text-2xl mr-1' />
                         <span>Customer</span>
                     </Link>
-                    <Link onClick={() => setShowNav(!showNav)} to='/customer' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
+                    <Link onClick={() => setShowNav(!showNav)} to='/health' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
                         <MdHealthAndSafety className='text-2xl mr-1' />
                         <span>Health Report</span>
                     </Link>
@@ -89,7 +89,7 @@ const ProfileNavigation: React.FC = () => {
                         <FaMedal className='text-2xl mr-1' />
                         <span>Podium</span>
                     </Link>
-                    <Link onClick={() => setShowNav(!showNav)} to='/health' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
+                    <Link onClick={() => setShowNav(!showNav)} to='/setting' className='cursor-pointer hover:font-semibold hover:text-primary-dark text-sm px-6 py-2 flex items-center'>
                         <IoMdSettings className='text-2xl mr-1' />
                         <span>Setting</span>
                     </Link>
