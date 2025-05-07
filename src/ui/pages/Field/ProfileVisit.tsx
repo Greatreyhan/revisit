@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { MdEdit, MdDelete, MdPrint, MdClose, MdContentCopy } from "react-icons/md";
+import { MdEdit, MdDelete, MdPrint, MdClose, MdContentCopy, MdOutlineShare } from "react-icons/md";
 import { IoMdSettings } from "react-icons/io";
 import { useFirebase } from "../../../utils/FirebaseContext";
 import { VisitData } from "../../interface/Visit";
@@ -11,6 +11,7 @@ const ProfileVisit = () => {
   const [key, setKey] = useState<string[]>([]);
   const [keyData, setKeyData] = useState<string>("");
   const [deleteKey, setDeleteKey] = useState<string>("");
+  const [shareLink, setShareLink] = useState<string>("");
 
   useEffect(() => {
     getFromDatabase(`visit/${user?.uid}`).then((data) => {
@@ -33,8 +34,54 @@ const ProfileVisit = () => {
     setKey((prev) => [newKey, ...prev]);
   };
 
+  // Fungsi untuk copy ke clipboard
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(shareLink);
+      // alert("Link berhasil disalin!");
+    } catch (err) {
+      console.error("Gagal menyalin: ", err);
+    }
+  };
+
   return (
     <div className="w-10/12 mx-auto pt-8">
+      {/* Share Link Modal */}
+      {shareLink !== "" && (
+        <div
+          onClick={() => setShareLink("")}
+          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white rounded-lg p-6 w-11/12 max-w-md space-y-4"
+          >
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-semibold">Bagikan Link Visit</h3>
+              <button onClick={() => setShareLink("")}>
+                <MdClose className="text-2xl" />
+              </button>
+            </div>
+            <p className="text-sm text-gray-600">
+              Salin link berikut untuk dibagikan:
+            </p>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                readOnly
+                value={shareLink}
+                className="flex-1 px-3 py-2 border rounded focus:outline-none"
+              />
+              <button
+                onClick={handleCopy}
+                className="bg-primary hover:bg-red-700 text-white px-4 py-2 rounded flex items-center"
+              >
+                <MdContentCopy className="mr-1" /> Copy
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Modal Visit Info */}
       <div
         onClick={() => setKeyData("")}
@@ -216,6 +263,13 @@ const ProfileVisit = () => {
                     onClick={() => handleDuplicate(key)}
                   >
                     <MdContentCopy />
+                  </button>
+                  <button
+                    className="p-2 text-yellow-800 rounded-full bg-yellow-100"
+                    type="button"
+                    onClick={() => setShareLink(`https://isuzuvisitreport.com/visit/${user?.uid}/${key}`)}
+                  >
+                    <MdOutlineShare />
                   </button>
                   <Link
                     className="p-2 text-green-800 rounded-full bg-green-100"

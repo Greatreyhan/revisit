@@ -15,8 +15,8 @@ import ProfileTrainingEditor from "./ProfileTrainingEditor";
 import ProfileVisit from "./ProfileVisit";
 import ProfileVisitEditor from "./ProfileVisitEditor";
 import ProfileWarranty from "./ProfileWarranty";
-import VisitViewer from "./VisitViewer";
-import ReportViewer from "./ReportViewer";
+import ProfileVisitViewer from "./ProfileVisitViewer";
+import ProfileReportViewer from "./ProfileReportViewer";
 
 export {
   Profile,
@@ -36,6 +36,6 @@ export {
   ProfileVisit,
   ProfileVisitEditor,
   ProfileWarranty,
-  VisitViewer,
-  ReportViewer
+  ProfileVisitViewer,
+  ProfileReportViewer
 };

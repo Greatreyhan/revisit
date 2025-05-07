@@ -15,7 +15,7 @@ const renderTextBlocks = (text?: string) => {
     ));
 };
 
-const VisitViewer: React.FC = () => {
+const ProfileVisitViewer: React.FC = () => {
     const { getFromDatabase, user, waiting } = useFirebase()
     const { id } = useParams<{ id: string }>();
 
@@ -392,4 +392,4 @@ const VisitViewer: React.FC = () => {
     );
 };
 
-export default VisitViewer
+export default ProfileVisitViewer

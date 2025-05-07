@@ -7,7 +7,8 @@ import {
   MdDangerous,
   MdGppGood,
   MdClose,
-  MdContentCopy
+  MdContentCopy,
+  MdOutlineShare
 } from "react-icons/md";
 import { IoMdSettings } from "react-icons/io";
 import { useFirebase } from "../../../utils/FirebaseContext";
@@ -24,6 +25,7 @@ const ProfileReport = () => {
   const [key, setKey] = useState<string[]>([]);
   const [keyData, setKeyData] = useState<string>("");
   const [confirmDeleteKey, setConfirmDeleteKey] = useState<string>("");
+  const [shareLink, setShareLink] = useState<string>("");
 
   useEffect(() => {
     getFromDatabase(`report/${user?.uid}`).then((data) => {
@@ -54,14 +56,57 @@ const ProfileReport = () => {
     setKeyData("");
   };
 
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(shareLink);
+      // alert("Link berhasil disalin!");
+    } catch (err) {
+      console.error("Gagal menyalin: ", err);
+    }
+  };
+
   return (
     <div className="w-10/12 mx-auto pt-8">
+      {shareLink !== "" && (
+        <div
+          onClick={() => setShareLink("")}
+          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white rounded-lg p-6 w-11/12 max-w-md space-y-4"
+          >
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-semibold">Bagikan Link Visit</h3>
+              <button onClick={() => setShareLink("")}>
+                <MdClose className="text-2xl" />
+              </button>
+            </div>
+            <p className="text-sm text-gray-600">
+              Salin link berikut untuk dibagikan:
+            </p>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                readOnly
+                value={shareLink}
+                className="flex-1 px-3 py-2 border rounded focus:outline-none"
+              />
+              <button
+                onClick={handleCopy}
+                className="bg-primary hover:bg-red-700 text-white px-4 py-2 rounded flex items-center"
+              >
+                <MdContentCopy className="mr-1" /> Copy
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Detail Modal */}
       <div
         onClick={() => setKeyData("")}
-        className={`fixed w-screen h-screen bg-black top-0 left-0 bg-opacity-40 ${
-          keyData === "" ? "hidden" : "flex"
-        } justify-center items-center`}
+        className={`fixed w-screen h-screen bg-black top-0 left-0 bg-opacity-40 ${keyData === "" ? "hidden" : "flex"
+          } justify-center items-center`}
       >
         <div className="pb-6 bg-slate-50 rounded-lg flex flex-col">
           <div className="relative">
@@ -112,9 +157,8 @@ const ProfileReport = () => {
       {/* Confirm Delete Modal */}
       <div
         onClick={() => setConfirmDeleteKey("")}
-        className={`fixed w-screen h-screen bg-black top-0 left-0 bg-opacity-40 ${
-          confirmDeleteKey === "" ? "hidden" : "flex"
-        } justify-center items-center`}
+        className={`fixed w-screen h-screen bg-black top-0 left-0 bg-opacity-40 ${confirmDeleteKey === "" ? "hidden" : "flex"
+          } justify-center items-center`}
       >
         <div
           className="bg-white p-6 rounded-lg shadow-md"
@@ -143,7 +187,7 @@ const ProfileReport = () => {
 
       {/* Header and Table */}
       <div className="flex items-center justify-between py-8">
-      <p className="px-4 py-2 rounded-md bg-slate-100"><span className="text-sm pr-2">Total Report :</span> <span className="font-bold text-primary-dark">{key.length}</span></p>
+        <p className="px-4 py-2 rounded-md bg-slate-100"><span className="text-sm pr-2">Total Report :</span> <span className="font-bold text-primary-dark">{key.length}</span></p>
         <Link
           className="inline-flex items-center px-6 py-1.5 bg-primary rounded-full text-white"
           to="/report/editor"
@@ -206,6 +250,13 @@ const ProfileReport = () => {
                     onClick={() => handleDuplicate(key)}
                   >
                     <MdContentCopy />
+                  </button>
+                  <button
+                    className="p-2 text-yellow-800 rounded-full bg-yellow-100"
+                    type="button"
+                    onClick={() => setShareLink(`https://isuzuvisitreport.com/report/${user?.uid}/${key}`)}
+                  >
+                    <MdOutlineShare />
                   </button>
                   <Link
                     className="p-2 text-green-800 rounded-full bg-green-100"

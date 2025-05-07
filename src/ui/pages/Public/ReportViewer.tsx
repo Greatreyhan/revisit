@@ -15,8 +15,8 @@ const renderTextBlocks = (text?: string) => {
 };
 
 const ReportViewer: React.FC = () => {
-    const { user, getFromDatabase } = useFirebase()
-    const { id } = useParams<{ uid: string, id: string }>();
+    const { getFromDatabase } = useFirebase()
+    const { uid, id } = useParams<{ uid: string, id: string }>();
 
     // Print
     const contentRef = useRef<HTMLDivElement>(null);
@@ -27,7 +27,7 @@ const ReportViewer: React.FC = () => {
 
     useEffect(() => {
         if (id) {
-            getFromDatabase(`report/${user?.uid}/${id}`).then((data) => {
+            getFromDatabase(`report/${uid}/${id}`).then((data) => {
                 if (data) {
                     setDataReport(data);
                 }

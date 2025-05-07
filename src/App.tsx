@@ -3,7 +3,7 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
-import { Blog, Home, Login, Article } from "./ui/pages/Public"
+import { Blog, Home, Login, Article, VisitViewer, ReportViewer } from "./ui/pages/Public"
 import { FirebaseProvider } from './utils/FirebaseContext';
 import AdminTemplate from './ui/templates/AdminTemplate';
 import LandingTemplate from './ui/templates/LandingTemplate';
@@ -65,6 +65,7 @@ import {
   ProfilePodium,
   ProfileReport,
   ProfileReportEditor,
+  ProfileReportViewer,
   ProfileSchedule,
   ProfileScheduleEditor,
   ProfileSetting,
@@ -72,14 +73,14 @@ import {
   ProfileTrainingEditor,
   ProfileVisit,
   ProfileVisitEditor,
-  ReportViewer,
-  VisitViewer,
+  ProfileVisitViewer,
   // ProfileWarranty
 } from "./ui/pages/Field";
 
 import AdminVisuzalizationRegular from "./ui/pages/Admin/AdminVisualizationRegular";
 import DealerVisuzalizationRegular from "./ui/pages/Dealer/DealerVisualizationRegular";
 import DealerTemplate from "./ui/templates/DealerTemplate";
+import PublicViewerTemplate from "./ui/templates/PublicViewerTemplate";
 
 const NotFound: React.FC = () => (
   <div className="flex flex-col justify-center items-center h-screen">
@@ -94,6 +95,8 @@ function App() {
     { path: '/', element: <Home />, layout: 'landing' },
     { path: '/blog', element: <Blog />, layout: 'landing' },
     { path: '/article/:id', element: <Article />, layout: 'landing' },
+    { path: '/visit/:uid/:id', element: <VisitViewer />, layout: 'public' },
+    { path: '/report/:uid/:id', element: <ReportViewer />, layout: 'public' },
 
     // Login
     { path: '/login', element: <Login />, layout: 'basic' },
@@ -111,10 +114,10 @@ function App() {
 
     // Field Editors & Viewers
     { path: '/report/editor', element: <ProfileReportEditor />, layout: 'profile' },
-    { path: '/report/view/:id', element: <ReportViewer />, layout: 'viewer' },
+    { path: '/report/view/:id', element: <ProfileReportViewer />, layout: 'viewer' },
     { path: '/report/editor/:id', element: <ProfileReportEditor />, layout: 'profile' },
     { path: '/visit/editor', element: <ProfileVisitEditor />, layout: 'profile' },
-    { path: '/visit/view/:id', element: <VisitViewer />, layout: 'viewer' },
+    { path: '/visit/view/:id', element: <ProfileVisitViewer />, layout: 'viewer' },
     { path: '/visit/editor/:id', element: <ProfileVisitEditor />, layout: 'profile' },
     { path: '/schedule', element: <ProfileSchedule />, layout: 'profile' },
     { path: '/schedule/editor', element: <ProfileScheduleEditor />, layout: 'profile' },
@@ -193,6 +196,8 @@ function App() {
                 return <Route key={index} path={path} element={<ProfileTemplate>{element}</ProfileTemplate>} />;
               case 'viewer':
                 return <Route key={index} path={path} element={<ViewerTemplate>{element}</ViewerTemplate>} />;
+              case 'public':
+                return <Route key={index} path={path} element={<PublicViewerTemplate>{element}</PublicViewerTemplate>} />;
               default:
                 return <Route key={index} path={path} element={element} />;
             }
