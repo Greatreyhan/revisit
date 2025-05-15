@@ -23,12 +23,12 @@ const Navigation: React.FC = () => {
         <div className="md:flex justify-around items-center px-8 py-2 hidden">
           {[
             { to: '/', label: 'Home' },
-            { to: '/blog', label: 'Article' },
-            { to: '/assistant', label: 'Assistant' },
+            // { to: '/blog', label: 'Article' },
+            // { to: '/assistant', label: 'Assistant' },
             { to: '/report', label: 'Report' },
             { to: '/schedule', label: 'Schedule' },
-            { to: '/literature', label: 'Literature' },
-            { to: '/tools', label: 'Tools' },
+            // { to: '/literature', label: 'Literature' },
+            // { to: '/tools', label: 'Tools' },
           ].map((item) => (
             <Link
               key={item.to}
@@ -67,12 +67,12 @@ const Navigation: React.FC = () => {
           <div className="flex-col w-full h-full text-center pt-8 justify-around items-center text-xl tracking-wide text-slate-900">
             {[
               { to: '/', label: 'Home' },
-              { to: '/blog', label: 'Article' },
-              { to: '/assistant', label: 'Assistant' },
+              // { to: '/blog', label: 'Article' },
+              // { to: '/assistant', label: 'Assistant' },
               { to: '/report', label: 'Report' },
               { to: '/schedule', label: 'Schedule' },
-              { to: '/literature', label: 'Literature' },
-              { to: '/tools', label: 'Tools' },
+              // { to: '/literature', label: 'Literature' },
+              // { to: '/tools', label: 'Tools' },
             ].map((item) => (
               <Link
                 key={item.to}

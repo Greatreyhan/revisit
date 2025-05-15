@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Logo } from "../../assets/icons";
-import { BsInstagram } from "react-icons/bs";
-import { BiLogoGmail, BiLogoLinkedin } from "react-icons/bi";
+// import { BsInstagram } from "react-icons/bs";
+// import { BiLogoGmail, BiLogoLinkedin } from "react-icons/bi";
 
 const Footer = () => {
   return (
@@ -9,15 +9,15 @@ const Footer = () => {
       <div className="flex flex-wrap md:w-10/12 w-full px-3 md:px-0 mx-auto justify-around items-start pt-4">
         <div className="md:w-4/12 w-full text-white text-normal p-3">
           <img className="w-24 mt-9" src={Logo} />
-          <h4 className="font-bold mt-4 text-xl">Isuzu Astra Motor Indonesia</h4>
-          <address className="mt-3">
+          {/* <h4 className="font-bold mt-4 text-xl">Ready To Visit</h4> */}
+          {/* <address className="mt-3">
             <p className="font-semibold ">Bekasi</p>
             Jl. Pejuang, RT.007/RW.016, Harapan Jaya, Kecamatan Medan Satria, Kota Bks, Jawa Barat 17124
-          </address>
+          </address> */}
         </div>
         <div className="flex flex-col flex-1 mx-8">
           <div className="flex justify-end gap-3 mt-6">
-            <a
+            {/* <a
               className="mt-3 text-primary w-10 h-10 p-2.5 bg-base-white rounded-full inline-block hover:text-white"
               target="_blank"
               href="https://www.instagram.com/isuzuid/"
@@ -30,7 +30,7 @@ const Footer = () => {
               href="mailto:contact@isuzu-astra.com"
             >
               <BiLogoGmail className="w-full h-full" />
-            </a>
+            </a> */}
             {/* <a
               className="mt-3 text-primary w-10 h-10 p-2.5 bg-base-white rounded-full inline-block hover:text-white"
               target="_blank"
@@ -38,13 +38,13 @@ const Footer = () => {
             >
               <BsWhatsapp className="w-full h-full" />
             </a> */}
-            <a
+            {/* <a
               className="mt-3 text-primary w-10 h-10 p-2.5 bg-base-white rounded-full inline-block hover:text-white"
               target="_blank"
               href="https://www.linkedin.com/company/isuzu-astra-motor-indonesia"
             >
               <BiLogoLinkedin className="w-full h-full" />
-            </a>
+            </a> */}
           </div>
           <div className="flex justify-around flex-1">
             <div className="md:flex-1 w-4/12 text-white flex flex-col p-2 mt-8 md:pl-10 pl-0">
@@ -60,7 +60,7 @@ const Footer = () => {
               >
                 Dashboard
               </Link>
-              <Link
+              {/* <Link
                 className="mt-3 text-gray-300 hover:text-white"
                 to="/"
               >
@@ -68,10 +68,10 @@ const Footer = () => {
               </Link>
               <Link className="mt-3 text-gray-300 hover:text-white" to="/">
                 Assistant
-              </Link>
+              </Link> */}
               <Link
                 className="mt-3 text-gray-300 hover:text-white"
-                to="/"
+                to="/login"
               >
                 Report
               </Link>
@@ -80,7 +80,7 @@ const Footer = () => {
               <h5 className="mt-1 font-bold text-xl">
                 Document
               </h5>
-              <a
+              {/* <a
                 className="mt-3 text-gray-300 hover:text-white"
                 target="_blank"
                 href="https://drive.google.com/drive/folders/1a4L5uFV7OlCR-TCHdJ7OIk6u5hPYqEbb"
@@ -93,7 +93,7 @@ const Footer = () => {
                 href="https://drive.google.com/drive/folders/1a4L5uFV7OlCR-TCHdJ7OIk6u5hPYqEbb"
               >
                 Workshop Manual
-              </a>
+              </a> */}
               <a
                 className="mt-3 text-gray-300 hover:text-white"
                 target="_blank"
@@ -127,13 +127,13 @@ const Footer = () => {
               >
                 IWC
               </a>
-              <a
+              {/* <a
                 className="mt-3 text-gray-300 hover:text-white"
                 target="_blank"
                 href="https://drive.google.com/drive/folders/1jO5sqvHVLwP5z5ZrDGW6aFUGr6Fr1rFn?usp=sharing"
               >
                 Tutorial
-              </a>
+              </a> */}
               {/* <a
                 className="mt-3 text-gray-300 hover:text-white"
                 target="_blank"
@@ -147,7 +147,7 @@ const Footer = () => {
 
       </div>
       <p className="text-center mt-8 text-white text-sm">
-        © Isuzu Astra Motor Indonesia 2025
+        © Ready To Visit 2025
       </p>
     </div>
   );

@@ -33,7 +33,7 @@ const ProfilePodium: React.FC = () => {
   // Data user dan key dari data user
   const [userData, setUserData] = useState<Record<string, any>>({});
   const [userKeys, setUserKeys] = useState<string[]>([]);
-  
+
   // State modal
   const [keyData, setKeyData] = useState<string>("");
 
@@ -122,7 +122,7 @@ const ProfilePodium: React.FC = () => {
       visit: visitCount,
       health: healthCount,
       training: trainingCount,
-      score: reportCount*2 + visitCount*2 + healthCount + trainingCount*5,
+      score: reportCount * 2 + visitCount * 2 + healthCount + trainingCount * 5,
     };
     return acc;
   }, {} as Record<string, SummaryData>);
@@ -132,7 +132,9 @@ const ProfilePodium: React.FC = () => {
 
   // Apply dealer filter pada daftar kunci
   const filteredKeys = summaryKeys.filter(
-    (uid) => !filterDealer || summaryData[uid].dealer === filterDealer
+    (uid) =>
+      summaryData[uid].dealer !== "ISUZU ASTRA MOTOR INDONESIA" && 
+      (!filterDealer || summaryData[uid].dealer === filterDealer)
   );
 
   // Fungsi untuk mengurutkan data sesuai konfigurasi sortConfig
@@ -168,9 +170,8 @@ const ProfilePodium: React.FC = () => {
       {/* Modal Info (tidak diubah) */}
       <div
         onClick={() => setKeyData("")}
-        className={`fixed w-screen h-screen bg-black top-0 left-0 bg-opacity-40 ${
-          keyData === "" ? "hidden" : "flex"
-        } justify-center items-center`}
+        className={`fixed w-screen h-screen bg-black top-0 left-0 bg-opacity-40 ${keyData === "" ? "hidden" : "flex"
+          } justify-center items-center`}
       >
         <div className="pb-6 bg-slate-50 rounded-lg flex flex-col">
           <div className="relative">
