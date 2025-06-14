@@ -1,13 +1,13 @@
 
 // Data
 export const seriesData = [
-    "P series", "N series", "F series", "G series", "T series"
+    "P series", "N series", "F series", "G series", "T series", "Other"
 ];
 
 export const vehicleTypesData = [
     "Pick Up", "LIGHT TRUCK 4T", "LIGHT TRUCK 6T", "MEDIUM TRUCK 4X2",
     "MEDIUM TRUCK 6X2", "MEDIUM TRUCK 6X4", "TRACTOR HEAD 4X2", "TRACTOR HEAD 6X2",
-    "TRACTOR HEAD 6X4"
+    "TRACTOR HEAD 6X4", "Other"
 ];
 
 export const focusModelsData = [
@@ -15,10 +15,10 @@ export const focusModelsData = [
     "NMR HD 6.5", "NQR B", "NPS", "FRR Q", "FTR P", "FTR S", "FTR T",
     "FVR L D", "FVR P", "FVR Q", "FVR S", "FVR U", "FVM N HP ABS", "FVM N",
     "FVM U", "FVM U HP", "FVZ N HP", "FVZ U HP", "FVZ L HP MX", "GVR J T/H",
-    "GVR J HP ABS T/H", "GVZ K HP ABS T/H", "GXZ K ABS T/H"
+    "GVR J HP ABS T/H", "GVZ K HP ABS T/H", "GXZ K ABS T/H", "NHR 55", "NHR 71", "Bison", "Other"
 ];
 
-export const euroTypeData = ["Euro 2", "Euro 4"]
+export const euroTypeData = ["Euro 2", "Euro 4", "Other"]
 
 export const areaData = ["Jawa", "Sumatra", "Kalimantan", "Sulawesi", "IBT"]
 
