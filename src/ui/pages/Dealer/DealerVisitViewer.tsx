@@ -175,7 +175,7 @@ const DealerVisitViewer: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {dataVisit?.units.map((unit, index) => (
+                            {dataVisit?.units?.map((unit, index) => (
                                 <tr key={index}>
                                     <td className="border border-gray-200 px-4 text-center py-2 text-sm">{unit?.trademark}</td>
                                     <td className="border border-gray-200 px-4 text-center py-2 text-sm">{unit?.typeUnit}</td>

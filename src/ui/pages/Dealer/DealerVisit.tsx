@@ -217,7 +217,7 @@ const DealerVisit = () => {
                 <td className="border p-4 dark:border-dark-5 md:table-cell hidden">{data?.segment}</td>
                 <td className="border p-4 dark:border-dark-5">{data?.area}</td>
                 <td className="border p-4 dark:border-dark-5 text-center">
-                  {data?.units.reduce((total, unit) => total + parseInt(unit.qtyUnit, 10), 0)}
+                  {data?.units?.reduce((total, unit) => total + parseInt(unit.qtyUnit, 10), 0)}
                 </td>
                 <td className="border-t p-4 md:flex gap-x-3 justify-around items-center hidden">
                   <Link
