@@ -110,10 +110,10 @@ const DealerReport = () => {
       Homework: report.homework,
       OtherCaseTIR: report.otherCaseTIR,
       DifficultPoint: report.difficultPoint,
-      Attachments: report.attachments.map(a => `${a.imageDescription} (${a.imageAttached})`).join('; '),
-      Investigations: report.investigations.map(i => `${i.content} - ${i.result} - ${i.standard} - ${i.judge}`).join('; '),
-      Units: report.units.map(u => `${u.trademark} ${u.typeUnit} x${u.qtyUnit} ${u.goodType} ${u.route}`).join('; '),
-      UnitInvolves: report.unitInvolves.map(ui => `${ui.VIN} (${ui.mileage})`).join('; '),
+      Attachments: report.attachments?.map(a => `${a.imageDescription} (${a.imageAttached})`).join('; '),
+      Investigations: report.investigations?.map(i => `${i.content} - ${i.result} - ${i.standard} - ${i.judge}`).join('; '),
+      Units: report.units?.map(u => `${u.trademark} ${u.typeUnit} x${u.qtyUnit} ${u.goodType} ${u.route}`).join('; '),
+      UnitInvolves: report.unitInvolves?.map(ui => `${ui.VIN} (${ui.mileage})`).join('; '),
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(dataToExport);
